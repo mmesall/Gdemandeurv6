@@ -1,0 +1,64 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    <div *ngIf="candidatureProf">
+      <h2 data-cy="candidatureProfDetailsHeading"><span>Candidature Prof</span></h2>
+
+      <hr />
+
+      <jhi-alert-error></jhi-alert-error>
+
+      <jhi-alert></jhi-alert>
+
+      <dl class="row-md jh-entity-details">
+        <dt><span>ID</span></dt>
+        <dd>
+          <span>{{ candidatureProf.id }}</span>
+        </dd>
+        <dt><span>Offre Formation</span></dt>
+        <dd>
+          <span>{{ candidatureProf.offreFormation }}</span>
+        </dd>
+        <dt><span>Date Debut Offre</span></dt>
+        <dd>
+          <span>{{ candidatureProf.dateDebutOffre | formatMediumDate }}</span>
+        </dd>
+        <dt><span>Date Fin Offre</span></dt>
+        <dd>
+          <span>{{ candidatureProf.dateFinOffre | formatMediumDate }}</span>
+        </dd>
+        <dt><span>Date Depot</span></dt>
+        <dd>
+          <span>{{ candidatureProf.dateDepot | formatMediumDate }}</span>
+        </dd>
+        <dt><span>Resultat</span></dt>
+        <dd>
+          <span>{{ candidatureProf.resultat }}</span>
+        </dd>
+        <dt><span>Professionnel</span></dt>
+        <dd>
+          <div *ngIf="candidatureProf.professionnel">
+            <a [routerLink]="['/professionnel', candidatureProf.professionnel?.id, 'view']">{{
+              candidatureProf.professionnel?.profession
+            }}</a>
+          </div>
+        </dd>
+        <dt><span>Formation Continue</span></dt>
+        <dd>
+          <div *ngIf="candidatureProf.formationContinue">
+            <a [routerLink]="['/formation-continue', candidatureProf.formationContinue?.id, 'view']">{{
+              candidatureProf.formationContinue?.nomFormationC
+            }}</a>
+          </div>
+        </dd>
+      </dl>
+
+      <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+        <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span>Back</span>
+      </button>
+
+      <button type="button" [routerLink]="['/candidature-prof', candidatureProf.id, 'edit']" class="btn btn-primary">
+        <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span>Edit</span>
+      </button>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,101 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    <div *ngIf="formationInitiale">
+      <h2 data-cy="formationInitialeDetailsHeading"><span>Formation Initiale</span></h2>
+
+      <hr />
+
+      <jhi-alert-error></jhi-alert-error>
+
+      <jhi-alert></jhi-alert>
+
+      <dl class="row-md jh-entity-details">
+        <dt><span>ID</span></dt>
+        <dd>
+          <span>{{ formationInitiale.id }}</span>
+        </dd>
+        <dt><span>Nom Formation I</span></dt>
+        <dd>
+          <span>{{ formationInitiale.nomFormationI }}</span>
+        </dd>
+        <dt><span>Duree</span></dt>
+        <dd>
+          <span>{{ formationInitiale.duree }}</span>
+        </dd>
+        <dt><span>Admission</span></dt>
+        <dd>
+          <span>{{ formationInitiale.admission }}</span>
+        </dd>
+        <dt><span>Diplome Requis</span></dt>
+        <dd>
+          <span>{{ formationInitiale.diplomeRequis }}</span>
+        </dd>
+        <dt><span>Niveau Etude</span></dt>
+        <dd>
+          <span>{{ formationInitiale.niveauEtude }}</span>
+        </dd>
+        <dt><span>Fiche Formation</span></dt>
+        <dd>
+          <div *ngIf="formationInitiale.ficheFormation">
+            <a (click)="openFile(formationInitiale.ficheFormation, formationInitiale.ficheFormationContentType)">open</a>
+            {{ formationInitiale.ficheFormationContentType }}, {{ byteSize(formationInitiale.ficheFormation) }}
+          </div>
+        </dd>
+        <dt><span>Filiere</span></dt>
+        <dd>
+          <span>{{ formationInitiale.filiere }}</span>
+        </dd>
+        <dt><span>Serie</span></dt>
+        <dd>
+          <span>{{ formationInitiale.serie }}</span>
+        </dd>
+        <dt><span>Cfp</span></dt>
+        <dd>
+          <span>{{ formationInitiale.cfp }}</span>
+        </dd>
+        <dt><span>Lycee</span></dt>
+        <dd>
+          <span>{{ formationInitiale.lycee }}</span>
+        </dd>
+        <dt><span>Nom Concours</span></dt>
+        <dd>
+          <span>{{ formationInitiale.nomConcours }}</span>
+        </dd>
+        <dt><span>Date Ouverture</span></dt>
+        <dd>
+          <span>{{ formationInitiale.dateOuverture | formatMediumDate }}</span>
+        </dd>
+        <dt><span>Date Cloture</span></dt>
+        <dd>
+          <span>{{ formationInitiale.dateCloture | formatMediumDate }}</span>
+        </dd>
+        <dt><span>Date Concours</span></dt>
+        <dd>
+          <span>{{ formationInitiale.dateConcours | formatMediumDate }}</span>
+        </dd>
+        <dt><span>Nom Diplome</span></dt>
+        <dd>
+          <span>{{ formationInitiale.nomDiplome }}</span>
+        </dd>
+        <dt><span>Nom Debouche</span></dt>
+        <dd>
+          <span>{{ formationInitiale.nomDebouche }}</span>
+        </dd>
+        <dt><span>Formation</span></dt>
+        <dd>
+          <div *ngIf="formationInitiale.formation">
+            <a [routerLink]="['/formation', formationInitiale.formation?.id, 'view']">{{ formationInitiale.formation?.id }}</a>
+          </div>
+        </dd>
+      </dl>
+
+      <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+        <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span>Back</span>
+      </button>
+
+      <button type="button" [routerLink]="['/formation-initiale', formationInitiale.id, 'edit']" class="btn btn-primary">
+        <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span>Edit</span>
+      </button>
+    </div>
+  </div>
+</div>

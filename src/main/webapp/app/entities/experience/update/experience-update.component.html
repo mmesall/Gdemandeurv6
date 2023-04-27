@@ -1,0 +1,173 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    <form name="editForm" role="form" novalidate (ngSubmit)="save()" [formGroup]="editForm">
+      <h2 id="jhi-experience-heading" data-cy="ExperienceCreateUpdateHeading">Ajouter une nouvelle experience</h2>
+
+      <div>
+        <jhi-alert-error></jhi-alert-error>
+
+        <div *jhiHasAnyAuthority="'ROLE_ADMIN'" class="row mb-3" [hidden]="editForm.get('id')!.value == null">
+          <label class="form-label" for="field_id">ID</label>
+          <input type="number" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
+        </div>
+
+        <div class="row mb-3">
+          <label class="form-label" for="field_dateDebut">Date Debut</label>
+          <div class="input-group">
+            <input
+              id="field_dateDebut"
+              data-cy="dateDebut"
+              type="text"
+              class="form-control"
+              name="dateDebut"
+              ngbDatepicker
+              #dateDebutDp="ngbDatepicker"
+              formControlName="dateDebut"
+            />
+            <button type="button" class="btn btn-secondary" (click)="dateDebutDp.toggle()"><fa-icon icon="calendar-alt"></fa-icon></button>
+          </div>
+          <div *ngIf="editForm.get('dateDebut')!.invalid && (editForm.get('dateDebut')!.dirty || editForm.get('dateDebut')!.touched)">
+            <small class="form-text text-danger" *ngIf="editForm.get('dateDebut')?.errors?.required"> This field is required. </small>
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <label class="form-label" for="field_dateFin">Date Fin</label>
+          <div class="input-group">
+            <input
+              id="field_dateFin"
+              data-cy="dateFin"
+              type="text"
+              class="form-control"
+              name="dateFin"
+              ngbDatepicker
+              #dateFinDp="ngbDatepicker"
+              formControlName="dateFin"
+            />
+            <button type="button" class="btn btn-secondary" (click)="dateFinDp.toggle()"><fa-icon icon="calendar-alt"></fa-icon></button>
+          </div>
+          <div *ngIf="editForm.get('dateFin')!.invalid && (editForm.get('dateFin')!.dirty || editForm.get('dateFin')!.touched)">
+            <small class="form-text text-danger" *ngIf="editForm.get('dateFin')?.errors?.required"> This field is required. </small>
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <label class="form-label" for="field_nomEntreprise">Nom Entreprise</label>
+          <input
+            type="text"
+            class="form-control"
+            name="nomEntreprise"
+            id="field_nomEntreprise"
+            data-cy="nomEntreprise"
+            formControlName="nomEntreprise"
+          />
+          <div
+            *ngIf="
+              editForm.get('nomEntreprise')!.invalid && (editForm.get('nomEntreprise')!.dirty || editForm.get('nomEntreprise')!.touched)
+            "
+          >
+            <small class="form-text text-danger" *ngIf="editForm.get('nomEntreprise')?.errors?.required"> This field is required. </small>
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <label class="form-label" for="field_posteOccupe">Poste Occupe</label>
+          <input
+            type="text"
+            class="form-control"
+            name="posteOccupe"
+            id="field_posteOccupe"
+            data-cy="posteOccupe"
+            formControlName="posteOccupe"
+          />
+          <div *ngIf="editForm.get('posteOccupe')!.invalid && (editForm.get('posteOccupe')!.dirty || editForm.get('posteOccupe')!.touched)">
+            <small class="form-text text-danger" *ngIf="editForm.get('posteOccupe')?.errors?.required"> This field is required. </small>
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <label class="form-label" for="field_mission">Mission</label>
+          <textarea class="form-control" name="mission" id="field_mission" data-cy="mission" formControlName="mission"></textarea>
+        </div>
+
+        <div *jhiHasAnyAuthority="'ROLE_ADMIN'" class="row mb-3">
+          <label class="form-label" for="field_eleve">Eleve</label>
+          <select class="form-control" id="field_eleve" data-cy="eleve" name="eleve" formControlName="eleve">
+            <option [ngValue]="null"></option>
+            <option
+              [ngValue]="eleveOption.id === editForm.get('eleve')!.value?.id ? editForm.get('eleve')!.value : eleveOption"
+              *ngFor="let eleveOption of elevesSharedCollection; trackBy: trackEleveById"
+            >
+              {{ eleveOption.niveauEtude }}
+            </option>
+          </select>
+        </div>
+
+        <div *jhiHasAnyAuthority="'ROLE_ADMIN'" class="row mb-3">
+          <label class="form-label" for="field_etudiant">Etudiant</label>
+          <select class="form-control" id="field_etudiant" data-cy="etudiant" name="etudiant" formControlName="etudiant">
+            <option [ngValue]="null"></option>
+            <option
+              [ngValue]="etudiantOption.id === editForm.get('etudiant')!.value?.id ? editForm.get('etudiant')!.value : etudiantOption"
+              *ngFor="let etudiantOption of etudiantsSharedCollection; trackBy: trackEtudiantById"
+            >
+              {{ etudiantOption.carteEtudiant }}
+            </option>
+          </select>
+        </div>
+
+        <div *jhiHasAnyAuthority="'ROLE_ADMIN'" class="row mb-3">
+          <label class="form-label" for="field_professionnel">Professionnel</label>
+          <select
+            class="form-control"
+            id="field_professionnel"
+            data-cy="professionnel"
+            name="professionnel"
+            formControlName="professionnel"
+          >
+            <option [ngValue]="null"></option>
+            <option
+              [ngValue]="
+                professionnelOption.id === editForm.get('professionnel')!.value?.id
+                  ? editForm.get('professionnel')!.value
+                  : professionnelOption
+              "
+              *ngFor="let professionnelOption of professionnelsSharedCollection; trackBy: trackProfessionnelById"
+            >
+              {{ professionnelOption.profession }}
+            </option>
+          </select>
+        </div>
+
+        <div *jhiHasAnyAuthority="'ROLE_ADMIN'" class="row mb-3">
+          <label class="form-label" for="field_demandeur">Demandeur</label>
+          <select class="form-control" id="field_demandeur" data-cy="demandeur" name="demandeur" formControlName="demandeur">
+            <option [ngValue]="null"></option>
+            <option
+              [ngValue]="demandeurOption.id === editForm.get('demandeur')!.value?.id ? editForm.get('demandeur')!.value : demandeurOption"
+              *ngFor="let demandeurOption of demandeursSharedCollection; trackBy: trackDemandeurById"
+            >
+              {{ demandeurOption.profil }}
+            </option>
+          </select>
+        </div>
+      </div>
+
+      <div>
+        <button type="button" id="cancel-save" data-cy="entityCreateCancelButton" class="btn btn-secondary" (click)="previousState()">
+          <fa-icon icon="ban"></fa-icon>&nbsp;<span>Annuler</span>
+        </button>
+
+        <button
+          type="submit"
+          id="save-entity"
+          data-cy="entityCreateSaveButton"
+          [disabled]="editForm.invalid || isSaving"
+          class="btn btn-primary"
+        >
+          <fa-icon icon="save"></fa-icon>&nbsp;<span>Sauvegarder</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

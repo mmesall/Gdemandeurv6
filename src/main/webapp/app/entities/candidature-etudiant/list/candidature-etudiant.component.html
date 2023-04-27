@@ -1,0 +1,102 @@
+<div>
+  <h2 id="page-heading" data-cy="CandidatureEtudiantHeading">
+    <span>Candidature Etudiants</span>
+
+    <div class="d-flex justify-content-end">
+      <button class="btn btn-info me-2" (click)="reset()" [disabled]="isLoading">
+        <fa-icon icon="sync" [spin]="isLoading"></fa-icon>
+        <span>Refresh List</span>
+      </button>
+
+      <button
+        id="jh-create-entity"
+        data-cy="entityCreateButton"
+        class="btn btn-primary jh-create-entity create-candidature-etudiant"
+        [routerLink]="['/candidature-etudiant/new']"
+      >
+        <fa-icon icon="plus"></fa-icon>
+        <span> Create a new Candidature Etudiant </span>
+      </button>
+    </div>
+  </h2>
+
+  <jhi-alert-error></jhi-alert-error>
+
+  <jhi-alert></jhi-alert>
+
+  <div class="alert alert-warning" id="no-result" *ngIf="candidatureEtudiants?.length === 0">
+    <span>No candidatureEtudiants found</span>
+  </div>
+
+  <div class="table-responsive" id="entities" *ngIf="candidatureEtudiants && candidatureEtudiants.length > 0">
+    <table class="table table-striped" aria-describedby="page-heading">
+      <thead>
+        <tr jhiSort [(predicate)]="predicate" [(ascending)]="ascending" (sortChange)="reset()">
+          <th scope="col" jhiSortBy="id"><span>ID</span> <fa-icon icon="sort"></fa-icon></th>
+          <th scope="col" jhiSortBy="offreFormation"><span>Offre Formation</span> <fa-icon icon="sort"></fa-icon></th>
+          <th scope="col" jhiSortBy="dateDebutOffre"><span>Date Debut Offre</span> <fa-icon icon="sort"></fa-icon></th>
+          <th scope="col" jhiSortBy="dateFinOffre"><span>Date Fin Offre</span> <fa-icon icon="sort"></fa-icon></th>
+          <th scope="col" jhiSortBy="dateDepot"><span>Date Depot</span> <fa-icon icon="sort"></fa-icon></th>
+          <th scope="col" jhiSortBy="resultat"><span>Resultat</span> <fa-icon icon="sort"></fa-icon></th>
+          <th scope="col" jhiSortBy="etudiant.carteEtudiant"><span>Etudiant</span> <fa-icon icon="sort"></fa-icon></th>
+          <th scope="col" jhiSortBy="formationInitiale.nomFormationI"><span>Formation Initiale</span> <fa-icon icon="sort"></fa-icon></th>
+          <th scope="col"></th>
+        </tr>
+      </thead>
+      <tbody infinite-scroll (scrolled)="loadPage(page + 1)" [infiniteScrollDisabled]="page >= links['last']" [infiniteScrollDistance]="0">
+        <tr *ngFor="let candidatureEtudiant of candidatureEtudiants; trackBy: trackId" data-cy="entityTable">
+          <td>
+            <a [routerLink]="['/candidature-etudiant', candidatureEtudiant.id, 'view']">{{ candidatureEtudiant.id }}</a>
+          </td>
+          <td>{{ candidatureEtudiant.offreFormation }}</td>
+          <td>{{ candidatureEtudiant.dateDebutOffre | formatMediumDate }}</td>
+          <td>{{ candidatureEtudiant.dateFinOffre | formatMediumDate }}</td>
+          <td>{{ candidatureEtudiant.dateDepot | formatMediumDate }}</td>
+          <td>{{ candidatureEtudiant.resultat }}</td>
+          <td>
+            <div *ngIf="candidatureEtudiant.etudiant">
+              <a [routerLink]="['/etudiant', candidatureEtudiant.etudiant?.id, 'view']">{{
+                candidatureEtudiant.etudiant?.carteEtudiant
+              }}</a>
+            </div>
+          </td>
+          <td>
+            <div *ngIf="candidatureEtudiant.formationInitiale">
+              <a [routerLink]="['/formation-initiale', candidatureEtudiant.formationInitiale?.id, 'view']">{{
+                candidatureEtudiant.formationInitiale?.nomFormationI
+              }}</a>
+            </div>
+          </td>
+          <td class="text-end">
+            <div class="btn-group">
+              <button
+                type="submit"
+                [routerLink]="['/candidature-etudiant', candidatureEtudiant.id, 'view']"
+                class="btn btn-info btn-sm"
+                data-cy="entityDetailsButton"
+              >
+                <fa-icon icon="eye"></fa-icon>
+                <span class="d-none d-md-inline">View</span>
+              </button>
+
+              <button
+                type="submit"
+                [routerLink]="['/candidature-etudiant', candidatureEtudiant.id, 'edit']"
+                class="btn btn-primary btn-sm"
+                data-cy="entityEditButton"
+              >
+                <fa-icon icon="pencil-alt"></fa-icon>
+                <span class="d-none d-md-inline">Edit</span>
+              </button>
+
+              <button type="submit" (click)="delete(candidatureEtudiant)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
+                <fa-icon icon="times"></fa-icon>
+                <span class="d-none d-md-inline">Delete</span>
+              </button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

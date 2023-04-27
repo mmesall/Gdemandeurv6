@@ -1,0 +1,160 @@
+{
+  "applications": "*",
+  "changelogDate": "20230328104852",
+  "dto": "no",
+  "embedded": false,
+  "entityTableName": "dossier",
+  "fields": [
+    {
+      "fieldName": "numDossier",
+      "fieldType": "String",
+      "fieldValidateRules": ["unique"]
+    },
+    {
+      "fieldName": "dateNaiss",
+      "fieldType": "LocalDate"
+    },
+    {
+      "fieldName": "prenom",
+      "fieldType": "String",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "nom",
+      "fieldType": "String",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "nomUtilisateur",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "regionNaiss",
+      "fieldType": "NomRegion",
+      "fieldValues": "DAKAR,DIOURBEL,FATICK,KAFFRINE,KAOLACK,KEDOUGOU,KOLDA,LOUGA,MATAM,SAINT_LOUIS,SEDHIOU,TAMBACOUNDA,THIES,ZIGINCHOR,AUTRE"
+    },
+    {
+      "fieldName": "departementNaiss",
+      "fieldType": "NomDepartement",
+      "fieldValues": "DAKAR,GUEDIAWAYE,PIKINE,RUFISQUE,BAMBAEY,DIOURBEL,MBACKE,FATICK,FOUNDIOUGNE,GOSSAS,BIRKILANE,KAFFRINE,KOUNGHEUR,MALEM_HODAR,GUINGUINEO,KAOLOACK,NIORO,KEDOUGOU,SALAMATA,SARAYA,KOLDA,MEDINA_YORO_FOULAH,VELINGARA,KEBEMERE,LINGUERE,LOUGA,KANELKANEL,MATAM,RANEROU_FERLO,DAGANA,PODOR,SAINT_LOUIS,BOUNKILING,GOUDOMP,SEDHIOU,BAKEL,GOUDIRY,KOUMPENTOUM,TAMBACOUNDA,MBOUR,THIES,TIVAOUANE,BIGNONA,OUSSOUYE,ZICHUINCHOR,AUTRE"
+    },
+    {
+      "fieldName": "lieuNaiss",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "typePiece",
+      "fieldType": "TypePiece",
+      "fieldValues": "CNI,PASSEPORT"
+    },
+    {
+      "fieldName": "numeroPiece",
+      "fieldType": "Long",
+      "fieldValidateRules": ["unique"]
+    },
+    {
+      "fieldName": "sexe",
+      "fieldType": "Sexe",
+      "fieldValues": "HOMME,FEMME"
+    },
+    {
+      "fieldName": "regionResidence",
+      "fieldType": "NomRegion",
+      "fieldValues": "DAKAR,DIOURBEL,FATICK,KAFFRINE,KAOLACK,KEDOUGOU,KOLDA,LOUGA,MATAM,SAINT_LOUIS,SEDHIOU,TAMBACOUNDA,THIES,ZIGINCHOR,AUTRE"
+    },
+    {
+      "fieldName": "depResidence",
+      "fieldType": "NomDepartement",
+      "fieldValues": "DAKAR,GUEDIAWAYE,PIKINE,RUFISQUE,BAMBAEY,DIOURBEL,MBACKE,FATICK,FOUNDIOUGNE,GOSSAS,BIRKILANE,KAFFRINE,KOUNGHEUR,MALEM_HODAR,GUINGUINEO,KAOLOACK,NIORO,KEDOUGOU,SALAMATA,SARAYA,KOLDA,MEDINA_YORO_FOULAH,VELINGARA,KEBEMERE,LINGUERE,LOUGA,KANELKANEL,MATAM,RANEROU_FERLO,DAGANA,PODOR,SAINT_LOUIS,BOUNKILING,GOUDOMP,SEDHIOU,BAKEL,GOUDIRY,KOUMPENTOUM,TAMBACOUNDA,MBOUR,THIES,TIVAOUANE,BIGNONA,OUSSOUYE,ZICHUINCHOR,AUTRE"
+    },
+    {
+      "fieldName": "adresseResidence",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "telephone1",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "telephone2",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "email",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "niveauFormation",
+      "fieldType": "NiveauEtude",
+      "fieldValues": "Cinquieme,Quatrieme,Troisieme,BFEM,Equivalent_BFEM,Seconde,Premiere,Terminal,BAC,Equivalent_BAC,Licenece1,Licence2,Licence3,Master,Doctorat,Attestation,CAP,CAP1,CAP2,CAP3,CPS,BEP,BEP1,BEP2,BT,BT1,BT2,BT3,BTS,BTS1,BTS2,CQP,ChefEquipe,Chef_de_Chantier,TechnicienSpecialise,METP,BTI,Titre_professionnel,Autres"
+    },
+    {
+      "fieldName": "specialite1",
+      "fieldType": "NomFiliere",
+      "fieldValues": "AGRI_ELEVAGE,AGRICULTURE,PECHE,ELEVAGE,MINE_CARRIERES,ARTISANAT,BATIMAT_TRAVAUX_PUBLIQUES,MECANIQUE,MENUISERIE_BOIS,HABILLEMENT,AGROALIMENTAIRE,ELECTROTECHNIQUE_ELECTRIQUE_ENERGETIQUE,HYDRAULIQUE,STRUCTURE_METALLIQUE,STRUCTURE_PLASTIQUE,BEAUTE_ESTHETIQUE,DEVELOPPEMENT_TERRITORIAL,DROIT,ECONOMIE_GESTION_COMMERCE_LOGISTIQUE,INSDUSTRIE_CULTURELLE_ET_CREATIVE,INFORMATIQUE_ET_NUMERIQUE,RESTAURATION_ET_HOTELLORIE,SANTE_BIOLOGIE_CHIMIE,SPORT,TOURISME,ENVIRONNEMENT,AUTRES"
+    },
+    {
+      "fieldName": "specialite2",
+      "fieldType": "NomSerie",
+      "fieldValues": "STEG,STIDD_M,STIDD_E,S3,S4,S5,F6,Autres"
+    },
+    {
+      "fieldName": "diplomeRequis",
+      "fieldType": "DiplomeRequis",
+      "fieldValues": "ATTESTATION,CAP,BT,DUR,DNBA,BEP,BTS,BFEM,BAC,LICENCE,MASTER,Autres"
+    },
+    {
+      "fieldName": "cv",
+      "fieldType": "byte[]",
+      "fieldTypeBlobContent": "any"
+    },
+    {
+      "fieldName": "lettreMotivation",
+      "fieldType": "byte[]",
+      "fieldTypeBlobContent": "text"
+    },
+    {
+      "fieldName": "profession",
+      "fieldType": "String"
+    }
+  ],
+  "fluentMethods": true,
+  "jpaMetamodelFiltering": false,
+  "name": "Dossier",
+  "pagination": "infinite-scroll",
+  "readOnly": false,
+  "relationships": [
+    {
+      "otherEntityField": "niveauEtude",
+      "otherEntityName": "eleve",
+      "otherEntityRelationshipName": "dossier",
+      "ownerSide": true,
+      "relationshipName": "eleve",
+      "relationshipType": "one-to-one"
+    },
+    {
+      "otherEntityField": "carteEtudiant",
+      "otherEntityName": "etudiant",
+      "otherEntityRelationshipName": "dossier",
+      "ownerSide": true,
+      "relationshipName": "etudiant",
+      "relationshipType": "one-to-one"
+    },
+    {
+      "otherEntityField": "profession",
+      "otherEntityName": "professionnel",
+      "otherEntityRelationshipName": "dossier",
+      "ownerSide": true,
+      "relationshipName": "professionnel",
+      "relationshipType": "one-to-one"
+    },
+    {
+      "otherEntityName": "demandeur",
+      "otherEntityRelationshipName": "dossier",
+      "ownerSide": false,
+      "relationshipName": "demandeur",
+      "relationshipType": "one-to-one"
+    }
+  ],
+  "service": "serviceImpl"
+}

@@ -1,0 +1,53 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    <div *ngIf="serviceMFPAI">
+      <h2 data-cy="serviceMFPAIDetailsHeading"><span>Service MFPAI</span></h2>
+
+      <hr />
+
+      <jhi-alert-error></jhi-alert-error>
+
+      <jhi-alert></jhi-alert>
+
+      <dl class="row-md jh-entity-details">
+        <dt><span>ID</span></dt>
+        <dd>
+          <span>{{ serviceMFPAI.id }}</span>
+        </dd>
+        <dt><span>Image Service</span></dt>
+        <dd>
+          <div *ngIf="serviceMFPAI.imageService">
+            <a (click)="openFile(serviceMFPAI.imageService, serviceMFPAI.imageServiceContentType)">
+              <img
+                [src]="'data:' + serviceMFPAI.imageServiceContentType + ';base64,' + serviceMFPAI.imageService"
+                style="max-width: 100%"
+                alt="serviceMFPAI image"
+              />
+            </a>
+            {{ serviceMFPAI.imageServiceContentType }}, {{ byteSize(serviceMFPAI.imageService) }}
+          </div>
+        </dd>
+        <dt><span>Nom Service</span></dt>
+        <dd>
+          <span>{{ serviceMFPAI.nomService }}</span>
+        </dd>
+        <dt><span>Chef Service</span></dt>
+        <dd>
+          <span>{{ serviceMFPAI.chefService }}</span>
+        </dd>
+        <dt><span>Description</span></dt>
+        <dd>
+          <span>{{ serviceMFPAI.description }}</span>
+        </dd>
+      </dl>
+
+      <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+        <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span>Back</span>
+      </button>
+
+      <button type="button" [routerLink]="['/service-mfpai', serviceMFPAI.id, 'edit']" class="btn btn-primary">
+        <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span>Edit</span>
+      </button>
+    </div>
+  </div>
+</div>

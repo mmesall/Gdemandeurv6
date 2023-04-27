@@ -1,0 +1,182 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    <form name="editForm" role="form" novalidate (ngSubmit)="save()" [formGroup]="editForm">
+      <h2 id="jhi-diplome-heading" data-cy="DiplomeCreateUpdateHeading">Create or edit a Diplome</h2>
+
+      <div>
+        <jhi-alert-error></jhi-alert-error>
+
+        <div class="row mb-3" [hidden]="editForm.get('id')!.value == null">
+          <label class="form-label" for="field_id">ID</label>
+          <input type="number" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
+        </div>
+
+        <div class="row mb-3">
+          <label class="form-label" for="field_intitule">Intitule</label>
+          <input type="text" class="form-control" name="intitule" id="field_intitule" data-cy="intitule" formControlName="intitule" />
+        </div>
+
+        <div class="row mb-3">
+          <label class="form-label" for="field_domaine">Domaine</label>
+          <select class="form-control" name="domaine" formControlName="domaine" id="field_domaine" data-cy="domaine">
+            <option [ngValue]="null"></option>
+            <option *ngFor="let nomFiliere of nomFiliereValues" [value]="nomFiliere">nomFiliere</option>
+          </select>
+          <div *ngIf="editForm.get('domaine')!.invalid && (editForm.get('domaine')!.dirty || editForm.get('domaine')!.touched)">
+            <small class="form-text text-danger" *ngIf="editForm.get('domaine')?.errors?.required"> This field is required. </small>
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <label class="form-label" for="field_niveau">Niveau</label>
+          <select class="form-control" name="niveau" formControlName="niveau" id="field_niveau" data-cy="niveau">
+            <option [ngValue]="null"></option>
+            <option *ngFor="let niveauEtude of niveauEtudeValues" [value]="niveauEtude">niveauEtude</option>
+          </select>
+        </div>
+
+        <div class="row mb-3">
+          <label class="form-label" for="field_mention">Mention</label>
+          <select class="form-control" name="mention" formControlName="mention" id="field_mention" data-cy="mention">
+            <option [ngValue]="null"></option>
+            <option *ngFor="let mention of mentionValues" [value]="mention">mention</option>
+          </select>
+        </div>
+
+        <div class="row mb-3">
+          <label class="form-label" for="field_anneeObtention">Annee Obtention</label>
+          <input
+            type="text"
+            class="form-control"
+            name="anneeObtention"
+            id="field_anneeObtention"
+            data-cy="anneeObtention"
+            formControlName="anneeObtention"
+          />
+        </div>
+
+        <div class="row mb-3">
+          <label class="form-label" for="field_etablissement">Etablissement</label>
+          <input
+            type="text"
+            class="form-control"
+            name="etablissement"
+            id="field_etablissement"
+            data-cy="etablissement"
+            formControlName="etablissement"
+          />
+        </div>
+
+        <div class="row mb-3">
+          <label class="form-label" for="field_document">Document</label>
+          <div>
+            <div *ngIf="editForm.get('document')!.value" class="form-text text-danger clearfix">
+              <a class="pull-start" (click)="openFile(editForm.get('document')!.value, editForm.get('documentContentType')!.value)">open</a
+              ><br />
+              <span class="pull-start"
+                >{{ editForm.get('documentContentType')!.value }}, {{ byteSize(editForm.get('document')!.value) }}</span
+              >
+              <button
+                type="button"
+                (click)="editForm.patchValue({ document: null }); editForm.patchValue({ documentContentType: null })"
+                class="btn btn-secondary btn-xs pull-end"
+              >
+                <fa-icon icon="times"></fa-icon>
+              </button>
+            </div>
+            <input type="file" id="file_document" data-cy="document" (change)="setFileData($event, 'document', false)" />
+          </div>
+          <input type="hidden" class="form-control" name="document" id="field_document" data-cy="document" formControlName="document" />
+          <input
+            type="hidden"
+            class="form-control"
+            name="documentContentType"
+            id="field_documentContentType"
+            formControlName="documentContentType"
+          />
+          <div *ngIf="editForm.get('document')!.invalid && (editForm.get('document')!.dirty || editForm.get('document')!.touched)">
+            <small class="form-text text-danger" *ngIf="editForm.get('document')?.errors?.required"> This field is required. </small>
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <label class="form-label" for="field_eleve">Eleve</label>
+          <select class="form-control" id="field_eleve" data-cy="eleve" name="eleve" formControlName="eleve">
+            <option [ngValue]="null"></option>
+            <option
+              [ngValue]="eleveOption.id === editForm.get('eleve')!.value?.id ? editForm.get('eleve')!.value : eleveOption"
+              *ngFor="let eleveOption of elevesSharedCollection; trackBy: trackEleveById"
+            >
+              {{ eleveOption.niveauEtude }}
+            </option>
+          </select>
+        </div>
+
+        <div class="row mb-3">
+          <label class="form-label" for="field_etudiant">Etudiant</label>
+          <select class="form-control" id="field_etudiant" data-cy="etudiant" name="etudiant" formControlName="etudiant">
+            <option [ngValue]="null"></option>
+            <option
+              [ngValue]="etudiantOption.id === editForm.get('etudiant')!.value?.id ? editForm.get('etudiant')!.value : etudiantOption"
+              *ngFor="let etudiantOption of etudiantsSharedCollection; trackBy: trackEtudiantById"
+            >
+              {{ etudiantOption.carteEtudiant }}
+            </option>
+          </select>
+        </div>
+
+        <div class="row mb-3">
+          <label class="form-label" for="field_professionnel">Professionnel</label>
+          <select
+            class="form-control"
+            id="field_professionnel"
+            data-cy="professionnel"
+            name="professionnel"
+            formControlName="professionnel"
+          >
+            <option [ngValue]="null"></option>
+            <option
+              [ngValue]="
+                professionnelOption.id === editForm.get('professionnel')!.value?.id
+                  ? editForm.get('professionnel')!.value
+                  : professionnelOption
+              "
+              *ngFor="let professionnelOption of professionnelsSharedCollection; trackBy: trackProfessionnelById"
+            >
+              {{ professionnelOption.profession }}
+            </option>
+          </select>
+        </div>
+
+        <div class="row mb-3">
+          <label class="form-label" for="field_demandeur">Demandeur</label>
+          <select class="form-control" id="field_demandeur" data-cy="demandeur" name="demandeur" formControlName="demandeur">
+            <option [ngValue]="null"></option>
+            <option
+              [ngValue]="demandeurOption.id === editForm.get('demandeur')!.value?.id ? editForm.get('demandeur')!.value : demandeurOption"
+              *ngFor="let demandeurOption of demandeursSharedCollection; trackBy: trackDemandeurById"
+            >
+              {{ demandeurOption.profil }}
+            </option>
+          </select>
+        </div>
+      </div>
+
+      <div>
+        <button type="button" id="cancel-save" data-cy="entityCreateCancelButton" class="btn btn-secondary" (click)="previousState()">
+          <fa-icon icon="ban"></fa-icon>&nbsp;<span>Cancel</span>
+        </button>
+
+        <button
+          type="submit"
+          id="save-entity"
+          data-cy="entityCreateSaveButton"
+          [disabled]="editForm.invalid || isSaving"
+          class="btn btn-primary"
+        >
+          <fa-icon icon="save"></fa-icon>&nbsp;<span>Save</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

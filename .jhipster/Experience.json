@@ -1,0 +1,70 @@
+{
+  "applications": "*",
+  "changelogDate": "20230328104854",
+  "dto": "no",
+  "embedded": false,
+  "entityTableName": "experience",
+  "fields": [
+    {
+      "fieldName": "dateDebut",
+      "fieldType": "LocalDate",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "dateFin",
+      "fieldType": "LocalDate",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "nomEntreprise",
+      "fieldType": "String",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "posteOccupe",
+      "fieldType": "String",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "mission",
+      "fieldType": "byte[]",
+      "fieldTypeBlobContent": "text"
+    }
+  ],
+  "fluentMethods": true,
+  "jpaMetamodelFiltering": false,
+  "name": "Experience",
+  "pagination": "infinite-scroll",
+  "readOnly": false,
+  "relationships": [
+    {
+      "otherEntityField": "niveauEtude",
+      "otherEntityName": "eleve",
+      "otherEntityRelationshipName": "experience",
+      "relationshipName": "eleve",
+      "relationshipType": "many-to-one"
+    },
+    {
+      "otherEntityField": "carteEtudiant",
+      "otherEntityName": "etudiant",
+      "otherEntityRelationshipName": "experience",
+      "relationshipName": "etudiant",
+      "relationshipType": "many-to-one"
+    },
+    {
+      "otherEntityField": "profession",
+      "otherEntityName": "professionnel",
+      "otherEntityRelationshipName": "experience",
+      "relationshipName": "professionnel",
+      "relationshipType": "many-to-one"
+    },
+    {
+      "otherEntityField": "profil",
+      "otherEntityName": "demandeur",
+      "otherEntityRelationshipName": "experience",
+      "relationshipName": "demandeur",
+      "relationshipType": "many-to-one"
+    }
+  ],
+  "service": "serviceImpl"
+}

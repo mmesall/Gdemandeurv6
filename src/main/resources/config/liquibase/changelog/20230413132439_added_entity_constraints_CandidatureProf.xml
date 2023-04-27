@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.6.xsd">
+    <!--
+        Added the constraints for entity CandidatureProf.
+    -->
+    <changeSet id="20230413132439-2" author="jhipster">
+
+        <addForeignKeyConstraint baseColumnNames="professionnel_id"
+                                 baseTableName="candidature_prof"
+                                 constraintName="fk_candidature_prof__professionnel_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="professionnel"/>
+
+        <addForeignKeyConstraint baseColumnNames="formation_continue_id"
+                                 baseTableName="candidature_prof"
+                                 constraintName="fk_candidature_prof__formation_continue_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="formation_continue"/>
+    </changeSet>
+</databaseChangeLog>

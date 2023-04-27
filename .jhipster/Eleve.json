@@ -1,0 +1,109 @@
+{
+  "applications": "*",
+  "changelogDate": "20230328104857",
+  "dto": "no",
+  "embedded": false,
+  "entityTableName": "eleve",
+  "fields": [
+    {
+      "fieldName": "nom",
+      "fieldType": "String",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "prenom",
+      "fieldType": "String",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "dateNaiss",
+      "fieldType": "LocalDate"
+    },
+    {
+      "fieldName": "lieuNaiss",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "sexe",
+      "fieldType": "Sexe",
+      "fieldValues": "HOMME,FEMME"
+    },
+    {
+      "fieldName": "telephone",
+      "fieldType": "Long"
+    },
+    {
+      "fieldName": "adressePhysique",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "regionResidence",
+      "fieldType": "NomRegion",
+      "fieldValues": "DAKAR,DIOURBEL,FATICK,KAFFRINE,KAOLACK,KEDOUGOU,KOLDA,LOUGA,MATAM,SAINT_LOUIS,SEDHIOU,TAMBACOUNDA,THIES,ZIGINCHOR,AUTRE"
+    },
+    {
+      "fieldName": "departResidence",
+      "fieldType": "NomDepartement",
+      "fieldValues": "DAKAR,GUEDIAWAYE,PIKINE,RUFISQUE,BAMBAEY,DIOURBEL,MBACKE,FATICK,FOUNDIOUGNE,GOSSAS,BIRKILANE,KAFFRINE,KOUNGHEUR,MALEM_HODAR,GUINGUINEO,KAOLOACK,NIORO,KEDOUGOU,SALAMATA,SARAYA,KOLDA,MEDINA_YORO_FOULAH,VELINGARA,KEBEMERE,LINGUERE,LOUGA,KANELKANEL,MATAM,RANEROU_FERLO,DAGANA,PODOR,SAINT_LOUIS,BOUNKILING,GOUDOMP,SEDHIOU,BAKEL,GOUDIRY,KOUMPENTOUM,TAMBACOUNDA,MBOUR,THIES,TIVAOUANE,BIGNONA,OUSSOUYE,ZICHUINCHOR,AUTRE"
+    },
+    {
+      "fieldName": "niveauEtude",
+      "fieldType": "NiveauEtude",
+      "fieldValidateRules": ["required"],
+      "fieldValues": "Cinquieme,Quatrieme,Troisieme,BFEM,Equivalent_BFEM,Seconde,Premiere,Terminal,BAC,Equivalent_BAC,Licenece1,Licence2,Licence3,Master,Doctorat,Attestation,CAP,CAP1,CAP2,CAP3,CPS,BEP,BEP1,BEP2,BT,BT1,BT2,BT3,BTS,BTS1,BTS2,CQP,ChefEquipe,Chef_de_Chantier,TechnicienSpecialise,METP,BTI,Titre_professionnel,Autres"
+    },
+    {
+      "fieldName": "cni",
+      "fieldType": "Long",
+      "fieldValidateRules": ["unique"]
+    }
+  ],
+  "fluentMethods": true,
+  "jpaMetamodelFiltering": false,
+  "name": "Eleve",
+  "pagination": "infinite-scroll",
+  "readOnly": false,
+  "relationships": [
+    {
+      "otherEntityField": "login",
+      "otherEntityName": "user",
+      "otherEntityRelationshipName": "eleve",
+      "ownerSide": true,
+      "relationshipName": "user",
+      "relationshipType": "one-to-one"
+    },
+    {
+      "otherEntityName": "diplome",
+      "otherEntityRelationshipName": "eleve",
+      "relationshipName": "diplome",
+      "relationshipType": "one-to-many"
+    },
+    {
+      "otherEntityName": "experience",
+      "otherEntityRelationshipName": "eleve",
+      "relationshipName": "experience",
+      "relationshipType": "one-to-many"
+    },
+    {
+      "otherEntityName": "candidatureElev",
+      "otherEntityRelationshipName": "eleve",
+      "relationshipName": "candidatureElev",
+      "relationshipType": "one-to-many"
+    },
+    {
+      "otherEntityName": "dossier",
+      "otherEntityRelationshipName": "eleve",
+      "ownerSide": false,
+      "relationshipName": "dossier",
+      "relationshipType": "one-to-one"
+    },
+    {
+      "otherEntityName": "demandeur",
+      "otherEntityRelationshipName": "eleve",
+      "ownerSide": false,
+      "relationshipName": "demandeur",
+      "relationshipType": "one-to-one"
+    }
+  ],
+  "service": "serviceImpl"
+}

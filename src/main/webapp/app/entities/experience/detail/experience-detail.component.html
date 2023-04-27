@@ -1,0 +1,72 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    <div *ngIf="experience">
+      <h2 data-cy="experienceDetailsHeading"><span>Experience</span></h2>
+
+      <hr />
+
+      <jhi-alert-error></jhi-alert-error>
+
+      <jhi-alert></jhi-alert>
+
+      <dl class="row-md jh-entity-details">
+        <dt><span>ID</span></dt>
+        <dd>
+          <span>{{ experience.id }}</span>
+        </dd>
+        <dt><span>Date Debut</span></dt>
+        <dd>
+          <span>{{ experience.dateDebut | formatMediumDate }}</span>
+        </dd>
+        <dt><span>Date Fin</span></dt>
+        <dd>
+          <span>{{ experience.dateFin | formatMediumDate }}</span>
+        </dd>
+        <dt><span>Nom Entreprise</span></dt>
+        <dd>
+          <span>{{ experience.nomEntreprise }}</span>
+        </dd>
+        <dt><span>Poste Occupe</span></dt>
+        <dd>
+          <span>{{ experience.posteOccupe }}</span>
+        </dd>
+        <dt><span>Mission</span></dt>
+        <dd>
+          <span>{{ experience.mission }}</span>
+        </dd>
+        <dt><span>Eleve</span></dt>
+        <dd>
+          <div *ngIf="experience.eleve">
+            <a [routerLink]="['/eleve', experience.eleve?.id, 'view']">{{ experience.eleve?.niveauEtude }}</a>
+          </div>
+        </dd>
+        <dt><span>Etudiant</span></dt>
+        <dd>
+          <div *ngIf="experience.etudiant">
+            <a [routerLink]="['/etudiant', experience.etudiant?.id, 'view']">{{ experience.etudiant?.carteEtudiant }}</a>
+          </div>
+        </dd>
+        <dt><span>Professionnel</span></dt>
+        <dd>
+          <div *ngIf="experience.professionnel">
+            <a [routerLink]="['/professionnel', experience.professionnel?.id, 'view']">{{ experience.professionnel?.profession }}</a>
+          </div>
+        </dd>
+        <dt><span>Demandeur</span></dt>
+        <dd>
+          <div *ngIf="experience.demandeur">
+            <a [routerLink]="['/demandeur', experience.demandeur?.id, 'view']">{{ experience.demandeur?.profil }}</a>
+          </div>
+        </dd>
+      </dl>
+
+      <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+        <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span>Back</span>
+      </button>
+
+      <button type="button" [routerLink]="['/experience', experience.id, 'edit']" class="btn btn-primary">
+        <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span>Edit</span>
+      </button>
+    </div>
+  </div>
+</div>

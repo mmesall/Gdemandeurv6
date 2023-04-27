@@ -1,0 +1,75 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    <div *ngIf="formation">
+      <h2 data-cy="formationDetailsHeading"><span>Formation</span></h2>
+
+      <hr />
+
+      <jhi-alert-error></jhi-alert-error>
+
+      <jhi-alert></jhi-alert>
+
+      <dl class="row-md jh-entity-details">
+        <dt><span>ID</span></dt>
+        <dd>
+          <span>{{ formation.id }}</span>
+        </dd>
+        <dt><span>Nom Formation</span></dt>
+        <dd>
+          <span>{{ formation.nomFormation }}</span>
+        </dd>
+        <dt><span>Image Formation</span></dt>
+        <dd>
+          <div *ngIf="formation.imageFormation">
+            <a (click)="openFile(formation.imageFormation, formation.imageFormationContentType)">
+              <img
+                [src]="'data:' + formation.imageFormationContentType + ';base64,' + formation.imageFormation"
+                style="max-width: 100%"
+                alt="formation image"
+              />
+            </a>
+            {{ formation.imageFormationContentType }}, {{ byteSize(formation.imageFormation) }}
+          </div>
+        </dd>
+        <dt><span>Type Formation</span></dt>
+        <dd>
+          <span>{{ formation.typeFormation }}</span>
+        </dd>
+        <dt><span>Duree</span></dt>
+        <dd>
+          <span>{{ formation.duree }}</span>
+        </dd>
+        <dt><span>Admission</span></dt>
+        <dd>
+          <span>{{ formation.admission }}</span>
+        </dd>
+        <dt><span>Diplome Requis</span></dt>
+        <dd>
+          <span>{{ formation.diplomeRequis }}</span>
+        </dd>
+        <dt><span>Fiche Formation</span></dt>
+        <dd>
+          <div *ngIf="formation.ficheFormation">
+            <a (click)="openFile(formation.ficheFormation, formation.ficheFormationContentType)">open</a>
+            {{ formation.ficheFormationContentType }}, {{ byteSize(formation.ficheFormation) }}
+          </div>
+        </dd>
+        <dt><span>Etablissement</span></dt>
+        <dd>
+          <span *ngFor="let etablissement of formation.etablissements; let last = last">
+            <a [routerLink]="['/etablissement', etablissement?.id, 'view']">{{ etablissement.nomEtablissement }}</a
+            >{{ last ? '' : ', ' }}
+          </span>
+        </dd>
+      </dl>
+
+      <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+        <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span>Back</span>
+      </button>
+
+      <button type="button" [routerLink]="['/formation', formation.id, 'edit']" class="btn btn-primary">
+        <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span>Edit</span>
+      </button>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,105 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    <div *ngIf="formationContinue">
+      <h2 data-cy="formationContinueDetailsHeading"><span>Formation Continue</span></h2>
+
+      <hr />
+
+      <jhi-alert-error></jhi-alert-error>
+
+      <jhi-alert></jhi-alert>
+
+      <dl class="row-md jh-entity-details">
+        <dt><span>ID</span></dt>
+        <dd>
+          <span>{{ formationContinue.id }}</span>
+        </dd>
+        <dt><span>Nom Formation C</span></dt>
+        <dd>
+          <span>{{ formationContinue.nomFormationC }}</span>
+        </dd>
+        <dt><span>Duree</span></dt>
+        <dd>
+          <span>{{ formationContinue.duree }}</span>
+        </dd>
+        <dt><span>Admission</span></dt>
+        <dd>
+          <span>{{ formationContinue.admission }}</span>
+        </dd>
+        <dt><span>Diplome Requis</span></dt>
+        <dd>
+          <span>{{ formationContinue.diplomeRequis }}</span>
+        </dd>
+        <dt><span>Niveau Etude</span></dt>
+        <dd>
+          <span>{{ formationContinue.niveauEtude }}</span>
+        </dd>
+        <dt><span>Filiere</span></dt>
+        <dd>
+          <span>{{ formationContinue.filiere }}</span>
+        </dd>
+        <dt><span>Serie</span></dt>
+        <dd>
+          <span>{{ formationContinue.serie }}</span>
+        </dd>
+        <dt><span>Cfp</span></dt>
+        <dd>
+          <span>{{ formationContinue.cfp }}</span>
+        </dd>
+        <dt><span>Lycee</span></dt>
+        <dd>
+          <span>{{ formationContinue.lycee }}</span>
+        </dd>
+        <dt><span>Fiche Formation</span></dt>
+        <dd>
+          <div *ngIf="formationContinue.ficheFormation">
+            <a (click)="openFile(formationContinue.ficheFormation, formationContinue.ficheFormationContentType)">open</a>
+            {{ formationContinue.ficheFormationContentType }}, {{ byteSize(formationContinue.ficheFormation) }}
+          </div>
+        </dd>
+        <dt><span>Libelle PC</span></dt>
+        <dd>
+          <span>{{ formationContinue.libellePC }}</span>
+        </dd>
+        <dt><span>Montant Prise En Charge</span></dt>
+        <dd>
+          <span>{{ formationContinue.montantPriseEnCharge }}</span>
+        </dd>
+        <dt><span>Cout Formation</span></dt>
+        <dd>
+          <span>{{ formationContinue.coutFormation }}</span>
+        </dd>
+        <dt><span>Detail PC</span></dt>
+        <dd>
+          <span>{{ formationContinue.detailPC }}</span>
+        </dd>
+        <dt><span>Nom Diplome</span></dt>
+        <dd>
+          <span>{{ formationContinue.nomDiplome }}</span>
+        </dd>
+        <dt><span>Autre Diplome</span></dt>
+        <dd>
+          <span>{{ formationContinue.autreDiplome }}</span>
+        </dd>
+        <dt><span>Nom Debouche</span></dt>
+        <dd>
+          <span>{{ formationContinue.nomDebouche }}</span>
+        </dd>
+        <dt><span>Formation</span></dt>
+        <dd>
+          <div *ngIf="formationContinue.formation">
+            <a [routerLink]="['/formation', formationContinue.formation?.id, 'view']">{{ formationContinue.formation?.id }}</a>
+          </div>
+        </dd>
+      </dl>
+
+      <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+        <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span>Back</span>
+      </button>
+
+      <button type="button" [routerLink]="['/formation-continue', formationContinue.id, 'edit']" class="btn btn-primary">
+        <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span>Edit</span>
+      </button>
+    </div>
+  </div>
+</div>

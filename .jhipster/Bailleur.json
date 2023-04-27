@@ -1,0 +1,44 @@
+{
+  "applications": "*",
+  "changelogDate": "20230328104851",
+  "dto": "no",
+  "embedded": false,
+  "entityTableName": "bailleur",
+  "fields": [
+    {
+      "fieldName": "nomBailleur",
+      "fieldType": "String",
+      "fieldValidateRules": ["required", "unique"]
+    },
+    {
+      "fieldName": "budgetPrevu",
+      "fieldType": "Double"
+    },
+    {
+      "fieldName": "budgetDepense",
+      "fieldType": "Double"
+    },
+    {
+      "fieldName": "budgetRestant",
+      "fieldType": "Double"
+    },
+    {
+      "fieldName": "nbrePC",
+      "fieldType": "Long"
+    }
+  ],
+  "fluentMethods": true,
+  "jpaMetamodelFiltering": false,
+  "name": "Bailleur",
+  "pagination": "infinite-scroll",
+  "readOnly": false,
+  "relationships": [
+    {
+      "otherEntityName": "priseEnCharge",
+      "otherEntityRelationshipName": "bailleur",
+      "relationshipName": "priseEnCharge",
+      "relationshipType": "one-to-many"
+    }
+  ],
+  "service": "serviceImpl"
+}

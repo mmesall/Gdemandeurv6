@@ -1,0 +1,104 @@
+{
+  "applications": "*",
+  "changelogDate": "20230328104856",
+  "dto": "no",
+  "embedded": false,
+  "entityTableName": "demandeur",
+  "fields": [
+    {
+      "fieldName": "nom",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "prenom",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "dateNaiss",
+      "fieldType": "LocalDate"
+    },
+    {
+      "fieldName": "lieuNaiss",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "sexe",
+      "fieldType": "Sexe",
+      "fieldValues": "HOMME,FEMME"
+    },
+    {
+      "fieldName": "telephone",
+      "fieldType": "Long"
+    },
+    {
+      "fieldName": "email",
+      "fieldType": "String",
+      "fieldValidateRules": ["unique"]
+    },
+    {
+      "fieldName": "profil",
+      "fieldType": "Profil",
+      "fieldValues": "ELEVE,ETUDIANT,PROFESSIONNEL"
+    }
+  ],
+  "fluentMethods": true,
+  "jpaMetamodelFiltering": false,
+  "name": "Demandeur",
+  "pagination": "infinite-scroll",
+  "readOnly": false,
+  "relationships": [
+    {
+      "otherEntityField": "login",
+      "otherEntityName": "user",
+      "otherEntityRelationshipName": "demandeur",
+      "ownerSide": true,
+      "relationshipName": "user",
+      "relationshipType": "one-to-one"
+    },
+    {
+      "otherEntityField": "numDossier",
+      "otherEntityName": "dossier",
+      "otherEntityRelationshipName": "demandeur",
+      "ownerSide": true,
+      "relationshipName": "dossier",
+      "relationshipType": "one-to-one"
+    },
+    {
+      "otherEntityField": "cni",
+      "otherEntityName": "eleve",
+      "otherEntityRelationshipName": "demandeur",
+      "ownerSide": true,
+      "relationshipName": "eleve",
+      "relationshipType": "one-to-one"
+    },
+    {
+      "otherEntityField": "cni",
+      "otherEntityName": "etudiant",
+      "otherEntityRelationshipName": "demandeur",
+      "ownerSide": true,
+      "relationshipName": "etudiant",
+      "relationshipType": "one-to-one"
+    },
+    {
+      "otherEntityField": "cni",
+      "otherEntityName": "professionnel",
+      "otherEntityRelationshipName": "demandeur",
+      "ownerSide": true,
+      "relationshipName": "professionnel",
+      "relationshipType": "one-to-one"
+    },
+    {
+      "otherEntityName": "diplome",
+      "otherEntityRelationshipName": "demandeur",
+      "relationshipName": "diplome",
+      "relationshipType": "one-to-many"
+    },
+    {
+      "otherEntityName": "experience",
+      "otherEntityRelationshipName": "demandeur",
+      "relationshipName": "experience",
+      "relationshipType": "one-to-many"
+    }
+  ],
+  "service": "serviceImpl"
+}

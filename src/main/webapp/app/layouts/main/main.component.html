@@ -1,0 +1,31 @@
+<!-- <jhi-page-ribbon></jhi-page-ribbon> -->
+
+<!-- <div>
+  <router-outlet name="navbar"></router-outlet>
+</div>
+
+<div class="container-fluid">
+  <div class="card jh-card">
+    <router-outlet></router-outlet>
+  </div>
+
+  <jhi-footer></jhi-footer>
+</div> -->
+
+<div>
+  <div class="logo pull-left">
+    <img src="../../../content/images/header2.jpg" height="100px" width="1250px" />
+  </div>
+
+  <div>
+    <router-outlet name="navbar"></router-outlet>
+  </div>
+
+  <div class="container-fluid" style="background-color: rgb(253, 252, 252)">
+    <router-outlet></router-outlet>
+  </div>
+
+  <div>
+    <jhi-footer></jhi-footer>
+  </div>
+</div>

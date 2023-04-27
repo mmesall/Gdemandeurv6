@@ -1,0 +1,119 @@
+<div>
+  <h2 id="page-heading" data-cy="EtablissementHeading">
+    <span>Etablissements</span>
+
+    <div class="d-flex justify-content-end">
+      <button class="btn btn-info me-2" (click)="reset()" [disabled]="isLoading">
+        <fa-icon icon="sync" [spin]="isLoading"></fa-icon>
+        <span>Refresh List</span>
+      </button>
+
+      <button
+        id="jh-create-entity"
+        data-cy="entityCreateButton"
+        class="btn btn-primary jh-create-entity create-etablissement"
+        [routerLink]="['/etablissement/new']"
+      >
+        <fa-icon icon="plus"></fa-icon>
+        <span> Create a new Etablissement </span>
+      </button>
+    </div>
+  </h2>
+
+  <jhi-alert-error></jhi-alert-error>
+
+  <jhi-alert></jhi-alert>
+
+  <div class="alert alert-warning" id="no-result" *ngIf="etablissements?.length === 0">
+    <span>No etablissements found</span>
+  </div>
+
+  <div class="table-responsive" id="entities" *ngIf="etablissements && etablissements.length > 0">
+    <table class="table table-striped" aria-describedby="page-heading">
+      <thead>
+        <tr jhiSort [(predicate)]="predicate" [(ascending)]="ascending" (sortChange)="reset()">
+          <th scope="col" jhiSortBy="id"><span>ID</span> <fa-icon icon="sort"></fa-icon></th>
+          <th scope="col" jhiSortBy="nomEtablissement"><span>Nom Etablissement</span> <fa-icon icon="sort"></fa-icon></th>
+          <th scope="col" jhiSortBy="photo"><span>Photo</span> <fa-icon icon="sort"></fa-icon></th>
+          <th scope="col" jhiSortBy="region"><span>Region</span> <fa-icon icon="sort"></fa-icon></th>
+          <th scope="col" jhiSortBy="departement"><span>Departement</span> <fa-icon icon="sort"></fa-icon></th>
+          <th scope="col" jhiSortBy="email"><span>Email</span> <fa-icon icon="sort"></fa-icon></th>
+          <th scope="col" jhiSortBy="telephone"><span>Telephone</span> <fa-icon icon="sort"></fa-icon></th>
+          <th scope="col" jhiSortBy="typeEtablissement"><span>Type Etablissement</span> <fa-icon icon="sort"></fa-icon></th>
+          <th scope="col" jhiSortBy="statut"><span>Statut</span> <fa-icon icon="sort"></fa-icon></th>
+          <th scope="col" jhiSortBy="autreRegion"><span>Autre Region</span> <fa-icon icon="sort"></fa-icon></th>
+          <th scope="col" jhiSortBy="autreDepartement"><span>Autre Departement</span> <fa-icon icon="sort"></fa-icon></th>
+          <th scope="col" jhiSortBy="cfp"><span>Cfp</span> <fa-icon icon="sort"></fa-icon></th>
+          <th scope="col" jhiSortBy="lycee"><span>Lycee</span> <fa-icon icon="sort"></fa-icon></th>
+          <th scope="col" jhiSortBy="filiere"><span>Filiere</span> <fa-icon icon="sort"></fa-icon></th>
+          <th scope="col" jhiSortBy="serie"><span>Serie</span> <fa-icon icon="sort"></fa-icon></th>
+          <th scope="col" jhiSortBy="autreFiliere"><span>Autre Filiere</span> <fa-icon icon="sort"></fa-icon></th>
+          <th scope="col" jhiSortBy="autreSerie"><span>Autre Serie</span> <fa-icon icon="sort"></fa-icon></th>
+          <th scope="col" jhiSortBy="autreNomEtablissement"><span>Autre Nom Etablissement</span> <fa-icon icon="sort"></fa-icon></th>
+          <th scope="col"></th>
+        </tr>
+      </thead>
+      <tbody infinite-scroll (scrolled)="loadPage(page + 1)" [infiniteScrollDisabled]="page >= links['last']" [infiniteScrollDistance]="0">
+        <tr *ngFor="let etablissement of etablissements; trackBy: trackId" data-cy="entityTable">
+          <td>
+            <a [routerLink]="['/etablissement', etablissement.id, 'view']">{{ etablissement.id }}</a>
+          </td>
+          <td>{{ etablissement.nomEtablissement }}</td>
+          <td>
+            <a *ngIf="etablissement.photo" (click)="openFile(etablissement.photo, etablissement.photoContentType)">
+              <img
+                [src]="'data:' + etablissement.photoContentType + ';base64,' + etablissement.photo"
+                style="max-height: 30px"
+                alt="etablissement image"
+              />
+            </a>
+            <span *ngIf="etablissement.photo">{{ etablissement.photoContentType }}, {{ byteSize(etablissement.photo) }}</span>
+          </td>
+          <td>{{ etablissement.region }}</td>
+          <td>{{ etablissement.departement }}</td>
+          <td>{{ etablissement.email }}</td>
+          <td>{{ etablissement.telephone }}</td>
+          <td>{{ etablissement.typeEtablissement }}</td>
+          <td>{{ etablissement.statut }}</td>
+          <td>{{ etablissement.autreRegion }}</td>
+          <td>{{ etablissement.autreDepartement }}</td>
+          <td>{{ etablissement.cfp }}</td>
+          <td>{{ etablissement.lycee }}</td>
+          <td>{{ etablissement.filiere }}</td>
+          <td>{{ etablissement.serie }}</td>
+          <td>{{ etablissement.autreFiliere }}</td>
+          <td>{{ etablissement.autreSerie }}</td>
+          <td>{{ etablissement.autreNomEtablissement }}</td>
+          <td class="text-end">
+            <div class="btn-group">
+              <button
+                type="submit"
+                [routerLink]="['/etablissement', etablissement.id, 'view']"
+                class="btn btn-info btn-sm"
+                data-cy="entityDetailsButton"
+              >
+                <fa-icon icon="eye"></fa-icon>
+                <span class="d-none d-md-inline">View</span>
+              </button>
+
+              <button
+                type="submit"
+                [routerLink]="['/etablissement', etablissement.id, 'edit']"
+                class="btn btn-primary btn-sm"
+                data-cy="entityEditButton"
+              >
+                <fa-icon icon="pencil-alt"></fa-icon>
+                <span class="d-none d-md-inline">Edit</span>
+              </button>
+
+              <button type="submit" (click)="delete(etablissement)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
+                <fa-icon icon="times"></fa-icon>
+                <span class="d-none d-md-inline">Delete</span>
+              </button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

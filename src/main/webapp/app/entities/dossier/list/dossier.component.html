@@ -1,0 +1,157 @@
+<div>
+  <h2 id="page-heading" data-cy="DossierHeading">
+    <span>Dossiers</span>
+
+    <div class="d-flex justify-content-end">
+      <!-- <button class="btn btn-info me-2" (click)="reset()" [disabled]="isLoading">
+        <fa-icon icon="sync" [spin]="isLoading"></fa-icon>
+        <span>Refresh List</span>
+      </button> -->
+
+      <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+        <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span>Retour</span>
+      </button>
+
+      <button
+        *jhiHasAnyAuthority="'ROLE_ADMIN'"
+        id="jh-create-entity"
+        data-cy="entityCreateButton"
+        class="btn btn-primary jh-create-entity create-dossier"
+        [routerLink]="['/dossier/new']"
+      >
+        <fa-icon icon="plus"></fa-icon>
+        <span> Create a new Dossier </span>
+      </button>
+    </div>
+  </h2>
+
+  <jhi-alert-error></jhi-alert-error>
+
+  <jhi-alert></jhi-alert>
+
+  <div class="alert alert-warning" id="no-result" *ngIf="dossiers?.length === 0">
+    <span>No dossiers found</span>
+  </div>
+
+  <div class="table-responsive" id="entities" *ngIf="dossiers && dossiers.length > 0">
+    <table class="table table-striped" aria-describedby="page-heading">
+      <thead>
+        <tr jhiSort [(predicate)]="predicate" [(ascending)]="ascending" (sortChange)="reset()">
+          <th scope="col" jhiSortBy="id"><span>ID</span> <fa-icon icon="sort"></fa-icon></th>
+          <th scope="col" jhiSortBy="numDossier"><span>Num Dossier</span> <fa-icon icon="sort"></fa-icon></th>
+          <th scope="col" jhiSortBy="dateNaiss"><span>Date Naiss</span> <fa-icon icon="sort"></fa-icon></th>
+          <th scope="col" jhiSortBy="prenom"><span>Prenom</span> <fa-icon icon="sort"></fa-icon></th>
+          <th scope="col" jhiSortBy="nom"><span>Nom</span> <fa-icon icon="sort"></fa-icon></th>
+          <th scope="col" jhiSortBy="nomUtilisateur"><span>Nom Utilisateur</span> <fa-icon icon="sort"></fa-icon></th>
+          <th scope="col" jhiSortBy="regionNaiss"><span>Region Naiss</span> <fa-icon icon="sort"></fa-icon></th>
+          <th scope="col" jhiSortBy="departementNaiss"><span>Departement Naiss</span> <fa-icon icon="sort"></fa-icon></th>
+          <th scope="col" jhiSortBy="lieuNaiss"><span>Lieu Naiss</span> <fa-icon icon="sort"></fa-icon></th>
+          <th scope="col" jhiSortBy="typePiece"><span>Type Piece</span> <fa-icon icon="sort"></fa-icon></th>
+          <th scope="col" jhiSortBy="numeroPiece"><span>Numero Piece</span> <fa-icon icon="sort"></fa-icon></th>
+          <th scope="col" jhiSortBy="sexe"><span>Sexe</span> <fa-icon icon="sort"></fa-icon></th>
+          <th scope="col" jhiSortBy="regionResidence"><span>Region Residence</span> <fa-icon icon="sort"></fa-icon></th>
+          <th scope="col" jhiSortBy="depResidence"><span>Dep Residence</span> <fa-icon icon="sort"></fa-icon></th>
+          <th scope="col" jhiSortBy="adresseResidence"><span>Adresse Residence</span> <fa-icon icon="sort"></fa-icon></th>
+          <th scope="col" jhiSortBy="telephone1"><span>Telephone 1</span> <fa-icon icon="sort"></fa-icon></th>
+          <th scope="col" jhiSortBy="telephone2"><span>Telephone 2</span> <fa-icon icon="sort"></fa-icon></th>
+          <th scope="col" jhiSortBy="email"><span>Email</span> <fa-icon icon="sort"></fa-icon></th>
+          <th scope="col" jhiSortBy="niveauFormation"><span>Niveau Formation</span> <fa-icon icon="sort"></fa-icon></th>
+          <th scope="col" jhiSortBy="specialite1"><span>Specialite 1</span> <fa-icon icon="sort"></fa-icon></th>
+          <th scope="col" jhiSortBy="specialite2"><span>Specialite 2</span> <fa-icon icon="sort"></fa-icon></th>
+          <th scope="col" jhiSortBy="diplomeRequis"><span>Diplome Requis</span> <fa-icon icon="sort"></fa-icon></th>
+          <th scope="col" jhiSortBy="cv"><span>Cv</span> <fa-icon icon="sort"></fa-icon></th>
+          <th scope="col" jhiSortBy="lettreMotivation"><span>Lettre Motivation</span> <fa-icon icon="sort"></fa-icon></th>
+          <th scope="col" jhiSortBy="profession"><span>Profession</span> <fa-icon icon="sort"></fa-icon></th>
+          <th scope="col" jhiSortBy="eleve.niveauEtude"><span>Eleve</span> <fa-icon icon="sort"></fa-icon></th>
+          <th scope="col" jhiSortBy="etudiant.carteEtudiant"><span>Etudiant</span> <fa-icon icon="sort"></fa-icon></th>
+          <th scope="col" jhiSortBy="professionnel.profession"><span>Professionnel</span> <fa-icon icon="sort"></fa-icon></th>
+          <th scope="col"></th>
+        </tr>
+      </thead>
+      <tbody infinite-scroll (scrolled)="loadPage(page + 1)" [infiniteScrollDisabled]="page >= links['last']" [infiniteScrollDistance]="0">
+        <tr *ngFor="let dossier of dossiers; trackBy: trackId" data-cy="entityTable">
+          <td>
+            <a [routerLink]="['/dossier', dossier.id, 'view']">{{ dossier.id }}</a>
+          </td>
+          <td>{{ dossier.numDossier }}</td>
+          <td>{{ dossier.dateNaiss | formatMediumDate }}</td>
+          <td>{{ dossier.prenom }}</td>
+          <td>{{ dossier.nom }}</td>
+          <td>{{ dossier.nomUtilisateur }}</td>
+          <td>{{ dossier.regionNaiss }}</td>
+          <td>{{ dossier.departementNaiss }}</td>
+          <td>{{ dossier.lieuNaiss }}</td>
+          <td>{{ dossier.typePiece }}</td>
+          <td>{{ dossier.numeroPiece }}</td>
+          <td>{{ dossier.sexe }}</td>
+          <td>{{ dossier.regionResidence }}</td>
+          <td>{{ dossier.depResidence }}</td>
+          <td>{{ dossier.adresseResidence }}</td>
+          <td>{{ dossier.telephone1 }}</td>
+          <td>{{ dossier.telephone2 }}</td>
+          <td>{{ dossier.email }}</td>
+          <td>{{ dossier.niveauFormation }}</td>
+          <td>{{ dossier.specialite1 }}</td>
+          <td>{{ dossier.specialite2 }}</td>
+          <td>{{ dossier.diplomeRequis }}</td>
+          <td>
+            <a *ngIf="dossier.cv" (click)="openFile(dossier.cv, dossier.cvContentType)">open</a>
+            <span *ngIf="dossier.cv">{{ dossier.cvContentType }}, {{ byteSize(dossier.cv) }}</span>
+          </td>
+          <td>{{ dossier.lettreMotivation }}</td>
+          <td>{{ dossier.profession }}</td>
+          <td>
+            <div *ngIf="dossier.eleve">
+              <a [routerLink]="['/eleve', dossier.eleve?.id, 'view']">{{ dossier.eleve?.niveauEtude }}</a>
+            </div>
+          </td>
+          <td>
+            <div *ngIf="dossier.etudiant">
+              <a [routerLink]="['/etudiant', dossier.etudiant?.id, 'view']">{{ dossier.etudiant?.carteEtudiant }}</a>
+            </div>
+          </td>
+          <td>
+            <div *ngIf="dossier.professionnel">
+              <a [routerLink]="['/professionnel', dossier.professionnel?.id, 'view']">{{ dossier.professionnel?.profession }}</a>
+            </div>
+          </td>
+          <td class="text-end">
+            <div class="btn-group">
+              <button
+                *jhiHasAnyAuthority="'ROLE_ADMIN'"
+                type="submit"
+                [routerLink]="['/dossier', dossier.id, 'view']"
+                class="btn btn-info btn-sm"
+                data-cy="entityDetailsButton"
+              >
+                <fa-icon icon="eye"></fa-icon>
+                <span class="d-none d-md-inline">View</span>
+              </button>
+
+              <button
+                type="submit"
+                [routerLink]="['/dossier', dossier.id, 'edit']"
+                class="btn btn-primary btn-sm"
+                data-cy="entityEditButton"
+              >
+                <fa-icon icon="pencil-alt"></fa-icon>
+                <span class="d-none d-md-inline">Edit</span>
+              </button>
+
+              <button
+                *jhiHasAnyAuthority="'ROLE_ADMIN'"
+                type="submit"
+                (click)="delete(dossier)"
+                class="btn btn-danger btn-sm"
+                data-cy="entityDeleteButton"
+              >
+                <fa-icon icon="times"></fa-icon>
+                <span class="d-none d-md-inline">Delete</span>
+              </button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

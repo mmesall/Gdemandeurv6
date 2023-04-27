@@ -1,0 +1,62 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    <div *ngIf="candidatureElev">
+      <h2 data-cy="candidatureElevDetailsHeading"><span>Candidature Elev</span></h2>
+
+      <hr />
+
+      <jhi-alert-error></jhi-alert-error>
+
+      <jhi-alert></jhi-alert>
+
+      <dl class="row-md jh-entity-details">
+        <dt><span>ID</span></dt>
+        <dd>
+          <span>{{ candidatureElev.id }}</span>
+        </dd>
+        <dt><span>Offre Formation</span></dt>
+        <dd>
+          <span>{{ candidatureElev.offreFormation }}</span>
+        </dd>
+        <dt><span>Date Debut Offre</span></dt>
+        <dd>
+          <span>{{ candidatureElev.dateDebutOffre | formatMediumDate }}</span>
+        </dd>
+        <dt><span>Date Fin Offre</span></dt>
+        <dd>
+          <span>{{ candidatureElev.dateFinOffre | formatMediumDate }}</span>
+        </dd>
+        <dt><span>Date Depot</span></dt>
+        <dd>
+          <span>{{ candidatureElev.dateDepot | formatMediumDate }}</span>
+        </dd>
+        <dt><span>Resultat</span></dt>
+        <dd>
+          <span>{{ candidatureElev.resultat }}</span>
+        </dd>
+        <dt><span>Eleve</span></dt>
+        <dd>
+          <div *ngIf="candidatureElev.eleve">
+            <a [routerLink]="['/eleve', candidatureElev.eleve?.id, 'view']">{{ candidatureElev.eleve?.niveauEtude }}</a>
+          </div>
+        </dd>
+        <dt><span>Formation Initiale</span></dt>
+        <dd>
+          <div *ngIf="candidatureElev.formationInitiale">
+            <a [routerLink]="['/formation-initiale', candidatureElev.formationInitiale?.id, 'view']">{{
+              candidatureElev.formationInitiale?.nomFormationI
+            }}</a>
+          </div>
+        </dd>
+      </dl>
+
+      <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+        <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span>Back</span>
+      </button>
+
+      <button type="button" [routerLink]="['/candidature-elev', candidatureElev.id, 'edit']" class="btn btn-primary">
+        <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span>Edit</span>
+      </button>
+    </div>
+  </div>
+</div>

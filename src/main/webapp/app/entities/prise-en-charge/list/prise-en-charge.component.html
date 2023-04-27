@@ -1,0 +1,92 @@
+<div>
+  <h2 id="page-heading" data-cy="PriseEnChargeHeading">
+    <span>Prise En Charges</span>
+
+    <div class="d-flex justify-content-end">
+      <button class="btn btn-info me-2" (click)="reset()" [disabled]="isLoading">
+        <fa-icon icon="sync" [spin]="isLoading"></fa-icon>
+        <span>Refresh List</span>
+      </button>
+
+      <button
+        id="jh-create-entity"
+        data-cy="entityCreateButton"
+        class="btn btn-primary jh-create-entity create-prise-en-charge"
+        [routerLink]="['/prise-en-charge/new']"
+      >
+        <fa-icon icon="plus"></fa-icon>
+        <span> Create a new Prise En Charge </span>
+      </button>
+    </div>
+  </h2>
+
+  <jhi-alert-error></jhi-alert-error>
+
+  <jhi-alert></jhi-alert>
+
+  <div class="alert alert-warning" id="no-result" *ngIf="priseEnCharges?.length === 0">
+    <span>No priseEnCharges found</span>
+  </div>
+
+  <div class="table-responsive" id="entities" *ngIf="priseEnCharges && priseEnCharges.length > 0">
+    <table class="table table-striped" aria-describedby="page-heading">
+      <thead>
+        <tr jhiSort [(predicate)]="predicate" [(ascending)]="ascending" (sortChange)="reset()">
+          <th scope="col" jhiSortBy="id"><span>ID</span> <fa-icon icon="sort"></fa-icon></th>
+          <th scope="col" jhiSortBy="libelle"><span>Libelle</span> <fa-icon icon="sort"></fa-icon></th>
+          <th scope="col" jhiSortBy="montantPC"><span>Montant PC</span> <fa-icon icon="sort"></fa-icon></th>
+          <th scope="col" jhiSortBy="formation.id"><span>Formation</span> <fa-icon icon="sort"></fa-icon></th>
+          <th scope="col" jhiSortBy="bailleur.nomBailleur"><span>Bailleur</span> <fa-icon icon="sort"></fa-icon></th>
+          <th scope="col"></th>
+        </tr>
+      </thead>
+      <tbody infinite-scroll (scrolled)="loadPage(page + 1)" [infiniteScrollDisabled]="page >= links['last']" [infiniteScrollDistance]="0">
+        <tr *ngFor="let priseEnCharge of priseEnCharges; trackBy: trackId" data-cy="entityTable">
+          <td>
+            <a [routerLink]="['/prise-en-charge', priseEnCharge.id, 'view']">{{ priseEnCharge.id }}</a>
+          </td>
+          <td>{{ priseEnCharge.libelle }}</td>
+          <td>{{ priseEnCharge.montantPC }}</td>
+          <td>
+            <div *ngIf="priseEnCharge.formation">
+              <a [routerLink]="['/formation', priseEnCharge.formation?.id, 'view']">{{ priseEnCharge.formation?.id }}</a>
+            </div>
+          </td>
+          <td>
+            <div *ngIf="priseEnCharge.bailleur">
+              <a [routerLink]="['/bailleur', priseEnCharge.bailleur?.id, 'view']">{{ priseEnCharge.bailleur?.nomBailleur }}</a>
+            </div>
+          </td>
+          <td class="text-end">
+            <div class="btn-group">
+              <button
+                type="submit"
+                [routerLink]="['/prise-en-charge', priseEnCharge.id, 'view']"
+                class="btn btn-info btn-sm"
+                data-cy="entityDetailsButton"
+              >
+                <fa-icon icon="eye"></fa-icon>
+                <span class="d-none d-md-inline">View</span>
+              </button>
+
+              <button
+                type="submit"
+                [routerLink]="['/prise-en-charge', priseEnCharge.id, 'edit']"
+                class="btn btn-primary btn-sm"
+                data-cy="entityEditButton"
+              >
+                <fa-icon icon="pencil-alt"></fa-icon>
+                <span class="d-none d-md-inline">Edit</span>
+              </button>
+
+              <button type="submit" (click)="delete(priseEnCharge)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
+                <fa-icon icon="times"></fa-icon>
+                <span class="d-none d-md-inline">Delete</span>
+              </button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

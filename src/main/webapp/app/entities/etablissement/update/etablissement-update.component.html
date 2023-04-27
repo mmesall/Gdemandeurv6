@@ -1,0 +1,232 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    <form name="editForm" role="form" novalidate (ngSubmit)="save()" [formGroup]="editForm">
+      <h2 id="jhi-etablissement-heading" data-cy="EtablissementCreateUpdateHeading">Create or edit a Etablissement</h2>
+
+      <div>
+        <jhi-alert-error></jhi-alert-error>
+
+        <div class="row mb-3" [hidden]="editForm.get('id')!.value == null">
+          <label class="form-label" for="field_id">ID</label>
+          <input type="number" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
+        </div>
+
+        <div class="row mb-3">
+          <label class="form-label" for="field_nomEtablissement">Nom Etablissement</label>
+          <select
+            class="form-control"
+            name="nomEtablissement"
+            formControlName="nomEtablissement"
+            id="field_nomEtablissement"
+            data-cy="nomEtablissement"
+          >
+            <option [ngValue]="null"></option>
+            <option *ngFor="let nomEtablissement of nomEtablissementValues" [value]="nomEtablissement">{{ nomEtablissement }}</option>
+          </select>
+          <div
+            *ngIf="
+              editForm.get('nomEtablissement')!.invalid &&
+              (editForm.get('nomEtablissement')!.dirty || editForm.get('nomEtablissement')!.touched)
+            "
+          ></div>
+        </div>
+
+        <div class="row mb-3">
+          <label class="form-label" for="field_photo">Photo</label>
+          <div>
+            <img
+              [src]="'data:' + editForm.get('photoContentType')!.value + ';base64,' + editForm.get('photo')!.value"
+              style="max-height: 100px"
+              *ngIf="editForm.get('photo')!.value"
+              alt="etablissement image"
+            />
+            <div *ngIf="editForm.get('photo')!.value" class="form-text text-danger clearfix">
+              <span class="pull-start">{{ editForm.get('photoContentType')!.value }}, {{ byteSize(editForm.get('photo')!.value) }}</span>
+              <button
+                type="button"
+                (click)="clearInputImage('photo', 'photoContentType', 'file_photo')"
+                class="btn btn-secondary btn-xs pull-end"
+              >
+                <fa-icon icon="times"></fa-icon>
+              </button>
+            </div>
+            <input type="file" id="file_photo" data-cy="photo" (change)="setFileData($event, 'photo', true)" accept="image/*" />
+          </div>
+          <input type="hidden" class="form-control" name="photo" id="field_photo" data-cy="photo" formControlName="photo" />
+          <input
+            type="hidden"
+            class="form-control"
+            name="photoContentType"
+            id="field_photoContentType"
+            formControlName="photoContentType"
+          />
+        </div>
+
+        <div class="row mb-3">
+          <label class="form-label" for="field_region">Region</label>
+          <select class="form-control" name="region" formControlName="region" id="field_region" data-cy="region">
+            <option [ngValue]="null"></option>
+            <option *ngFor="let nomRegion of nomRegionValues" [value]="nomRegion">{{ nomRegion }}</option>
+          </select>
+          <div *ngIf="editForm.get('region')!.invalid && (editForm.get('region')!.dirty || editForm.get('region')!.touched)">
+            <small class="form-text text-danger" *ngIf="editForm.get('region')?.errors?.required"> This field is required. </small>
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <label class="form-label" for="field_departement">Departement</label>
+          <select class="form-control" name="departement" formControlName="departement" id="field_departement" data-cy="departement">
+            <option [ngValue]="null"></option>
+            <option *ngFor="let nomDepartement of nomDepartementValues" [value]="nomDepartement">{{ nomDepartement }}</option>
+          </select>
+          <div *ngIf="editForm.get('departement')!.invalid && (editForm.get('departement')!.dirty || editForm.get('departement')!.touched)">
+            <small class="form-text text-danger" *ngIf="editForm.get('departement')?.errors?.required"> This field is required. </small>
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <label class="form-label" for="field_email">Email</label>
+          <input type="text" class="form-control" name="email" id="field_email" data-cy="email" formControlName="email" />
+        </div>
+
+        <div class="row mb-3">
+          <label class="form-label" for="field_telephone">Telephone</label>
+          <input type="number" class="form-control" name="telephone" id="field_telephone" data-cy="telephone" formControlName="telephone" />
+        </div>
+
+        <div class="row mb-3">
+          <label class="form-label" for="field_typeEtablissement">Type Etablissement</label>
+          <select
+            class="form-control"
+            name="typeEtablissement"
+            formControlName="typeEtablissement"
+            id="field_typeEtablissement"
+            data-cy="typeEtablissement"
+          >
+            <option [ngValue]="null"></option>
+            <option *ngFor="let typeEtablissement of typeEtablissementValues" [value]="typeEtablissement">{{ typeEtablissement }}</option>
+          </select>
+        </div>
+
+        <div class="row mb-3">
+          <label class="form-label" for="field_statut">Statut</label>
+          <select class="form-control" name="statut" formControlName="statut" id="field_statut" data-cy="statut">
+            <option [ngValue]="null"></option>
+            <option *ngFor="let statutEtab of statutEtabValues" [value]="statutEtab">{{ statutEtab }}</option>
+          </select>
+          <div *ngIf="editForm.get('statut')!.invalid && (editForm.get('statut')!.dirty || editForm.get('statut')!.touched)">
+            <small class="form-text text-danger" *ngIf="editForm.get('statut')?.errors?.required"> This field is required. </small>
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <label class="form-label" for="field_autreRegion">Autre Region</label>
+          <input
+            type="text"
+            class="form-control"
+            name="autreRegion"
+            id="field_autreRegion"
+            data-cy="autreRegion"
+            formControlName="autreRegion"
+          />
+        </div>
+
+        <div class="row mb-3">
+          <label class="form-label" for="field_autreDepartement">Autre Departement</label>
+          <input
+            type="text"
+            class="form-control"
+            name="autreDepartement"
+            id="field_autreDepartement"
+            data-cy="autreDepartement"
+            formControlName="autreDepartement"
+          />
+        </div>
+
+        <div class="row mb-3">
+          <label class="form-label" for="field_cfp">Cfp</label>
+          <select class="form-control" name="cfp" formControlName="cfp" id="field_cfp" data-cy="cfp">
+            <option [ngValue]="null"></option>
+            <option *ngFor="let cFP of cFPValues" [value]="cFP">{{ cFP }}</option>
+          </select>
+        </div>
+
+        <div class="row mb-3">
+          <label class="form-label" for="field_lycee">Lycee</label>
+          <select class="form-control" name="lycee" formControlName="lycee" id="field_lycee" data-cy="lycee">
+            <option [ngValue]="null"></option>
+            <option *ngFor="let lYCEE of lYCEEValues" [value]="lYCEE">{{ lYCEE }}</option>
+          </select>
+        </div>
+
+        <div class="row mb-3">
+          <label class="form-label" for="field_filiere">Filiere</label>
+          <select class="form-control" name="filiere" formControlName="filiere" id="field_filiere" data-cy="filiere">
+            <option [ngValue]="null"></option>
+            <option *ngFor="let nomFiliere of nomFiliereValues" [value]="nomFiliere">{{ nomFiliere }}</option>
+          </select>
+        </div>
+
+        <div class="row mb-3">
+          <label class="form-label" for="field_serie">Serie</label>
+          <select class="form-control" name="serie" formControlName="serie" id="field_serie" data-cy="serie">
+            <option [ngValue]="null"></option>
+            <option *ngFor="let nomSerie of nomSerieValues" [value]="nomSerie">{{ nomSerie }}</option>
+          </select>
+        </div>
+
+        <div class="row mb-3">
+          <label class="form-label" for="field_autreFiliere">Autre Filiere</label>
+          <input
+            type="text"
+            class="form-control"
+            name="autreFiliere"
+            id="field_autreFiliere"
+            data-cy="autreFiliere"
+            formControlName="autreFiliere"
+          />
+        </div>
+
+        <div class="row mb-3">
+          <label class="form-label" for="field_autreSerie">Autre Serie</label>
+          <input
+            type="text"
+            class="form-control"
+            name="autreSerie"
+            id="field_autreSerie"
+            data-cy="autreSerie"
+            formControlName="autreSerie"
+          />
+        </div>
+
+        <div class="row mb-3">
+          <label class="form-label" for="field_autreNomEtablissement">Autre Nom Etablissement</label>
+          <input
+            type="text"
+            class="form-control"
+            name="autreNomEtablissement"
+            id="field_autreNomEtablissement"
+            data-cy="autreNomEtablissement"
+            formControlName="autreNomEtablissement"
+          />
+        </div>
+      </div>
+
+      <div>
+        <button type="button" id="cancel-save" data-cy="entityCreateCancelButton" class="btn btn-secondary" (click)="previousState()">
+          <fa-icon icon="ban"></fa-icon>&nbsp;<span>Cancel</span>
+        </button>
+
+        <button
+          type="submit"
+          id="save-entity"
+          data-cy="entityCreateSaveButton"
+          [disabled]="editForm.invalid || isSaving"
+          class="btn btn-primary"
+        >
+          <fa-icon icon="save"></fa-icon>&nbsp;<span>Save</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

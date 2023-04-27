@@ -1,0 +1,155 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    <form name="editForm" role="form" novalidate (ngSubmit)="save()" [formGroup]="editForm">
+      <h2 id="jhi-candidature-prof-heading" data-cy="CandidatureProfCreateUpdateHeading">Create or edit a Candidature Prof</h2>
+
+      <div>
+        <jhi-alert-error></jhi-alert-error>
+
+        <div class="row mb-3" [hidden]="editForm.get('id')!.value == null">
+          <label class="form-label" for="field_id">ID</label>
+          <input type="number" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
+        </div>
+
+        <div class="row mb-3">
+          <label class="form-label" for="field_offreFormation">Offre Formation</label>
+          <select
+            class="form-control"
+            name="offreFormation"
+            formControlName="offreFormation"
+            id="field_offreFormation"
+            data-cy="offreFormation"
+          >
+            <option [ngValue]="null"></option>
+            <option *ngFor="let nomFiliere of nomFiliereValues" [value]="nomFiliere">nomFiliere</option>
+          </select>
+        </div>
+
+        <div class="row mb-3">
+          <label class="form-label" for="field_dateDebutOffre">Date Debut Offre</label>
+          <div class="input-group">
+            <input
+              id="field_dateDebutOffre"
+              data-cy="dateDebutOffre"
+              type="text"
+              class="form-control"
+              name="dateDebutOffre"
+              ngbDatepicker
+              #dateDebutOffreDp="ngbDatepicker"
+              formControlName="dateDebutOffre"
+            />
+            <button type="button" class="btn btn-secondary" (click)="dateDebutOffreDp.toggle()">
+              <fa-icon icon="calendar-alt"></fa-icon>
+            </button>
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <label class="form-label" for="field_dateFinOffre">Date Fin Offre</label>
+          <div class="input-group">
+            <input
+              id="field_dateFinOffre"
+              data-cy="dateFinOffre"
+              type="text"
+              class="form-control"
+              name="dateFinOffre"
+              ngbDatepicker
+              #dateFinOffreDp="ngbDatepicker"
+              formControlName="dateFinOffre"
+            />
+            <button type="button" class="btn btn-secondary" (click)="dateFinOffreDp.toggle()">
+              <fa-icon icon="calendar-alt"></fa-icon>
+            </button>
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <label class="form-label" for="field_dateDepot">Date Depot</label>
+          <div class="input-group">
+            <input
+              id="field_dateDepot"
+              data-cy="dateDepot"
+              type="text"
+              class="form-control"
+              name="dateDepot"
+              ngbDatepicker
+              #dateDepotDp="ngbDatepicker"
+              formControlName="dateDepot"
+            />
+            <button type="button" class="btn btn-secondary" (click)="dateDepotDp.toggle()"><fa-icon icon="calendar-alt"></fa-icon></button>
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <label class="form-label" for="field_resultat">Resultat</label>
+          <select class="form-control" name="resultat" formControlName="resultat" id="field_resultat" data-cy="resultat">
+            <option [ngValue]="null"></option>
+            <option *ngFor="let resultat of resultatValues" [value]="resultat">resultat</option>
+          </select>
+        </div>
+
+        <div class="row mb-3">
+          <label class="form-label" for="field_professionnel">Professionnel</label>
+          <select
+            class="form-control"
+            id="field_professionnel"
+            data-cy="professionnel"
+            name="professionnel"
+            formControlName="professionnel"
+          >
+            <option [ngValue]="null"></option>
+            <option
+              [ngValue]="
+                professionnelOption.id === editForm.get('professionnel')!.value?.id
+                  ? editForm.get('professionnel')!.value
+                  : professionnelOption
+              "
+              *ngFor="let professionnelOption of professionnelsSharedCollection; trackBy: trackProfessionnelById"
+            >
+              {{ professionnelOption.profession }}
+            </option>
+          </select>
+        </div>
+
+        <div class="row mb-3">
+          <label class="form-label" for="field_formationContinue">Formation Continue</label>
+          <select
+            class="form-control"
+            id="field_formationContinue"
+            data-cy="formationContinue"
+            name="formationContinue"
+            formControlName="formationContinue"
+          >
+            <option [ngValue]="null"></option>
+            <option
+              [ngValue]="
+                formationContinueOption.id === editForm.get('formationContinue')!.value?.id
+                  ? editForm.get('formationContinue')!.value
+                  : formationContinueOption
+              "
+              *ngFor="let formationContinueOption of formationContinuesSharedCollection; trackBy: trackFormationContinueById"
+            >
+              {{ formationContinueOption.nomFormationC }}
+            </option>
+          </select>
+        </div>
+      </div>
+
+      <div>
+        <button type="button" id="cancel-save" data-cy="entityCreateCancelButton" class="btn btn-secondary" (click)="previousState()">
+          <fa-icon icon="ban"></fa-icon>&nbsp;<span>Cancel</span>
+        </button>
+
+        <button
+          type="submit"
+          id="save-entity"
+          data-cy="entityCreateSaveButton"
+          [disabled]="editForm.invalid || isSaving"
+          class="btn btn-primary"
+        >
+          <fa-icon icon="save"></fa-icon>&nbsp;<span>Save</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

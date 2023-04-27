@@ -1,0 +1,105 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    <div *ngIf="etablissement">
+      <h2 data-cy="etablissementDetailsHeading"><span>Etablissement</span></h2>
+
+      <hr />
+
+      <jhi-alert-error></jhi-alert-error>
+
+      <jhi-alert></jhi-alert>
+
+      <dl class="row-md jh-entity-details">
+        <dt><span>ID</span></dt>
+        <dd>
+          <span>{{ etablissement.id }}</span>
+        </dd>
+        <dt><span>Nom Etablissement</span></dt>
+        <dd>
+          <span>{{ etablissement.nomEtablissement }}</span>
+        </dd>
+        <dt><span>Photo</span></dt>
+        <dd>
+          <div *ngIf="etablissement.photo">
+            <a (click)="openFile(etablissement.photo, etablissement.photoContentType)">
+              <img
+                [src]="'data:' + etablissement.photoContentType + ';base64,' + etablissement.photo"
+                style="max-width: 100%"
+                alt="etablissement image"
+              />
+            </a>
+            {{ etablissement.photoContentType }}, {{ byteSize(etablissement.photo) }}
+          </div>
+        </dd>
+        <dt><span>Region</span></dt>
+        <dd>
+          <span>{{ etablissement.region }}</span>
+        </dd>
+        <dt><span>Departement</span></dt>
+        <dd>
+          <span>{{ etablissement.departement }}</span>
+        </dd>
+        <dt><span>Email</span></dt>
+        <dd>
+          <span>{{ etablissement.email }}</span>
+        </dd>
+        <dt><span>Telephone</span></dt>
+        <dd>
+          <span>{{ etablissement.telephone }}</span>
+        </dd>
+        <dt><span>Type Etablissement</span></dt>
+        <dd>
+          <span>{{ etablissement.typeEtablissement }}</span>
+        </dd>
+        <dt><span>Statut</span></dt>
+        <dd>
+          <span>{{ etablissement.statut }}</span>
+        </dd>
+        <dt><span>Autre Region</span></dt>
+        <dd>
+          <span>{{ etablissement.autreRegion }}</span>
+        </dd>
+        <dt><span>Autre Departement</span></dt>
+        <dd>
+          <span>{{ etablissement.autreDepartement }}</span>
+        </dd>
+        <dt><span>Cfp</span></dt>
+        <dd>
+          <span>{{ etablissement.cfp }}</span>
+        </dd>
+        <dt><span>Lycee</span></dt>
+        <dd>
+          <span>{{ etablissement.lycee }}</span>
+        </dd>
+        <dt><span>Filiere</span></dt>
+        <dd>
+          <span>{{ etablissement.filiere }}</span>
+        </dd>
+        <dt><span>Serie</span></dt>
+        <dd>
+          <span>{{ etablissement.serie }}</span>
+        </dd>
+        <dt><span>Autre Filiere</span></dt>
+        <dd>
+          <span>{{ etablissement.autreFiliere }}</span>
+        </dd>
+        <dt><span>Autre Serie</span></dt>
+        <dd>
+          <span>{{ etablissement.autreSerie }}</span>
+        </dd>
+        <dt><span>Autre Nom Etablissement</span></dt>
+        <dd>
+          <span>{{ etablissement.autreNomEtablissement }}</span>
+        </dd>
+      </dl>
+
+      <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+        <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span>Back</span>
+      </button>
+
+      <button type="button" [routerLink]="['/etablissement', etablissement.id, 'edit']" class="btn btn-primary">
+        <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span>Edit</span>
+      </button>
+    </div>
+  </div>
+</div>
