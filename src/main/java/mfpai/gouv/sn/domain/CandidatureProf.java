@@ -42,11 +42,11 @@ public class CandidatureProf implements Serializable {
     private Resultat resultat;
 
     @ManyToOne
-    @JsonIgnoreProperties(value = { "user", "diplomes", "experiences", "candidatureProfs", "dossier", "demandeur" }, allowSetters = true)
+    @JsonIgnoreProperties(value = { "user", "diplomes", "experiences", "candidaturePS", "dossier", "demandeur" }, allowSetters = true)
     private Professionnel professionnel;
 
     @ManyToOne
-    @JsonIgnoreProperties(value = { "formation", "candidatureProfs" }, allowSetters = true)
+    @JsonIgnoreProperties(value = { "formation", "candidaturePS" }, allowSetters = true)
     private FormationContinue formationContinue;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here

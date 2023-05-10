@@ -1,35 +1,35 @@
 export enum NiveauEtude {
-  Cinquieme = 'Cinquieme',
+  CINQUIEME = 'CINQUIEME',
 
-  Quatrieme = 'Quatrieme',
+  QUATRIEME = 'QUATRIEME',
 
-  Troisieme = 'Troisieme',
+  TROISIEME = 'TROISIEME',
 
   BFEM = 'BFEM',
 
-  Equivalent_BFEM = 'Equivalent_BFEM',
+  EQUIVALENT_BFEM = 'EQUIVALENT_BFEM',
 
-  Seconde = 'Seconde',
+  SECONDE = 'SECONDE',
 
-  Premiere = 'Premiere',
+  PREMIERE = 'PREMIERE',
 
-  Terminal = 'Terminal',
+  TERMINAL = 'TERMINAL',
 
   BAC = 'BAC',
 
-  Equivalent_BAC = 'Equivalent_BAC',
+  EQUIVALENT_BAC = 'EQUIVALENT_BAC',
 
-  Licenece1 = 'Licenece1',
+  LICENCE1 = 'LICENCE1',
 
-  Licence2 = 'Licence2',
+  LICENCE2 = 'LICENCE2',
 
-  Licence3 = 'Licence3',
+  LICEMCE3 = 'LICEMCE3',
 
-  Master = 'Master',
+  MASTER = 'MASTER',
 
-  Doctorat = 'Doctorat',
+  DOCTORAT = 'DOCTORAT',
 
-  Attestation = 'Attestation',
+  ATTESTATION = 'ATTESTATION',
 
   CAP = 'CAP',
 
@@ -63,17 +63,17 @@ export enum NiveauEtude {
 
   CQP = 'CQP',
 
-  ChefEquipe = 'ChefEquipe',
+  CHEFEQUIPE = 'CHEFEQUIPE',
 
-  Chef_de_Chantier = 'Chef_de_Chantier',
+  CHEF_DE_CHANTIER = 'CHEF_DE_CHANTIER',
 
-  TechnicienSpecialise = 'TechnicienSpecialise',
+  TECHNICIENSPECIALISE = 'TECHNICIENSPECIALISE',
 
   METP = 'METP',
 
   BTI = 'BTI',
 
-  Titre_professionnel = 'Titre_professionnel',
+  TITRE_PROFESSIONNEL = 'TITRE_PROFESSIONNEL',
 
-  Autres = 'Autres',
+  AUTRES = 'AUTRES',
 }

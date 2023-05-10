@@ -11,5 +11,5 @@ public enum NomSerie {
     S4,
     S5,
     F6,
-    Autres,
+    AUTRES,
 }

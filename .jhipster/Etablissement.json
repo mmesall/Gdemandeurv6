@@ -73,7 +73,7 @@
     {
       "fieldName": "serie",
       "fieldType": "NomSerie",
-      "fieldValues": "STEG,STIDD_M,STIDD_E,S3,S4,S5,F6,Autres"
+      "fieldValues": "STEG,STIDD_M,STIDD_E,S3,S4,S5,F6,AUTRES"
     },
     {
       "fieldName": "autreFiliere",
@@ -94,6 +94,18 @@
   "pagination": "infinite-scroll",
   "readOnly": false,
   "relationships": [
+    {
+      "otherEntityName": "candidatureE",
+      "otherEntityRelationshipName": "etablissement",
+      "relationshipName": "candidatureE",
+      "relationshipType": "one-to-many"
+    },
+    {
+      "otherEntityName": "candidatureP",
+      "otherEntityRelationshipName": "etablissement",
+      "relationshipName": "candidatureP",
+      "relationshipType": "one-to-many"
+    },
     {
       "otherEntityName": "formation",
       "otherEntityRelationshipName": "etablissement",

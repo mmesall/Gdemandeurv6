@@ -1,7 +1,7 @@
 <div class="d-flex justify-content-center">
   <div class="col-8">
     <form name="editForm" role="form" novalidate (ngSubmit)="save()" [formGroup]="editForm">
-      <h2 id="jhi-candidature-elev-heading" data-cy="CandidatureElevCreateUpdateHeading">Creer votre candidature</h2>
+      <h2 id="jhi-candidature-elev-heading" data-cy="CandidatureElevCreateUpdateHeading">Create or edit a Candidature Elev</h2>
 
       <div>
         <jhi-alert-error></jhi-alert-error>
@@ -12,7 +12,7 @@
         </div>
 
         <div class="row mb-3">
-          <label class="form-label" for="field_offreFormation">Offre de formation en :</label>
+          <label class="form-label" for="field_offreFormation">Offre Formation</label>
           <select
             class="form-control"
             name="offreFormation"
@@ -21,7 +21,7 @@
             data-cy="offreFormation"
           >
             <option [ngValue]="null"></option>
-            <option *ngFor="let nomFiliere of nomFiliereValues" [value]="nomFiliere">{{ nomFiliere }}</option>
+            <option *ngFor="let nomFiliere of nomFiliereValues" [value]="nomFiliere">nomFiliere</option>
           </select>
         </div>
 
@@ -80,15 +80,15 @@
           </div>
         </div>
 
-        <div *jhiHasAnyAuthority="'ROLE_ADMIN'" class="row mb-3">
+        <div class="row mb-3">
           <label class="form-label" for="field_resultat">Resultat</label>
           <select class="form-control" name="resultat" formControlName="resultat" id="field_resultat" data-cy="resultat">
             <option [ngValue]="null"></option>
-            <option *ngFor="let resultat of resultatValues" [value]="resultat">{{ resultat }}</option>
+            <option *ngFor="let resultat of resultatValues" [value]="resultat">resultat</option>
           </select>
         </div>
 
-        <div *jhiHasAnyAuthority="'ROLE_ADMIN'" class="row mb-3">
+        <div class="row mb-3">
           <label class="form-label" for="field_eleve">Eleve</label>
           <select class="form-control" id="field_eleve" data-cy="eleve" name="eleve" formControlName="eleve">
             <option [ngValue]="null"></option>
@@ -127,7 +127,7 @@
 
       <div>
         <button type="button" id="cancel-save" data-cy="entityCreateCancelButton" class="btn btn-secondary" (click)="previousState()">
-          <fa-icon icon="ban"></fa-icon>&nbsp;<span>Annuler</span>
+          <fa-icon icon="ban"></fa-icon>&nbsp;<span>Cancel</span>
         </button>
 
         <button
@@ -137,7 +137,7 @@
           [disabled]="editForm.invalid || isSaving"
           class="btn btn-primary"
         >
-          <fa-icon icon="save"></fa-icon>&nbsp;<span>Soumettre</span>
+          <fa-icon icon="save"></fa-icon>&nbsp;<span>Save</span>
         </button>
       </div>
     </form>

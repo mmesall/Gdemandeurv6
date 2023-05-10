@@ -31,7 +31,7 @@
     {
       "fieldName": "diplomeRequis",
       "fieldType": "DiplomeRequis",
-      "fieldValues": "ATTESTATION,CAP,BT,DUR,DNBA,BEP,BTS,BFEM,BAC,LICENCE,MASTER,Autres"
+      "fieldValues": "ATTESTATION,CAP,BT,DUR,DNBA,BEP,BTS,BFEM,BAC,LICENCE,MASTER,AUTRES"
     },
     {
       "fieldName": "ficheFormation",

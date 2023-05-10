@@ -93,8 +93,8 @@ class DossierResourceIT {
     private static final String DEFAULT_EMAIL = "AAAAAAAAAA";
     private static final String UPDATED_EMAIL = "BBBBBBBBBB";
 
-    private static final NiveauEtude DEFAULT_NIVEAU_FORMATION = NiveauEtude.Cinquieme;
-    private static final NiveauEtude UPDATED_NIVEAU_FORMATION = NiveauEtude.Quatrieme;
+    private static final NiveauEtude DEFAULT_NIVEAU_FORMATION = NiveauEtude.CINQUIEME;
+    private static final NiveauEtude UPDATED_NIVEAU_FORMATION = NiveauEtude.QUATRIEME;
 
     private static final NomFiliere DEFAULT_SPECIALITE_1 = NomFiliere.AGRI_ELEVAGE;
     private static final NomFiliere UPDATED_SPECIALITE_1 = NomFiliere.AGRICULTURE;

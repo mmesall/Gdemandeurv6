@@ -39,14 +39,16 @@
       "ServiceMFPAI",
       "CandidatureElev",
       "CandidatureEtudiant",
-      "CandidatureProf"
+      "CandidatureProf",
+      "CandidatureE",
+      "CandidatureP"
     ],
     "entitySuffix": "",
     "jhiPrefix": "jhi",
     "jhipsterVersion": "7.7.0",
     "jwtSecretKey": "YzM4MmIxZmZkYTNkYzVlY2UwNjdmNDg0OGE1ZjE3MmFhZmYyN2IxMWYwMDgyOWIyZjEzN2RlNzU5NTBjMDA5ZjkwZDFlZDI0OWJkNmEwMzg2MThjYzE0MjcwMjFiZmYyZDY5MzRhMTQyMWFmZDY4Nzg0ZTZlYWU4YTBmZWY4MjU=",
     "languages": ["en", "fr"],
-    "lastLiquibaseTimestamp": 1681392279000,
+    "lastLiquibaseTimestamp": 1683730830000,
     "messageBroker": false,
     "nativeLanguage": "fr",
     "otherModules": [],

@@ -3,17 +3,12 @@
     <span>Dossiers</span>
 
     <div class="d-flex justify-content-end">
-      <!-- <button class="btn btn-info me-2" (click)="reset()" [disabled]="isLoading">
+      <button class="btn btn-info me-2" (click)="reset()" [disabled]="isLoading">
         <fa-icon icon="sync" [spin]="isLoading"></fa-icon>
         <span>Refresh List</span>
-      </button> -->
-
-      <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
-        <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span>Retour</span>
       </button>
 
       <button
-        *jhiHasAnyAuthority="'ROLE_ADMIN'"
         id="jh-create-entity"
         data-cy="entityCreateButton"
         class="btn btn-primary jh-create-entity create-dossier"
@@ -118,7 +113,6 @@
           <td class="text-end">
             <div class="btn-group">
               <button
-                *jhiHasAnyAuthority="'ROLE_ADMIN'"
                 type="submit"
                 [routerLink]="['/dossier', dossier.id, 'view']"
                 class="btn btn-info btn-sm"
@@ -138,13 +132,7 @@
                 <span class="d-none d-md-inline">Edit</span>
               </button>
 
-              <button
-                *jhiHasAnyAuthority="'ROLE_ADMIN'"
-                type="submit"
-                (click)="delete(dossier)"
-                class="btn btn-danger btn-sm"
-                data-cy="entityDeleteButton"
-              >
+              <button type="submit" (click)="delete(dossier)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
                 <fa-icon icon="times"></fa-icon>
                 <span class="d-none d-md-inline">Delete</span>
               </button>

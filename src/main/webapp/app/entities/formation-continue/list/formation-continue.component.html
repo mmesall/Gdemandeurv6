@@ -2,7 +2,7 @@
   <h2 id="page-heading" data-cy="FormationContinueHeading">
     <span>Formation Continues</span>
 
-    <div class="d-flex justify-content-end">
+    <div *jhiHasAnyAuthority="'ROLE_ADMIN'" class="d-flex justify-content-end">
       <button class="btn btn-info me-2" (click)="reset()" [disabled]="isLoading">
         <fa-icon icon="sync" [spin]="isLoading"></fa-icon>
         <span>Refresh List</span>
@@ -32,43 +32,43 @@
     <table class="table table-striped" aria-describedby="page-heading">
       <thead>
         <tr jhiSort [(predicate)]="predicate" [(ascending)]="ascending" (sortChange)="reset()">
-          <th scope="col" jhiSortBy="id"><span>ID</span> <fa-icon icon="sort"></fa-icon></th>
+          <th *jhiHasAnyAuthority="'ROLE_ADMIN'" scope="col" jhiSortBy="id"><span>ID</span> <fa-icon icon="sort"></fa-icon></th>
           <th scope="col" jhiSortBy="nomFormationC"><span>Nom Formation C</span> <fa-icon icon="sort"></fa-icon></th>
           <th scope="col" jhiSortBy="duree"><span>Duree</span> <fa-icon icon="sort"></fa-icon></th>
           <th scope="col" jhiSortBy="admission"><span>Admission</span> <fa-icon icon="sort"></fa-icon></th>
-          <th scope="col" jhiSortBy="diplomeRequis"><span>Diplome Requis</span> <fa-icon icon="sort"></fa-icon></th>
+          <!-- <th scope="col" jhiSortBy="diplomeRequis"><span>Diplome Requis</span> <fa-icon icon="sort"></fa-icon></th> -->
           <th scope="col" jhiSortBy="niveauEtude"><span>Niveau Etude</span> <fa-icon icon="sort"></fa-icon></th>
-          <th scope="col" jhiSortBy="filiere"><span>Filiere</span> <fa-icon icon="sort"></fa-icon></th>
+          <!-- <th scope="col" jhiSortBy="filiere"><span>Filiere</span> <fa-icon icon="sort"></fa-icon></th>
           <th scope="col" jhiSortBy="serie"><span>Serie</span> <fa-icon icon="sort"></fa-icon></th>
           <th scope="col" jhiSortBy="cfp"><span>Cfp</span> <fa-icon icon="sort"></fa-icon></th>
           <th scope="col" jhiSortBy="lycee"><span>Lycee</span> <fa-icon icon="sort"></fa-icon></th>
           <th scope="col" jhiSortBy="ficheFormation"><span>Fiche Formation</span> <fa-icon icon="sort"></fa-icon></th>
           <th scope="col" jhiSortBy="libellePC"><span>Libelle PC</span> <fa-icon icon="sort"></fa-icon></th>
           <th scope="col" jhiSortBy="montantPriseEnCharge"><span>Montant Prise En Charge</span> <fa-icon icon="sort"></fa-icon></th>
-          <th scope="col" jhiSortBy="coutFormation"><span>Cout Formation</span> <fa-icon icon="sort"></fa-icon></th>
-          <th scope="col" jhiSortBy="detailPC"><span>Detail PC</span> <fa-icon icon="sort"></fa-icon></th>
+          <th scope="col" jhiSortBy="coutFormation"><span>Cout Formation</span> <fa-icon icon="sort"></fa-icon></th> -->
+          <!-- <th scope="col" jhiSortBy="detailPC"><span>Detail PC</span> <fa-icon icon="sort"></fa-icon></th>
           <th scope="col" jhiSortBy="nomDiplome"><span>Nom Diplome</span> <fa-icon icon="sort"></fa-icon></th>
           <th scope="col" jhiSortBy="autreDiplome"><span>Autre Diplome</span> <fa-icon icon="sort"></fa-icon></th>
           <th scope="col" jhiSortBy="nomDebouche"><span>Nom Debouche</span> <fa-icon icon="sort"></fa-icon></th>
-          <th scope="col" jhiSortBy="formation.id"><span>Formation</span> <fa-icon icon="sort"></fa-icon></th>
+          <th scope="col" jhiSortBy="formation.id"><span>Formation</span> <fa-icon icon="sort"></fa-icon></th> -->
           <th scope="col"></th>
         </tr>
       </thead>
       <tbody infinite-scroll (scrolled)="loadPage(page + 1)" [infiniteScrollDisabled]="page >= links['last']" [infiniteScrollDistance]="0">
         <tr *ngFor="let formationContinue of formationContinues; trackBy: trackId" data-cy="entityTable">
-          <td>
+          <td *jhiHasAnyAuthority="'ROLE_ADMIN'">
             <a [routerLink]="['/formation-continue', formationContinue.id, 'view']">{{ formationContinue.id }}</a>
           </td>
           <td>{{ formationContinue.nomFormationC }}</td>
           <td>{{ formationContinue.duree }}</td>
           <td>{{ formationContinue.admission }}</td>
-          <td>{{ formationContinue.diplomeRequis }}</td>
+          <!-- <td>{{ formationContinue.diplomeRequis }}</td> -->
           <td>{{ formationContinue.niveauEtude }}</td>
-          <td>{{ formationContinue.filiere }}</td>
+          <!-- <td>{{ formationContinue.filiere }}</td>
           <td>{{ formationContinue.serie }}</td>
           <td>{{ formationContinue.cfp }}</td>
-          <td>{{ formationContinue.lycee }}</td>
-          <td>
+          <td>{{ formationContinue.lycee }}</td> -->
+          <!-- <td>
             <a
               *ngIf="formationContinue.ficheFormation"
               (click)="openFile(formationContinue.ficheFormation, formationContinue.ficheFormationContentType)"
@@ -77,22 +77,23 @@
             <span *ngIf="formationContinue.ficheFormation"
               >{{ formationContinue.ficheFormationContentType }}, {{ byteSize(formationContinue.ficheFormation) }}</span
             >
-          </td>
-          <td>{{ formationContinue.libellePC }}</td>
+          </td> -->
+          <!-- <td>{{ formationContinue.libellePC }}</td>
           <td>{{ formationContinue.montantPriseEnCharge }}</td>
           <td>{{ formationContinue.coutFormation }}</td>
           <td>{{ formationContinue.detailPC }}</td>
           <td>{{ formationContinue.nomDiplome }}</td>
           <td>{{ formationContinue.autreDiplome }}</td>
-          <td>{{ formationContinue.nomDebouche }}</td>
-          <td>
+          <td>{{ formationContinue.nomDebouche }}</td> -->
+          <!-- <td>
             <div *ngIf="formationContinue.formation">
               <a [routerLink]="['/formation', formationContinue.formation?.id, 'view']">{{ formationContinue.formation?.id }}</a>
             </div>
-          </td>
+          </td> -->
           <td class="text-end">
             <div class="btn-group">
               <button
+                *jhiHasAnyAuthority="'ROLE_ADMIN'"
                 type="submit"
                 [routerLink]="['/formation-continue', formationContinue.id, 'view']"
                 class="btn btn-info btn-sm"
@@ -102,7 +103,13 @@
                 <span class="d-none d-md-inline">View</span>
               </button>
 
+              <button type="submit" routerLink="/candidature-p/new" class="btn btn-success btn-sm" data-cy="entityDetailsButton">
+                <!-- <fa-icon icon="eye"></fa-icon> -->
+                <span class="d-none d-md-inline">Postuler</span>
+              </button>
+
               <button
+                *jhiHasAnyAuthority="'ROLE_ADMIN'"
                 type="submit"
                 [routerLink]="['/formation-continue', formationContinue.id, 'edit']"
                 class="btn btn-primary btn-sm"
@@ -112,7 +119,13 @@
                 <span class="d-none d-md-inline">Edit</span>
               </button>
 
-              <button type="submit" (click)="delete(formationContinue)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
+              <button
+                *jhiHasAnyAuthority="'ROLE_ADMIN'"
+                type="submit"
+                (click)="delete(formationContinue)"
+                class="btn btn-danger btn-sm"
+                data-cy="entityDeleteButton"
+              >
                 <fa-icon icon="times"></fa-icon>
                 <span class="d-none d-md-inline">Delete</span>
               </button>

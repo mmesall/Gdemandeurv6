@@ -87,8 +87,8 @@ public class Etudiant implements Serializable {
 
     @OneToMany(mappedBy = "etudiant")
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-    @JsonIgnoreProperties(value = { "etudiant", "formationInitiale" }, allowSetters = true)
-    private Set<CandidatureEtudiant> candidatureEtudiants = new HashSet<>();
+    @JsonIgnoreProperties(value = { "eleve", "etudiant", "formationInitiale", "etablissement" }, allowSetters = true)
+    private Set<CandidatureE> candidatureES = new HashSet<>();
 
     @JsonIgnoreProperties(value = { "eleve", "etudiant", "professionnel", "demandeur" }, allowSetters = true)
     @OneToOne(mappedBy = "etudiant")
@@ -347,34 +347,34 @@ public class Etudiant implements Serializable {
         return this;
     }
 
-    public Set<CandidatureEtudiant> getCandidatureEtudiants() {
-        return this.candidatureEtudiants;
+    public Set<CandidatureE> getCandidatureES() {
+        return this.candidatureES;
     }
 
-    public void setCandidatureEtudiants(Set<CandidatureEtudiant> candidatureEtudiants) {
-        if (this.candidatureEtudiants != null) {
-            this.candidatureEtudiants.forEach(i -> i.setEtudiant(null));
+    public void setCandidatureES(Set<CandidatureE> candidatureES) {
+        if (this.candidatureES != null) {
+            this.candidatureES.forEach(i -> i.setEtudiant(null));
         }
-        if (candidatureEtudiants != null) {
-            candidatureEtudiants.forEach(i -> i.setEtudiant(this));
+        if (candidatureES != null) {
+            candidatureES.forEach(i -> i.setEtudiant(this));
         }
-        this.candidatureEtudiants = candidatureEtudiants;
+        this.candidatureES = candidatureES;
     }
 
-    public Etudiant candidatureEtudiants(Set<CandidatureEtudiant> candidatureEtudiants) {
-        this.setCandidatureEtudiants(candidatureEtudiants);
+    public Etudiant candidatureES(Set<CandidatureE> candidatureES) {
+        this.setCandidatureES(candidatureES);
         return this;
     }
 
-    public Etudiant addCandidatureEtudiant(CandidatureEtudiant candidatureEtudiant) {
-        this.candidatureEtudiants.add(candidatureEtudiant);
-        candidatureEtudiant.setEtudiant(this);
+    public Etudiant addCandidatureE(CandidatureE candidatureE) {
+        this.candidatureES.add(candidatureE);
+        candidatureE.setEtudiant(this);
         return this;
     }
 
-    public Etudiant removeCandidatureEtudiant(CandidatureEtudiant candidatureEtudiant) {
-        this.candidatureEtudiants.remove(candidatureEtudiant);
-        candidatureEtudiant.setEtudiant(null);
+    public Etudiant removeCandidatureE(CandidatureE candidatureE) {
+        this.candidatureES.remove(candidatureE);
+        candidatureE.setEtudiant(null);
         return this;
     }
 

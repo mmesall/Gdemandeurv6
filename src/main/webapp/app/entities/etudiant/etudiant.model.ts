@@ -2,7 +2,7 @@ import dayjs from 'dayjs/esm';
 import { IUser } from 'app/entities/user/user.model';
 import { IDiplome } from 'app/entities/diplome/diplome.model';
 import { IExperience } from 'app/entities/experience/experience.model';
-import { ICandidatureEtudiant } from 'app/entities/candidature-etudiant/candidature-etudiant.model';
+import { ICandidatureE } from 'app/entities/candidature-e/candidature-e.model';
 import { IDossier } from 'app/entities/dossier/dossier.model';
 import { IDemandeur } from 'app/entities/demandeur/demandeur.model';
 import { Sexe } from 'app/entities/enumerations/sexe.model';
@@ -26,7 +26,7 @@ export interface IEtudiant {
   user?: IUser | null;
   diplomes?: IDiplome[] | null;
   experiences?: IExperience[] | null;
-  candidatureEtudiants?: ICandidatureEtudiant[] | null;
+  candidatureES?: ICandidatureE[] | null;
   dossier?: IDossier | null;
   demandeur?: IDemandeur | null;
 }
@@ -49,7 +49,7 @@ export class Etudiant implements IEtudiant {
     public user?: IUser | null,
     public diplomes?: IDiplome[] | null,
     public experiences?: IExperience[] | null,
-    public candidatureEtudiants?: ICandidatureEtudiant[] | null,
+    public candidatureES?: ICandidatureE[] | null,
     public dossier?: IDossier | null,
     public demandeur?: IDemandeur | null
   ) {}

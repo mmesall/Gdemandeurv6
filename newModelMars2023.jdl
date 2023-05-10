@@ -161,7 +161,7 @@ enum NomFiliere
 }
 
 enum NomSerie{
-STEG, STIDD_M, STIDD_E, S3, S4, S5, F6, Autres
+STEG, STIDD_M, STIDD_E, S3, S4, S5, F6, AUTRES
 }
 
 entity Formation {
@@ -194,7 +194,7 @@ enum DiplomeRequis{
     BAC,
     LICENCE,
     MASTER,
-    Autres
+    AUTRES
 }
 
 entity FormationInitiale {
@@ -237,7 +237,7 @@ entity FormationContinue{
 }
 
 enum DiplomeObtenu{
-CPS, CAP, BEP, BT, METP, BTS, CQP, BTI, TitreProf, CAEP, TS, Autres
+CPS, CAP, BEP, BT, METP, BTS, CQP, BTI, TITREPROF, CAEP, TS, AUTRES
 }
 
 entity Concours {
@@ -251,22 +251,22 @@ entity Concours {
 }
 
 enum NiveauEtude{
-	Cinquieme,
-	Quatrieme,
-	Troisieme,
+	CINQUIEME,
+	QUATRIEME,
+	TROISIEME,
 	BFEM,
-	Equivalent_BFEM,
-	Seconde,
-	Premiere,
-	Terminal,
+	EQUIVALENT_BFEM,
+	SECONDE,
+	PREMIERE,
+	TERMINAL,
 	BAC,
-	Equivalent_BAC,
-	Licenece1,
-	Licence2,
-	Licence3,
-	Master,
-	Doctorat,
-	Attestation,
+	EQUIVALENT_BAC,
+	LICENCE1,
+	LICENCE2,
+	LICEMCE3,
+	MASTER,
+	DOCTORAT,
+	ATTESTATION,
 	CAP,
     CAP1,
     CAP2,
@@ -283,13 +283,13 @@ enum NiveauEtude{
     BTS1,
     BTS2,
 	CQP,
-	ChefEquipe,
-	Chef_de_Chantier,
-	TechnicienSpecialise,
+	CHEFEQUIPE,
+	CHEF_DE_CHANTIER,
+	TECHNICIENSPECIALISE,
 	METP,
 	BTI,
-	Titre_professionnel,
-    Autres
+	TITRE_PROFESSIONNEL,
+    AUTRES
 }
 
 entity PriseEnCharge {
@@ -363,7 +363,7 @@ entity Experience{
 	mission TextBlob
 }
 
-entity CandidatureElev{
+entity CandidatureE{
 	offreFormation NomFiliere,
 	dateDebutOffre LocalDate,
 	dateFinOffre LocalDate,
@@ -372,16 +372,16 @@ entity CandidatureElev{
 	resultat Resultat
 }
 
-entity CandidatureEtudiant{
-	offreFormation NomFiliere,
-	dateDebutOffre LocalDate,
-	dateFinOffre LocalDate,
-	//formationChoisi String,
-	dateDepot LocalDate,
-	resultat Resultat
-}
+// entity CandidatureEtudiant{
+// 	offreFormation NomFiliere,
+// 	dateDebutOffre LocalDate,
+// 	dateFinOffre LocalDate,
+// 	//formationChoisi String,
+// 	dateDepot LocalDate,
+// 	resultat Resultat
+// }
 
-entity CandidatureProf{
+entity CandidatureP{
 	offreFormation NomFiliere,
 	dateDebutOffre LocalDate,
 	dateFinOffre LocalDate,
@@ -455,7 +455,7 @@ entity Professionnel {
 
 entity Agent {
 		matricule String required unique,
-		nom String,
+		nomAgent String,
 		prenom String,
 		dateNaiss LocalDate,
 		lieuNaiss String,
@@ -501,16 +501,18 @@ relationship OneToMany {
 	Eleve{experience} to Experience{Eleve(niveauEtude)},
 	Etudiant{experience} to Experience{Etudiant(carteEtudiant)},
 	Professionnel{experience} to Experience{Professionnel(profession)},
-	Eleve{CandidatureElev} to CandidatureElev{Eleve(niveauEtude)},
-	Etudiant{CandidatureEtudiant} to CandidatureEtudiant{Etudiant(carteEtudiant)},
-	Professionnel{CandidatureProf} to CandidatureProf{Professionnel(profession)},
+	Eleve{CandidatureE} to CandidatureE{Eleve(niveauEtude)},
+	Etudiant{CandidatureE} to CandidatureE{Etudiant(carteEtudiant)},
+	Professionnel{CandidatureP} to CandidatureP{Professionnel(profession)},
 	Demandeur{diplome} to Diplome{Demandeur(profil)},
 	Demandeur{experience} to Experience{Demandeur(profil)} ,
 	//Demandeur{candidature} to Candidature{Demandeur(profil)} ,
 	//Formation{candidature} to Candidature{Formation(nomFormation)},
-	FormationInitiale{CandidatureElev} to CandidatureElev{formationInitiale(nomFormationI)},
-	FormationInitiale{CandidatureEtudiant} to CandidatureEtudiant{formationInitiale(nomFormationI)},
-	FormationContinue{CandidatureProf} to CandidatureProf{formationContinue(nomFormationC)},
+	FormationInitiale{CandidatureE} to CandidatureE{formationInitiale(nomFormationI)},
+	FormationInitiale{CandidatureE} to CandidatureE{formationInitiale(nomFormationI)},
+	FormationContinue{CandidatureP} to CandidatureP{formationContinue(nomFormationC)},
+	Etablissement{CandidatureE} to CandidatureE{etablissement(nomEtablissement)},
+	Etablissement{CandidatureP} to CandidatureP{etablissement(nomEtablissement)}
 	//Formation{demandeur} to Demandeur{Formation(nomFormation)} ,
 	//Formation{eleve} to Eleve{Formation(nomFormation)},
 	//Formation{etudiant} to Etudiant{Formation(nomFormation)} ,

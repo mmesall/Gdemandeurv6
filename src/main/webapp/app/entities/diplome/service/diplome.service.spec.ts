@@ -26,7 +26,7 @@ describe('Diplome Service', () => {
       id: 0,
       intitule: 'AAAAAAA',
       domaine: NomFiliere.AGRI_ELEVAGE,
-      niveau: NiveauEtude.Cinquieme,
+      niveau: NiveauEtude.CINQUIEME,
       mention: Mention.PASSABLE,
       anneeObtention: 'AAAAAAA',
       etablissement: 'AAAAAAA',

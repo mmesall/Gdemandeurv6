@@ -56,18 +56,15 @@ public class Diplome implements Serializable {
     private String documentContentType;
 
     @ManyToOne
-    @JsonIgnoreProperties(value = { "user", "diplomes", "experiences", "candidatureElevs", "dossier", "demandeur" }, allowSetters = true)
+    @JsonIgnoreProperties(value = { "user", "diplomes", "experiences", "candidatureES", "dossier", "demandeur" }, allowSetters = true)
     private Eleve eleve;
 
     @ManyToOne
-    @JsonIgnoreProperties(
-        value = { "user", "diplomes", "experiences", "candidatureEtudiants", "dossier", "demandeur" },
-        allowSetters = true
-    )
+    @JsonIgnoreProperties(value = { "user", "diplomes", "experiences", "candidatureES", "dossier", "demandeur" }, allowSetters = true)
     private Etudiant etudiant;
 
     @ManyToOne
-    @JsonIgnoreProperties(value = { "user", "diplomes", "experiences", "candidatureProfs", "dossier", "demandeur" }, allowSetters = true)
+    @JsonIgnoreProperties(value = { "user", "diplomes", "experiences", "candidaturePS", "dossier", "demandeur" }, allowSetters = true)
     private Professionnel professionnel;
 
     @ManyToOne

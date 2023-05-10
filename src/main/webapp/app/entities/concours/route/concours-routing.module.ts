@@ -11,7 +11,7 @@ const concoursRoute: Routes = [
   {
     path: '',
     component: ConcoursComponent,
-    // canActivate: [UserRouteAccessService],
+    canActivate: [UserRouteAccessService],
   },
   {
     path: ':id/view',

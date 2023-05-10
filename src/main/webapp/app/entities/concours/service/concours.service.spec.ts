@@ -29,7 +29,7 @@ describe('Concours Service', () => {
       id: 0,
       nomConcours: 'AAAAAAA',
       nomEtablissement: NomEtablissement.CEDT_G15,
-      niveauEtude: NiveauEtude.Cinquieme,
+      niveauEtude: NiveauEtude.CINQUIEME,
       dateOuverture: currentDate,
       dateCloture: currentDate,
       dateConcours: currentDate,

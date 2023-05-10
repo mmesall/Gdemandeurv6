@@ -12,8 +12,8 @@ public enum DiplomeObtenu {
     BTS,
     CQP,
     BTI,
-    TitreProf,
+    TITREPROF,
     CAEP,
     TS,
-    Autres,
+    AUTRES,
 }

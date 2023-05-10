@@ -1,0 +1,70 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    <div *ngIf="candidatureP">
+      <h2 data-cy="candidaturePDetailsHeading"><span>Candidature P</span></h2>
+
+      <hr />
+
+      <jhi-alert-error></jhi-alert-error>
+
+      <jhi-alert></jhi-alert>
+
+      <dl class="row-md jh-entity-details">
+        <dt><span>ID</span></dt>
+        <dd>
+          <span>{{ candidatureP.id }}</span>
+        </dd>
+        <dt><span>Offre Formation</span></dt>
+        <dd>
+          <span>{{ candidatureP.offreFormation }}</span>
+        </dd>
+        <dt><span>Date Debut Offre</span></dt>
+        <dd>
+          <span>{{ candidatureP.dateDebutOffre | formatMediumDate }}</span>
+        </dd>
+        <dt><span>Date Fin Offre</span></dt>
+        <dd>
+          <span>{{ candidatureP.dateFinOffre | formatMediumDate }}</span>
+        </dd>
+        <dt><span>Date Depot</span></dt>
+        <dd>
+          <span>{{ candidatureP.dateDepot | formatMediumDate }}</span>
+        </dd>
+        <dt><span>Resultat</span></dt>
+        <dd>
+          <span>{{ candidatureP.resultat }}</span>
+        </dd>
+        <dt><span>Professionnel</span></dt>
+        <dd>
+          <div *ngIf="candidatureP.professionnel">
+            <a [routerLink]="['/professionnel', candidatureP.professionnel?.id, 'view']">{{ candidatureP.professionnel?.profession }}</a>
+          </div>
+        </dd>
+        <dt><span>Formation Continue</span></dt>
+        <dd>
+          <div *ngIf="candidatureP.formationContinue">
+            <a [routerLink]="['/formation-continue', candidatureP.formationContinue?.id, 'view']">{{
+              candidatureP.formationContinue?.nomFormationC
+            }}</a>
+          </div>
+        </dd>
+        <dt><span>Etablissement</span></dt>
+        <dd>
+          <div *ngIf="candidatureP.etablissement">
+            <a [routerLink]="['/etablissement', candidatureP.etablissement?.id, 'view']">{{
+              candidatureP.etablissement?.nomEtablissement
+            }}</a>
+          </div>
+        </dd>
+      </dl>
+
+      <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+        <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span>Back</span>
+      </button>
+
+      <button type="button" [routerLink]="['/candidature-p', candidatureP.id, 'edit']" class="btn btn-primary">
+        <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span>Edit</span>
+      </button>
+    </div>
+  </div>
+</div>

@@ -34,7 +34,7 @@
         <tr jhiSort [(predicate)]="predicate" [(ascending)]="ascending" (sortChange)="reset()">
           <th scope="col" jhiSortBy="id"><span>ID</span> <fa-icon icon="sort"></fa-icon></th>
           <th scope="col" jhiSortBy="matricule"><span>Matricule</span> <fa-icon icon="sort"></fa-icon></th>
-          <th scope="col" jhiSortBy="nom"><span>Nom</span> <fa-icon icon="sort"></fa-icon></th>
+          <th scope="col" jhiSortBy="nomAgent"><span>Nom Agent</span> <fa-icon icon="sort"></fa-icon></th>
           <th scope="col" jhiSortBy="prenom"><span>Prenom</span> <fa-icon icon="sort"></fa-icon></th>
           <th scope="col" jhiSortBy="dateNaiss"><span>Date Naiss</span> <fa-icon icon="sort"></fa-icon></th>
           <th scope="col" jhiSortBy="lieuNaiss"><span>Lieu Naiss</span> <fa-icon icon="sort"></fa-icon></th>
@@ -52,7 +52,7 @@
             <a [routerLink]="['/agent', agent.id, 'view']">{{ agent.id }}</a>
           </td>
           <td>{{ agent.matricule }}</td>
-          <td>{{ agent.nom }}</td>
+          <td>{{ agent.nomAgent }}</td>
           <td>{{ agent.prenom }}</td>
           <td>{{ agent.dateNaiss | formatMediumDate }}</td>
           <td>{{ agent.lieuNaiss }}</td>

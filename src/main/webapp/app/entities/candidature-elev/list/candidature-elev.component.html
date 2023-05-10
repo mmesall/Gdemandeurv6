@@ -1,15 +1,11 @@
 <div>
   <h2 id="page-heading" data-cy="CandidatureElevHeading">
-    <span>Ma liste de candidatures</span>
+    <span>Candidature Elevs</span>
 
     <div class="d-flex justify-content-end">
-      <!-- <button class="btn btn-info me-2" (click)="reset()" [disabled]="isLoading">
+      <button class="btn btn-info me-2" (click)="reset()" [disabled]="isLoading">
         <fa-icon icon="sync" [spin]="isLoading"></fa-icon>
         <span>Refresh List</span>
-      </button> -->
-
-      <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
-        <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span>Retour</span>
       </button>
 
       <button
@@ -19,7 +15,7 @@
         [routerLink]="['/candidature-elev/new']"
       >
         <fa-icon icon="plus"></fa-icon>
-        <span>Faire une nouvelle candidature </span>
+        <span> Create a new Candidature Elev </span>
       </button>
     </div>
   </h2>
@@ -29,14 +25,14 @@
   <jhi-alert></jhi-alert>
 
   <div class="alert alert-warning" id="no-result" *ngIf="candidatureElevs?.length === 0">
-    <span>Aucune candidature trouvé</span>
+    <span>No candidatureElevs found</span>
   </div>
 
   <div class="table-responsive" id="entities" *ngIf="candidatureElevs && candidatureElevs.length > 0">
     <table class="table table-striped" aria-describedby="page-heading">
       <thead>
         <tr jhiSort [(predicate)]="predicate" [(ascending)]="ascending" (sortChange)="reset()">
-          <th *jhiHasAnyAuthority="'ROLE_ADMIN'" scope="col" jhiSortBy="id"><span>ID</span> <fa-icon icon="sort"></fa-icon></th>
+          <th scope="col" jhiSortBy="id"><span>ID</span> <fa-icon icon="sort"></fa-icon></th>
           <th scope="col" jhiSortBy="offreFormation"><span>Offre Formation</span> <fa-icon icon="sort"></fa-icon></th>
           <th scope="col" jhiSortBy="dateDebutOffre"><span>Date Debut Offre</span> <fa-icon icon="sort"></fa-icon></th>
           <th scope="col" jhiSortBy="dateFinOffre"><span>Date Fin Offre</span> <fa-icon icon="sort"></fa-icon></th>
@@ -49,7 +45,7 @@
       </thead>
       <tbody infinite-scroll (scrolled)="loadPage(page + 1)" [infiniteScrollDisabled]="page >= links['last']" [infiniteScrollDistance]="0">
         <tr *ngFor="let candidatureElev of candidatureElevs; trackBy: trackId" data-cy="entityTable">
-          <td *jhiHasAnyAuthority="'ROLE_ADMIN'">
+          <td>
             <a [routerLink]="['/candidature-elev', candidatureElev.id, 'view']">{{ candidatureElev.id }}</a>
           </td>
           <td>{{ candidatureElev.offreFormation }}</td>
@@ -72,36 +68,28 @@
           <td class="text-end">
             <div class="btn-group">
               <button
-                *jhiHasAnyAuthority="'ROLE_ADMIN'"
                 type="submit"
                 [routerLink]="['/candidature-elev', candidatureElev.id, 'view']"
                 class="btn btn-info btn-sm"
                 data-cy="entityDetailsButton"
               >
                 <fa-icon icon="eye"></fa-icon>
-                <!-- <span class="d-none d-md-inline">View</span> -->
+                <span class="d-none d-md-inline">View</span>
               </button>
 
               <button
-                *jhiHasAnyAuthority="'ROLE_ADMIN'"
                 type="submit"
                 [routerLink]="['/candidature-elev', candidatureElev.id, 'edit']"
                 class="btn btn-primary btn-sm"
                 data-cy="entityEditButton"
               >
                 <fa-icon icon="pencil-alt"></fa-icon>
-                <!-- <span class="d-none d-md-inline">Edit</span> -->
+                <span class="d-none d-md-inline">Edit</span>
               </button>
 
-              <button
-                *jhiHasAnyAuthority="'ROLE_ADMIN'"
-                type="submit"
-                (click)="delete(candidatureElev)"
-                class="btn btn-danger btn-sm"
-                data-cy="entityDeleteButton"
-              >
+              <button type="submit" (click)="delete(candidatureElev)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
                 <fa-icon icon="times"></fa-icon>
-                <!-- <span class="d-none d-md-inline">Delete</span> -->
+                <span class="d-none d-md-inline">Delete</span>
               </button>
             </div>
           </td>

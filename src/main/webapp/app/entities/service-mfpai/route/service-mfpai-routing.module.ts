@@ -11,7 +11,7 @@ const serviceMFPAIRoute: Routes = [
   {
     path: '',
     component: ServiceMFPAIComponent,
-    // canActivate: [UserRouteAccessService],
+    canActivate: [UserRouteAccessService],
   },
   {
     path: ':id/view',

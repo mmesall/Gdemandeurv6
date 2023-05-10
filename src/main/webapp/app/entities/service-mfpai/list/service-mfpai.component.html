@@ -1,8 +1,8 @@
 <div>
   <h2 id="page-heading" data-cy="ServiceMFPAIHeading">
-    <span>Directions et Services rattaches du MFPAI</span>
+    <span>Service MFPAIS</span>
 
-    <div *jhiHasAnyAuthority="'ROLE_ADMIN'" class="d-flex justify-content-end">
+    <div class="d-flex justify-content-end">
       <button class="btn btn-info me-2" (click)="reset()" [disabled]="isLoading">
         <fa-icon icon="sync" [spin]="isLoading"></fa-icon>
         <span>Refresh List</span>
@@ -32,7 +32,7 @@
     <table class="table table-striped" aria-describedby="page-heading">
       <thead>
         <tr jhiSort [(predicate)]="predicate" [(ascending)]="ascending" (sortChange)="reset()">
-          <th *jhiHasAnyAuthority="'ROLE_ADMIN'" scope="col" jhiSortBy="id"><span>ID</span> <fa-icon icon="sort"></fa-icon></th>
+          <th scope="col" jhiSortBy="id"><span>ID</span> <fa-icon icon="sort"></fa-icon></th>
           <th scope="col" jhiSortBy="imageService"><span>Image Service</span> <fa-icon icon="sort"></fa-icon></th>
           <th scope="col" jhiSortBy="nomService"><span>Nom Service</span> <fa-icon icon="sort"></fa-icon></th>
           <th scope="col" jhiSortBy="chefService"><span>Chef Service</span> <fa-icon icon="sort"></fa-icon></th>
@@ -42,7 +42,7 @@
       </thead>
       <tbody infinite-scroll (scrolled)="loadPage(page + 1)" [infiniteScrollDisabled]="page >= links['last']" [infiniteScrollDistance]="0">
         <tr *ngFor="let serviceMFPAI of serviceMFPAIS; trackBy: trackId" data-cy="entityTable">
-          <td *jhiHasAnyAuthority="'ROLE_ADMIN'">
+          <td>
             <a [routerLink]="['/service-mfpai', serviceMFPAI.id, 'view']">{{ serviceMFPAI.id }}</a>
           </td>
           <td>
@@ -69,11 +69,10 @@
                 data-cy="entityDetailsButton"
               >
                 <fa-icon icon="eye"></fa-icon>
-                <!-- <span class="d-none d-md-inline">View</span> -->
+                <span class="d-none d-md-inline">View</span>
               </button>
 
               <button
-                *jhiHasAnyAuthority="'ROLE_ADMIN'"
                 type="submit"
                 [routerLink]="['/service-mfpai', serviceMFPAI.id, 'edit']"
                 class="btn btn-primary btn-sm"
@@ -83,13 +82,7 @@
                 <span class="d-none d-md-inline">Edit</span>
               </button>
 
-              <button
-                *jhiHasAnyAuthority="'ROLE_ADMIN'"
-                type="submit"
-                (click)="delete(serviceMFPAI)"
-                class="btn btn-danger btn-sm"
-                data-cy="entityDeleteButton"
-              >
+              <button type="submit" (click)="delete(serviceMFPAI)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
                 <fa-icon icon="times"></fa-icon>
                 <span class="d-none d-md-inline">Delete</span>
               </button>

@@ -11,7 +11,7 @@
       "fieldValidateRules": ["required", "unique"]
     },
     {
-      "fieldName": "nom",
+      "fieldName": "nomAgent",
       "fieldType": "String"
     },
     {

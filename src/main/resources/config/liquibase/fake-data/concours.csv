@@ -1,11 +1,11 @@
 id;nom_concours;nom_etablissement;niveau_etude;date_ouverture;date_cloture;date_concours;affiche;affiche_content_type
 1;wireless;CFP_KAFFRINE;CAP2;2023-03-27;2023-03-28;2023-03-27;../fake-data/blob/hipster.png;image/png
-2;Panoramas firewall Chicken;CFP_DIONEWAR;Chef_de_Chantier;2023-03-27;2023-03-27;2023-03-28;../fake-data/blob/hipster.png;image/png
+2;Panoramas firewall Chicken;CFP_DIONEWAR;CHEF_DE_CHANTIER;2023-03-27;2023-03-27;2023-03-28;../fake-data/blob/hipster.png;image/png
 3;a;LEFP_KOLDA;CAP3;2023-03-27;2023-03-27;2023-03-27;../fake-data/blob/hipster.png;image/png
 4;Account du withdrawal;CFP_SINDIAN;BTS2;2023-03-27;2023-03-28;2023-03-28;../fake-data/blob/hipster.png;image/png
-5;solution-oriented;CFP_MEDINA_GUEULE_TAPEE;Licence2;2023-03-27;2023-03-28;2023-03-27;../fake-data/blob/hipster.png;image/png
+5;solution-oriented;CFP_MEDINA_GUEULE_TAPEE;LICENCE2;2023-03-27;2023-03-28;2023-03-27;../fake-data/blob/hipster.png;image/png
 6;c b RSS;CENTRE_REFERENCE_SEDHIOU;BT3;2023-03-27;2023-03-27;2023-03-27;../fake-data/blob/hipster.png;image/png
 7;Venezuela;THIOUBALEL;BT1;2023-03-27;2023-03-28;2023-03-28;../fake-data/blob/hipster.png;image/png
 8;Avon expedite Euro;LTCAN_KAOLACK;CAP;2023-03-27;2023-03-28;2023-03-28;../fake-data/blob/hipster.png;image/png
-9;revolutionary Assistant;LTAP_SAINT_LOUIS;Licence3;2023-03-28;2023-03-28;2023-03-27;../fake-data/blob/hipster.png;image/png
-10;Incredible;CRFP_ZIGUINCHOR;Equivalent_BFEM;2023-03-28;2023-03-27;2023-03-28;../fake-data/blob/hipster.png;image/png
+9;revolutionary Assistant;LTAP_SAINT_LOUIS;LICEMCE3;2023-03-28;2023-03-28;2023-03-27;../fake-data/blob/hipster.png;image/png
+10;Incredible;CRFP_ZIGUINCHOR;EQUIVALENT_BFEM;2023-03-28;2023-03-27;2023-03-28;../fake-data/blob/hipster.png;image/png

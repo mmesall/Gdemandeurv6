@@ -1,0 +1,181 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    <form name="editForm" role="form" novalidate (ngSubmit)="save()" [formGroup]="editForm">
+      <h2 id="jhi-candidature-e-heading" data-cy="CandidatureECreateUpdateHeading">Create or edit a Candidature E</h2>
+
+      <div>
+        <jhi-alert-error></jhi-alert-error>
+
+        <div class="row mb-3" [hidden]="editForm.get('id')!.value == null">
+          <label class="form-label" for="field_id">ID</label>
+          <input type="number" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
+        </div>
+
+        <div class="row mb-3">
+          <label class="form-label" for="field_offreFormation">Offre Formation</label>
+          <select
+            class="form-control"
+            name="offreFormation"
+            formControlName="offreFormation"
+            id="field_offreFormation"
+            data-cy="offreFormation"
+          >
+            <option [ngValue]="null"></option>
+            <option *ngFor="let nomFiliere of nomFiliereValues" [value]="nomFiliere">nomFiliere</option>
+          </select>
+        </div>
+
+        <div class="row mb-3">
+          <label class="form-label" for="field_dateDebutOffre">Date Debut Offre</label>
+          <div class="input-group">
+            <input
+              id="field_dateDebutOffre"
+              data-cy="dateDebutOffre"
+              type="text"
+              class="form-control"
+              name="dateDebutOffre"
+              ngbDatepicker
+              #dateDebutOffreDp="ngbDatepicker"
+              formControlName="dateDebutOffre"
+            />
+            <button type="button" class="btn btn-secondary" (click)="dateDebutOffreDp.toggle()">
+              <fa-icon icon="calendar-alt"></fa-icon>
+            </button>
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <label class="form-label" for="field_dateFinOffre">Date Fin Offre</label>
+          <div class="input-group">
+            <input
+              id="field_dateFinOffre"
+              data-cy="dateFinOffre"
+              type="text"
+              class="form-control"
+              name="dateFinOffre"
+              ngbDatepicker
+              #dateFinOffreDp="ngbDatepicker"
+              formControlName="dateFinOffre"
+            />
+            <button type="button" class="btn btn-secondary" (click)="dateFinOffreDp.toggle()">
+              <fa-icon icon="calendar-alt"></fa-icon>
+            </button>
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <label class="form-label" for="field_dateDepot">Date Depot</label>
+          <div class="input-group">
+            <input
+              id="field_dateDepot"
+              data-cy="dateDepot"
+              type="text"
+              class="form-control"
+              name="dateDepot"
+              ngbDatepicker
+              #dateDepotDp="ngbDatepicker"
+              formControlName="dateDepot"
+            />
+            <button type="button" class="btn btn-secondary" (click)="dateDepotDp.toggle()"><fa-icon icon="calendar-alt"></fa-icon></button>
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <label class="form-label" for="field_resultat">Resultat</label>
+          <select class="form-control" name="resultat" formControlName="resultat" id="field_resultat" data-cy="resultat">
+            <option [ngValue]="null"></option>
+            <option *ngFor="let resultat of resultatValues" [value]="resultat">resultat</option>
+          </select>
+        </div>
+
+        <div class="row mb-3">
+          <label class="form-label" for="field_eleve">Eleve</label>
+          <select class="form-control" id="field_eleve" data-cy="eleve" name="eleve" formControlName="eleve">
+            <option [ngValue]="null"></option>
+            <option
+              [ngValue]="eleveOption.id === editForm.get('eleve')!.value?.id ? editForm.get('eleve')!.value : eleveOption"
+              *ngFor="let eleveOption of elevesSharedCollection; trackBy: trackEleveById"
+            >
+              {{ eleveOption.niveauEtude }}
+            </option>
+          </select>
+        </div>
+
+        <div class="row mb-3">
+          <label class="form-label" for="field_etudiant">Etudiant</label>
+          <select class="form-control" id="field_etudiant" data-cy="etudiant" name="etudiant" formControlName="etudiant">
+            <option [ngValue]="null"></option>
+            <option
+              [ngValue]="etudiantOption.id === editForm.get('etudiant')!.value?.id ? editForm.get('etudiant')!.value : etudiantOption"
+              *ngFor="let etudiantOption of etudiantsSharedCollection; trackBy: trackEtudiantById"
+            >
+              {{ etudiantOption.carteEtudiant }}
+            </option>
+          </select>
+        </div>
+
+        <div class="row mb-3">
+          <label class="form-label" for="field_formationInitiale">Formation Initiale</label>
+          <select
+            class="form-control"
+            id="field_formationInitiale"
+            data-cy="formationInitiale"
+            name="formationInitiale"
+            formControlName="formationInitiale"
+          >
+            <option [ngValue]="null"></option>
+            <option
+              [ngValue]="
+                formationInitialeOption.id === editForm.get('formationInitiale')!.value?.id
+                  ? editForm.get('formationInitiale')!.value
+                  : formationInitialeOption
+              "
+              *ngFor="let formationInitialeOption of formationInitialesSharedCollection; trackBy: trackFormationInitialeById"
+            >
+              {{ formationInitialeOption.nomFormationI }}
+            </option>
+          </select>
+        </div>
+
+        <div class="row mb-3">
+          <label class="form-label" for="field_etablissement">Etablissement</label>
+          <select
+            class="form-control"
+            id="field_etablissement"
+            data-cy="etablissement"
+            name="etablissement"
+            formControlName="etablissement"
+          >
+            <option [ngValue]="null"></option>
+            <option
+              [ngValue]="
+                etablissementOption.id === editForm.get('etablissement')!.value?.id
+                  ? editForm.get('etablissement')!.value
+                  : etablissementOption
+              "
+              *ngFor="let etablissementOption of etablissementsSharedCollection; trackBy: trackEtablissementById"
+            >
+              {{ etablissementOption.nomEtablissement }}
+            </option>
+          </select>
+        </div>
+      </div>
+
+      <div>
+        <button type="button" id="cancel-save" data-cy="entityCreateCancelButton" class="btn btn-secondary" (click)="previousState()">
+          <fa-icon icon="ban"></fa-icon>&nbsp;<span>Cancel</span>
+        </button>
+
+        <button
+          type="submit"
+          id="save-entity"
+          data-cy="entityCreateSaveButton"
+          [disabled]="editForm.invalid || isSaving"
+          class="btn btn-primary"
+        >
+          <fa-icon icon="save"></fa-icon>&nbsp;<span>Save</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

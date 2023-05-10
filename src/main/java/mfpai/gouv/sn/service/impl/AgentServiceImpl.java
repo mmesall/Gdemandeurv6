@@ -42,8 +42,8 @@ public class AgentServiceImpl implements AgentService {
                 if (agent.getMatricule() != null) {
                     existingAgent.setMatricule(agent.getMatricule());
                 }
-                if (agent.getNom() != null) {
-                    existingAgent.setNom(agent.getNom());
+                if (agent.getNomAgent() != null) {
+                    existingAgent.setNomAgent(agent.getNomAgent());
                 }
                 if (agent.getPrenom() != null) {
                     existingAgent.setPrenom(agent.getPrenom());

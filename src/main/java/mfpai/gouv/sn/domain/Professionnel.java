@@ -87,8 +87,8 @@ public class Professionnel implements Serializable {
 
     @OneToMany(mappedBy = "professionnel")
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-    @JsonIgnoreProperties(value = { "professionnel", "formationContinue" }, allowSetters = true)
-    private Set<CandidatureProf> candidatureProfs = new HashSet<>();
+    @JsonIgnoreProperties(value = { "professionnel", "formationContinue", "etablissement" }, allowSetters = true)
+    private Set<CandidatureP> candidaturePS = new HashSet<>();
 
     @JsonIgnoreProperties(value = { "eleve", "etudiant", "professionnel", "demandeur" }, allowSetters = true)
     @OneToOne(mappedBy = "professionnel")
@@ -347,34 +347,34 @@ public class Professionnel implements Serializable {
         return this;
     }
 
-    public Set<CandidatureProf> getCandidatureProfs() {
-        return this.candidatureProfs;
+    public Set<CandidatureP> getCandidaturePS() {
+        return this.candidaturePS;
     }
 
-    public void setCandidatureProfs(Set<CandidatureProf> candidatureProfs) {
-        if (this.candidatureProfs != null) {
-            this.candidatureProfs.forEach(i -> i.setProfessionnel(null));
+    public void setCandidaturePS(Set<CandidatureP> candidaturePS) {
+        if (this.candidaturePS != null) {
+            this.candidaturePS.forEach(i -> i.setProfessionnel(null));
         }
-        if (candidatureProfs != null) {
-            candidatureProfs.forEach(i -> i.setProfessionnel(this));
+        if (candidaturePS != null) {
+            candidaturePS.forEach(i -> i.setProfessionnel(this));
         }
-        this.candidatureProfs = candidatureProfs;
+        this.candidaturePS = candidaturePS;
     }
 
-    public Professionnel candidatureProfs(Set<CandidatureProf> candidatureProfs) {
-        this.setCandidatureProfs(candidatureProfs);
+    public Professionnel candidaturePS(Set<CandidatureP> candidaturePS) {
+        this.setCandidaturePS(candidaturePS);
         return this;
     }
 
-    public Professionnel addCandidatureProf(CandidatureProf candidatureProf) {
-        this.candidatureProfs.add(candidatureProf);
-        candidatureProf.setProfessionnel(this);
+    public Professionnel addCandidatureP(CandidatureP candidatureP) {
+        this.candidaturePS.add(candidatureP);
+        candidatureP.setProfessionnel(this);
         return this;
     }
 
-    public Professionnel removeCandidatureProf(CandidatureProf candidatureProf) {
-        this.candidatureProfs.remove(candidatureProf);
-        candidatureProf.setProfessionnel(null);
+    public Professionnel removeCandidatureP(CandidatureP candidatureP) {
+        this.candidaturePS.remove(candidatureP);
+        candidatureP.setProfessionnel(null);
         return this;
     }
 

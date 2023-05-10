@@ -27,7 +27,7 @@ export class AgentUpdateComponent implements OnInit {
   editForm = this.fb.group({
     id: [],
     matricule: [null, [Validators.required]],
-    nom: [],
+    nomAgent: [],
     prenom: [],
     dateNaiss: [],
     lieuNaiss: [],
@@ -99,7 +99,7 @@ export class AgentUpdateComponent implements OnInit {
     this.editForm.patchValue({
       id: agent.id,
       matricule: agent.matricule,
-      nom: agent.nom,
+      nomAgent: agent.nomAgent,
       prenom: agent.prenom,
       dateNaiss: agent.dateNaiss,
       lieuNaiss: agent.lieuNaiss,
@@ -140,7 +140,7 @@ export class AgentUpdateComponent implements OnInit {
       ...new Agent(),
       id: this.editForm.get(['id'])!.value,
       matricule: this.editForm.get(['matricule'])!.value,
-      nom: this.editForm.get(['nom'])!.value,
+      nomAgent: this.editForm.get(['nomAgent'])!.value,
       prenom: this.editForm.get(['prenom'])!.value,
       dateNaiss: this.editForm.get(['dateNaiss'])!.value,
       lieuNaiss: this.editForm.get(['lieuNaiss'])!.value,

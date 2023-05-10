@@ -52,8 +52,8 @@ class FormationInitialeResourceIT {
     private static final DiplomeRequis DEFAULT_DIPLOME_REQUIS = DiplomeRequis.ATTESTATION;
     private static final DiplomeRequis UPDATED_DIPLOME_REQUIS = DiplomeRequis.CAP;
 
-    private static final NiveauEtude DEFAULT_NIVEAU_ETUDE = NiveauEtude.Cinquieme;
-    private static final NiveauEtude UPDATED_NIVEAU_ETUDE = NiveauEtude.Quatrieme;
+    private static final NiveauEtude DEFAULT_NIVEAU_ETUDE = NiveauEtude.CINQUIEME;
+    private static final NiveauEtude UPDATED_NIVEAU_ETUDE = NiveauEtude.QUATRIEME;
 
     private static final byte[] DEFAULT_FICHE_FORMATION = TestUtil.createByteArray(1, "0");
     private static final byte[] UPDATED_FICHE_FORMATION = TestUtil.createByteArray(1, "1");

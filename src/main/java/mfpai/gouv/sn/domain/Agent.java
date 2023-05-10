@@ -28,8 +28,8 @@ public class Agent implements Serializable {
     @Column(name = "matricule", nullable = false, unique = true)
     private String matricule;
 
-    @Column(name = "nom")
-    private String nom;
+    @Column(name = "nom_agent")
+    private String nomAgent;
 
     @Column(name = "prenom")
     private String prenom;
@@ -87,17 +87,17 @@ public class Agent implements Serializable {
         this.matricule = matricule;
     }
 
-    public String getNom() {
-        return this.nom;
+    public String getNomAgent() {
+        return this.nomAgent;
     }
 
-    public Agent nom(String nom) {
-        this.setNom(nom);
+    public Agent nomAgent(String nomAgent) {
+        this.setNomAgent(nomAgent);
         return this;
     }
 
-    public void setNom(String nom) {
-        this.nom = nom;
+    public void setNomAgent(String nomAgent) {
+        this.nomAgent = nomAgent;
     }
 
     public String getPrenom() {
@@ -229,7 +229,7 @@ public class Agent implements Serializable {
         return "Agent{" +
             "id=" + getId() +
             ", matricule='" + getMatricule() + "'" +
-            ", nom='" + getNom() + "'" +
+            ", nomAgent='" + getNomAgent() + "'" +
             ", prenom='" + getPrenom() + "'" +
             ", dateNaiss='" + getDateNaiss() + "'" +
             ", lieuNaiss='" + getLieuNaiss() + "'" +

@@ -89,9 +89,9 @@
       "relationshipType": "one-to-many"
     },
     {
-      "otherEntityName": "candidatureProf",
+      "otherEntityName": "candidatureP",
       "otherEntityRelationshipName": "professionnel",
-      "relationshipName": "candidatureProf",
+      "relationshipName": "candidatureP",
       "relationshipType": "one-to-many"
     },
     {

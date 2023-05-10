@@ -15,5 +15,5 @@ public enum DiplomeRequis {
     BAC,
     LICENCE,
     MASTER,
-    Autres,
+    AUTRES,
 }

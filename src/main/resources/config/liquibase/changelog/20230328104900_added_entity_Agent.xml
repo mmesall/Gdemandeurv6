@@ -17,7 +17,7 @@
             <column name="matricule" type="varchar(255)">
                 <constraints nullable="false" unique="true" uniqueConstraintName="ux_agent__matricule" />
             </column>
-            <column name="nom" type="varchar(255)">
+            <column name="nom_agent" type="varchar(255)">
                 <constraints nullable="true" />
             </column>
             <column name="prenom" type="varchar(255)">
@@ -66,7 +66,7 @@
                   usePreparedStatements="true">
             <column name="id" type="numeric"/>
             <column name="matricule" type="string"/>
-            <column name="nom" type="string"/>
+            <column name="nom_agent" type="string"/>
             <column name="prenom" type="string"/>
             <column name="date_naiss" type="date"/>
             <column name="lieu_naiss" type="string"/>

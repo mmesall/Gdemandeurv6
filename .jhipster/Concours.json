@@ -17,7 +17,7 @@
     {
       "fieldName": "niveauEtude",
       "fieldType": "NiveauEtude",
-      "fieldValues": "Cinquieme,Quatrieme,Troisieme,BFEM,Equivalent_BFEM,Seconde,Premiere,Terminal,BAC,Equivalent_BAC,Licenece1,Licence2,Licence3,Master,Doctorat,Attestation,CAP,CAP1,CAP2,CAP3,CPS,BEP,BEP1,BEP2,BT,BT1,BT2,BT3,BTS,BTS1,BTS2,CQP,ChefEquipe,Chef_de_Chantier,TechnicienSpecialise,METP,BTI,Titre_professionnel,Autres"
+      "fieldValues": "CINQUIEME,QUATRIEME,TROISIEME,BFEM,EQUIVALENT_BFEM,SECONDE,PREMIERE,TERMINAL,BAC,EQUIVALENT_BAC,LICENCE1,LICENCE2,LICEMCE3,MASTER,DOCTORAT,ATTESTATION,CAP,CAP1,CAP2,CAP3,CPS,BEP,BEP1,BEP2,BT,BT1,BT2,BT3,BTS,BTS1,BTS2,CQP,CHEFEQUIPE,CHEF_DE_CHANTIER,TECHNICIENSPECIALISE,METP,BTI,TITRE_PROFESSIONNEL,AUTRES"
     },
     {
       "fieldName": "dateOuverture",

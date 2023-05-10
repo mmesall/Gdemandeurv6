@@ -104,6 +104,16 @@ import { RouterModule } from '@angular/router';
         data: { pageTitle: 'CandidatureProfs' },
         loadChildren: () => import('./candidature-prof/candidature-prof.module').then(m => m.CandidatureProfModule),
       },
+      {
+        path: 'candidature-e',
+        data: { pageTitle: 'CandidatureES' },
+        loadChildren: () => import('./candidature-e/candidature-e.module').then(m => m.CandidatureEModule),
+      },
+      {
+        path: 'candidature-p',
+        data: { pageTitle: 'CandidaturePS' },
+        loadChildren: () => import('./candidature-p/candidature-p.module').then(m => m.CandidaturePModule),
+      },
       /* jhipster-needle-add-entity-route - JHipster will add entity modules routes here */
     ]),
   ],

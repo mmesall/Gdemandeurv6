@@ -95,6 +95,15 @@ public class CacheConfiguration {
             createCache(cm, mfpai.gouv.sn.domain.CandidatureElev.class.getName());
             createCache(cm, mfpai.gouv.sn.domain.CandidatureEtudiant.class.getName());
             createCache(cm, mfpai.gouv.sn.domain.CandidatureProf.class.getName());
+            createCache(cm, mfpai.gouv.sn.domain.Etablissement.class.getName() + ".candidatureES");
+            createCache(cm, mfpai.gouv.sn.domain.Etablissement.class.getName() + ".candidaturePS");
+            createCache(cm, mfpai.gouv.sn.domain.FormationInitiale.class.getName() + ".candidatureES");
+            createCache(cm, mfpai.gouv.sn.domain.FormationContinue.class.getName() + ".candidaturePS");
+            createCache(cm, mfpai.gouv.sn.domain.Eleve.class.getName() + ".candidatureES");
+            createCache(cm, mfpai.gouv.sn.domain.Etudiant.class.getName() + ".candidatureES");
+            createCache(cm, mfpai.gouv.sn.domain.Professionnel.class.getName() + ".candidaturePS");
+            createCache(cm, mfpai.gouv.sn.domain.CandidatureE.class.getName());
+            createCache(cm, mfpai.gouv.sn.domain.CandidatureP.class.getName());
             // jhipster-needle-ehcache-add-entry
         };
     }

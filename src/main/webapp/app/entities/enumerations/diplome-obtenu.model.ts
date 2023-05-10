@@ -15,11 +15,11 @@ export enum DiplomeObtenu {
 
   BTI = 'BTI',
 
-  TitreProf = 'TitreProf',
+  TITREPROF = 'TITREPROF',
 
   CAEP = 'CAEP',
 
   TS = 'TS',
 
-  Autres = 'Autres',
+  AUTRES = 'AUTRES',
 }

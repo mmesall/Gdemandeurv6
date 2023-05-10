@@ -102,8 +102,8 @@ public class FormationContinue implements Serializable {
 
     @OneToMany(mappedBy = "formationContinue")
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-    @JsonIgnoreProperties(value = { "professionnel", "formationContinue" }, allowSetters = true)
-    private Set<CandidatureProf> candidatureProfs = new HashSet<>();
+    @JsonIgnoreProperties(value = { "professionnel", "formationContinue", "etablissement" }, allowSetters = true)
+    private Set<CandidatureP> candidaturePS = new HashSet<>();
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
@@ -367,34 +367,34 @@ public class FormationContinue implements Serializable {
         return this;
     }
 
-    public Set<CandidatureProf> getCandidatureProfs() {
-        return this.candidatureProfs;
+    public Set<CandidatureP> getCandidaturePS() {
+        return this.candidaturePS;
     }
 
-    public void setCandidatureProfs(Set<CandidatureProf> candidatureProfs) {
-        if (this.candidatureProfs != null) {
-            this.candidatureProfs.forEach(i -> i.setFormationContinue(null));
+    public void setCandidaturePS(Set<CandidatureP> candidaturePS) {
+        if (this.candidaturePS != null) {
+            this.candidaturePS.forEach(i -> i.setFormationContinue(null));
         }
-        if (candidatureProfs != null) {
-            candidatureProfs.forEach(i -> i.setFormationContinue(this));
+        if (candidaturePS != null) {
+            candidaturePS.forEach(i -> i.setFormationContinue(this));
         }
-        this.candidatureProfs = candidatureProfs;
+        this.candidaturePS = candidaturePS;
     }
 
-    public FormationContinue candidatureProfs(Set<CandidatureProf> candidatureProfs) {
-        this.setCandidatureProfs(candidatureProfs);
+    public FormationContinue candidaturePS(Set<CandidatureP> candidaturePS) {
+        this.setCandidaturePS(candidaturePS);
         return this;
     }
 
-    public FormationContinue addCandidatureProf(CandidatureProf candidatureProf) {
-        this.candidatureProfs.add(candidatureProf);
-        candidatureProf.setFormationContinue(this);
+    public FormationContinue addCandidatureP(CandidatureP candidatureP) {
+        this.candidaturePS.add(candidatureP);
+        candidatureP.setFormationContinue(this);
         return this;
     }
 
-    public FormationContinue removeCandidatureProf(CandidatureProf candidatureProf) {
-        this.candidatureProfs.remove(candidatureProf);
-        candidatureProf.setFormationContinue(null);
+    public FormationContinue removeCandidatureP(CandidatureP candidatureP) {
+        this.candidaturePS.remove(candidatureP);
+        candidatureP.setFormationContinue(null);
         return this;
     }
 

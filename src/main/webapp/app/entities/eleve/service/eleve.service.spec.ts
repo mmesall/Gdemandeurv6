@@ -38,7 +38,7 @@ describe('Eleve Service', () => {
       adressePhysique: 'AAAAAAA',
       regionResidence: NomRegion.DAKAR,
       departResidence: NomDepartement.DAKAR,
-      niveauEtude: NiveauEtude.Cinquieme,
+      niveauEtude: NiveauEtude.CINQUIEME,
       cni: 0,
     };
   });

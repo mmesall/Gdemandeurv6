@@ -50,8 +50,8 @@ class FormationContinueResourceIT {
     private static final DiplomeRequis DEFAULT_DIPLOME_REQUIS = DiplomeRequis.ATTESTATION;
     private static final DiplomeRequis UPDATED_DIPLOME_REQUIS = DiplomeRequis.CAP;
 
-    private static final NiveauEtude DEFAULT_NIVEAU_ETUDE = NiveauEtude.Cinquieme;
-    private static final NiveauEtude UPDATED_NIVEAU_ETUDE = NiveauEtude.Quatrieme;
+    private static final NiveauEtude DEFAULT_NIVEAU_ETUDE = NiveauEtude.CINQUIEME;
+    private static final NiveauEtude UPDATED_NIVEAU_ETUDE = NiveauEtude.QUATRIEME;
 
     private static final NomFiliere DEFAULT_FILIERE = NomFiliere.AGRI_ELEVAGE;
     private static final NomFiliere UPDATED_FILIERE = NomFiliere.AGRICULTURE;

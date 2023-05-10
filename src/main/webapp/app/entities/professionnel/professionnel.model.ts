@@ -2,7 +2,7 @@ import dayjs from 'dayjs/esm';
 import { IUser } from 'app/entities/user/user.model';
 import { IDiplome } from 'app/entities/diplome/diplome.model';
 import { IExperience } from 'app/entities/experience/experience.model';
-import { ICandidatureProf } from 'app/entities/candidature-prof/candidature-prof.model';
+import { ICandidatureP } from 'app/entities/candidature-p/candidature-p.model';
 import { IDossier } from 'app/entities/dossier/dossier.model';
 import { IDemandeur } from 'app/entities/demandeur/demandeur.model';
 import { Sexe } from 'app/entities/enumerations/sexe.model';
@@ -26,7 +26,7 @@ export interface IProfessionnel {
   user?: IUser | null;
   diplomes?: IDiplome[] | null;
   experiences?: IExperience[] | null;
-  candidatureProfs?: ICandidatureProf[] | null;
+  candidaturePS?: ICandidatureP[] | null;
   dossier?: IDossier | null;
   demandeur?: IDemandeur | null;
 }
@@ -49,7 +49,7 @@ export class Professionnel implements IProfessionnel {
     public user?: IUser | null,
     public diplomes?: IDiplome[] | null,
     public experiences?: IExperience[] | null,
-    public candidatureProfs?: ICandidatureProf[] | null,
+    public candidaturePS?: ICandidatureP[] | null,
     public dossier?: IDossier | null,
     public demandeur?: IDemandeur | null
   ) {}

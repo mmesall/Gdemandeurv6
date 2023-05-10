@@ -13,5 +13,5 @@ export enum NomSerie {
 
   F6 = 'F6',
 
-  Autres = 'Autres',
+  AUTRES = 'AUTRES',
 }

@@ -62,8 +62,8 @@ class EleveResourceIT {
     private static final NomDepartement DEFAULT_DEPART_RESIDENCE = NomDepartement.DAKAR;
     private static final NomDepartement UPDATED_DEPART_RESIDENCE = NomDepartement.GUEDIAWAYE;
 
-    private static final NiveauEtude DEFAULT_NIVEAU_ETUDE = NiveauEtude.Cinquieme;
-    private static final NiveauEtude UPDATED_NIVEAU_ETUDE = NiveauEtude.Quatrieme;
+    private static final NiveauEtude DEFAULT_NIVEAU_ETUDE = NiveauEtude.CINQUIEME;
+    private static final NiveauEtude UPDATED_NIVEAU_ETUDE = NiveauEtude.QUATRIEME;
 
     private static final Long DEFAULT_CNI = 1L;
     private static final Long UPDATED_CNI = 2L;

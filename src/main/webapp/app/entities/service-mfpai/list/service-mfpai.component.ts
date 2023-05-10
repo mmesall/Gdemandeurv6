@@ -1,4 +1,3 @@
-import { IDossier } from 'app/entities/dossier/dossier.model';
 import { Component, OnInit } from '@angular/core';
 import { HttpHeaders, HttpResponse } from '@angular/common/http';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';

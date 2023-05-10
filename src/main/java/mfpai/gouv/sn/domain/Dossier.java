@@ -120,20 +120,17 @@ public class Dossier implements Serializable {
     @Column(name = "profession")
     private String profession;
 
-    @JsonIgnoreProperties(value = { "user", "diplomes", "experiences", "candidatureElevs", "dossier", "demandeur" }, allowSetters = true)
+    @JsonIgnoreProperties(value = { "user", "diplomes", "experiences", "candidatureES", "dossier", "demandeur" }, allowSetters = true)
     @OneToOne
     @JoinColumn(unique = true)
     private Eleve eleve;
 
-    @JsonIgnoreProperties(
-        value = { "user", "diplomes", "experiences", "candidatureEtudiants", "dossier", "demandeur" },
-        allowSetters = true
-    )
+    @JsonIgnoreProperties(value = { "user", "diplomes", "experiences", "candidatureES", "dossier", "demandeur" }, allowSetters = true)
     @OneToOne
     @JoinColumn(unique = true)
     private Etudiant etudiant;
 
-    @JsonIgnoreProperties(value = { "user", "diplomes", "experiences", "candidatureProfs", "dossier", "demandeur" }, allowSetters = true)
+    @JsonIgnoreProperties(value = { "user", "diplomes", "experiences", "candidaturePS", "dossier", "demandeur" }, allowSetters = true)
     @OneToOne
     @JoinColumn(unique = true)
     private Professionnel professionnel;

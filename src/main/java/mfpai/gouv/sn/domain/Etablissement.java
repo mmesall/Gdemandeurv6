@@ -100,6 +100,16 @@ public class Etablissement implements Serializable {
     @Column(name = "autre_nom_etablissement")
     private String autreNomEtablissement;
 
+    @OneToMany(mappedBy = "etablissement")
+    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+    @JsonIgnoreProperties(value = { "eleve", "etudiant", "formationInitiale", "etablissement" }, allowSetters = true)
+    private Set<CandidatureE> candidatureES = new HashSet<>();
+
+    @OneToMany(mappedBy = "etablissement")
+    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+    @JsonIgnoreProperties(value = { "professionnel", "formationContinue", "etablissement" }, allowSetters = true)
+    private Set<CandidatureP> candidaturePS = new HashSet<>();
+
     @ManyToMany(mappedBy = "etablissements")
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     @JsonIgnoreProperties(value = { "etablissements", "priseEnCharge" }, allowSetters = true)
@@ -352,6 +362,68 @@ public class Etablissement implements Serializable {
 
     public void setAutreNomEtablissement(String autreNomEtablissement) {
         this.autreNomEtablissement = autreNomEtablissement;
+    }
+
+    public Set<CandidatureE> getCandidatureES() {
+        return this.candidatureES;
+    }
+
+    public void setCandidatureES(Set<CandidatureE> candidatureES) {
+        if (this.candidatureES != null) {
+            this.candidatureES.forEach(i -> i.setEtablissement(null));
+        }
+        if (candidatureES != null) {
+            candidatureES.forEach(i -> i.setEtablissement(this));
+        }
+        this.candidatureES = candidatureES;
+    }
+
+    public Etablissement candidatureES(Set<CandidatureE> candidatureES) {
+        this.setCandidatureES(candidatureES);
+        return this;
+    }
+
+    public Etablissement addCandidatureE(CandidatureE candidatureE) {
+        this.candidatureES.add(candidatureE);
+        candidatureE.setEtablissement(this);
+        return this;
+    }
+
+    public Etablissement removeCandidatureE(CandidatureE candidatureE) {
+        this.candidatureES.remove(candidatureE);
+        candidatureE.setEtablissement(null);
+        return this;
+    }
+
+    public Set<CandidatureP> getCandidaturePS() {
+        return this.candidaturePS;
+    }
+
+    public void setCandidaturePS(Set<CandidatureP> candidaturePS) {
+        if (this.candidaturePS != null) {
+            this.candidaturePS.forEach(i -> i.setEtablissement(null));
+        }
+        if (candidaturePS != null) {
+            candidaturePS.forEach(i -> i.setEtablissement(this));
+        }
+        this.candidaturePS = candidaturePS;
+    }
+
+    public Etablissement candidaturePS(Set<CandidatureP> candidaturePS) {
+        this.setCandidaturePS(candidaturePS);
+        return this;
+    }
+
+    public Etablissement addCandidatureP(CandidatureP candidatureP) {
+        this.candidaturePS.add(candidatureP);
+        candidatureP.setEtablissement(this);
+        return this;
+    }
+
+    public Etablissement removeCandidatureP(CandidatureP candidatureP) {
+        this.candidaturePS.remove(candidatureP);
+        candidatureP.setEtablissement(null);
+        return this;
     }
 
     public Set<Formation> getFormations() {

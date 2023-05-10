@@ -21,5 +21,5 @@ export enum DiplomeRequis {
 
   MASTER = 'MASTER',
 
-  Autres = 'Autres',
+  AUTRES = 'AUTRES',
 }

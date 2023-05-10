@@ -6,7 +6,7 @@ import { Sexe } from 'app/entities/enumerations/sexe.model';
 export interface IAgent {
   id?: number;
   matricule?: string;
-  nom?: string | null;
+  nomAgent?: string | null;
   prenom?: string | null;
   dateNaiss?: dayjs.Dayjs | null;
   lieuNaiss?: string | null;
@@ -21,7 +21,7 @@ export class Agent implements IAgent {
   constructor(
     public id?: number,
     public matricule?: string,
-    public nom?: string | null,
+    public nomAgent?: string | null,
     public prenom?: string | null,
     public dateNaiss?: dayjs.Dayjs | null,
     public lieuNaiss?: string | null,

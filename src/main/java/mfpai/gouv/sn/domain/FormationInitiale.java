@@ -99,13 +99,8 @@ public class FormationInitiale implements Serializable {
 
     @OneToMany(mappedBy = "formationInitiale")
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-    @JsonIgnoreProperties(value = { "eleve", "formationInitiale" }, allowSetters = true)
-    private Set<CandidatureElev> candidatureElevs = new HashSet<>();
-
-    @OneToMany(mappedBy = "formationInitiale")
-    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-    @JsonIgnoreProperties(value = { "etudiant", "formationInitiale" }, allowSetters = true)
-    private Set<CandidatureEtudiant> candidatureEtudiants = new HashSet<>();
+    @JsonIgnoreProperties(value = { "eleve", "etudiant", "formationInitiale", "etablissement" }, allowSetters = true)
+    private Set<CandidatureE> candidatureES = new HashSet<>();
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
@@ -356,65 +351,34 @@ public class FormationInitiale implements Serializable {
         return this;
     }
 
-    public Set<CandidatureElev> getCandidatureElevs() {
-        return this.candidatureElevs;
+    public Set<CandidatureE> getCandidatureES() {
+        return this.candidatureES;
     }
 
-    public void setCandidatureElevs(Set<CandidatureElev> candidatureElevs) {
-        if (this.candidatureElevs != null) {
-            this.candidatureElevs.forEach(i -> i.setFormationInitiale(null));
+    public void setCandidatureES(Set<CandidatureE> candidatureES) {
+        if (this.candidatureES != null) {
+            this.candidatureES.forEach(i -> i.setFormationInitiale(null));
         }
-        if (candidatureElevs != null) {
-            candidatureElevs.forEach(i -> i.setFormationInitiale(this));
+        if (candidatureES != null) {
+            candidatureES.forEach(i -> i.setFormationInitiale(this));
         }
-        this.candidatureElevs = candidatureElevs;
+        this.candidatureES = candidatureES;
     }
 
-    public FormationInitiale candidatureElevs(Set<CandidatureElev> candidatureElevs) {
-        this.setCandidatureElevs(candidatureElevs);
+    public FormationInitiale candidatureES(Set<CandidatureE> candidatureES) {
+        this.setCandidatureES(candidatureES);
         return this;
     }
 
-    public FormationInitiale addCandidatureElev(CandidatureElev candidatureElev) {
-        this.candidatureElevs.add(candidatureElev);
-        candidatureElev.setFormationInitiale(this);
+    public FormationInitiale addCandidatureE(CandidatureE candidatureE) {
+        this.candidatureES.add(candidatureE);
+        candidatureE.setFormationInitiale(this);
         return this;
     }
 
-    public FormationInitiale removeCandidatureElev(CandidatureElev candidatureElev) {
-        this.candidatureElevs.remove(candidatureElev);
-        candidatureElev.setFormationInitiale(null);
-        return this;
-    }
-
-    public Set<CandidatureEtudiant> getCandidatureEtudiants() {
-        return this.candidatureEtudiants;
-    }
-
-    public void setCandidatureEtudiants(Set<CandidatureEtudiant> candidatureEtudiants) {
-        if (this.candidatureEtudiants != null) {
-            this.candidatureEtudiants.forEach(i -> i.setFormationInitiale(null));
-        }
-        if (candidatureEtudiants != null) {
-            candidatureEtudiants.forEach(i -> i.setFormationInitiale(this));
-        }
-        this.candidatureEtudiants = candidatureEtudiants;
-    }
-
-    public FormationInitiale candidatureEtudiants(Set<CandidatureEtudiant> candidatureEtudiants) {
-        this.setCandidatureEtudiants(candidatureEtudiants);
-        return this;
-    }
-
-    public FormationInitiale addCandidatureEtudiant(CandidatureEtudiant candidatureEtudiant) {
-        this.candidatureEtudiants.add(candidatureEtudiant);
-        candidatureEtudiant.setFormationInitiale(this);
-        return this;
-    }
-
-    public FormationInitiale removeCandidatureEtudiant(CandidatureEtudiant candidatureEtudiant) {
-        this.candidatureEtudiants.remove(candidatureEtudiant);
-        candidatureEtudiant.setFormationInitiale(null);
+    public FormationInitiale removeCandidatureE(CandidatureE candidatureE) {
+        this.candidatureES.remove(candidatureE);
+        candidatureE.setFormationInitiale(null);
         return this;
     }
 

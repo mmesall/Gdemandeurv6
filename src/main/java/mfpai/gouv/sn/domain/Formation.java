@@ -67,7 +67,7 @@ public class Formation implements Serializable {
         inverseJoinColumns = @JoinColumn(name = "etablissement_id")
     )
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-    @JsonIgnoreProperties(value = { "formations" }, allowSetters = true)
+    @JsonIgnoreProperties(value = { "candidatureES", "candidaturePS", "formations" }, allowSetters = true)
     private Set<Etablissement> etablissements = new HashSet<>();
 
     @JsonIgnoreProperties(value = { "formation", "bailleur" }, allowSetters = true)

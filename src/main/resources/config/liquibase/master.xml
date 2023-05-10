@@ -35,6 +35,8 @@
     <include file="config/liquibase/changelog/20230413132437_added_entity_CandidatureElev.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20230413132438_added_entity_CandidatureEtudiant.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20230413132439_added_entity_CandidatureProf.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20230510150029_added_entity_CandidatureE.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20230510150030_added_entity_CandidatureP.xml" relativeToChangelogFile="false"/>
     <!-- jhipster-needle-liquibase-add-changelog - JHipster will add liquibase changelogs here -->
     <include file="config/liquibase/changelog/20230328104846_added_entity_constraints_Formation.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20230328104847_added_entity_constraints_FormationInitiale.xml" relativeToChangelogFile="false"/>
@@ -53,6 +55,8 @@
     <include file="config/liquibase/changelog/20230413132437_added_entity_constraints_CandidatureElev.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20230413132438_added_entity_constraints_CandidatureEtudiant.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20230413132439_added_entity_constraints_CandidatureProf.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20230510150029_added_entity_constraints_CandidatureE.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20230510150030_added_entity_constraints_CandidatureP.xml" relativeToChangelogFile="false"/>
     <!-- jhipster-needle-liquibase-add-constraints-changelog - JHipster will add liquibase constraints changelogs here -->
     <!-- jhipster-needle-liquibase-add-incremental-changelog - JHipster will add incremental liquibase changelogs here -->
 </databaseChangeLog>

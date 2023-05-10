@@ -40,8 +40,8 @@ class ConcoursResourceIT {
     private static final NomEtablissement DEFAULT_NOM_ETABLISSEMENT = NomEtablissement.CEDT_G15;
     private static final NomEtablissement UPDATED_NOM_ETABLISSEMENT = NomEtablissement.CFP_OUAKAM;
 
-    private static final NiveauEtude DEFAULT_NIVEAU_ETUDE = NiveauEtude.Cinquieme;
-    private static final NiveauEtude UPDATED_NIVEAU_ETUDE = NiveauEtude.Quatrieme;
+    private static final NiveauEtude DEFAULT_NIVEAU_ETUDE = NiveauEtude.CINQUIEME;
+    private static final NiveauEtude UPDATED_NIVEAU_ETUDE = NiveauEtude.QUATRIEME;
 
     private static final LocalDate DEFAULT_DATE_OUVERTURE = LocalDate.ofEpochDay(0L);
     private static final LocalDate UPDATED_DATE_OUVERTURE = LocalDate.now(ZoneId.systemDefault());

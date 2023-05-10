@@ -35,8 +35,8 @@ class AgentResourceIT {
     private static final String DEFAULT_MATRICULE = "AAAAAAAAAA";
     private static final String UPDATED_MATRICULE = "BBBBBBBBBB";
 
-    private static final String DEFAULT_NOM = "AAAAAAAAAA";
-    private static final String UPDATED_NOM = "BBBBBBBBBB";
+    private static final String DEFAULT_NOM_AGENT = "AAAAAAAAAA";
+    private static final String UPDATED_NOM_AGENT = "BBBBBBBBBB";
 
     private static final String DEFAULT_PRENOM = "AAAAAAAAAA";
     private static final String UPDATED_PRENOM = "BBBBBBBBBB";
@@ -82,7 +82,7 @@ class AgentResourceIT {
     public static Agent createEntity(EntityManager em) {
         Agent agent = new Agent()
             .matricule(DEFAULT_MATRICULE)
-            .nom(DEFAULT_NOM)
+            .nomAgent(DEFAULT_NOM_AGENT)
             .prenom(DEFAULT_PRENOM)
             .dateNaiss(DEFAULT_DATE_NAISS)
             .lieuNaiss(DEFAULT_LIEU_NAISS)
@@ -101,7 +101,7 @@ class AgentResourceIT {
     public static Agent createUpdatedEntity(EntityManager em) {
         Agent agent = new Agent()
             .matricule(UPDATED_MATRICULE)
-            .nom(UPDATED_NOM)
+            .nomAgent(UPDATED_NOM_AGENT)
             .prenom(UPDATED_PRENOM)
             .dateNaiss(UPDATED_DATE_NAISS)
             .lieuNaiss(UPDATED_LIEU_NAISS)
@@ -130,7 +130,7 @@ class AgentResourceIT {
         assertThat(agentList).hasSize(databaseSizeBeforeCreate + 1);
         Agent testAgent = agentList.get(agentList.size() - 1);
         assertThat(testAgent.getMatricule()).isEqualTo(DEFAULT_MATRICULE);
-        assertThat(testAgent.getNom()).isEqualTo(DEFAULT_NOM);
+        assertThat(testAgent.getNomAgent()).isEqualTo(DEFAULT_NOM_AGENT);
         assertThat(testAgent.getPrenom()).isEqualTo(DEFAULT_PRENOM);
         assertThat(testAgent.getDateNaiss()).isEqualTo(DEFAULT_DATE_NAISS);
         assertThat(testAgent.getLieuNaiss()).isEqualTo(DEFAULT_LIEU_NAISS);
@@ -187,7 +187,7 @@ class AgentResourceIT {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(agent.getId().intValue())))
             .andExpect(jsonPath("$.[*].matricule").value(hasItem(DEFAULT_MATRICULE)))
-            .andExpect(jsonPath("$.[*].nom").value(hasItem(DEFAULT_NOM)))
+            .andExpect(jsonPath("$.[*].nomAgent").value(hasItem(DEFAULT_NOM_AGENT)))
             .andExpect(jsonPath("$.[*].prenom").value(hasItem(DEFAULT_PRENOM)))
             .andExpect(jsonPath("$.[*].dateNaiss").value(hasItem(DEFAULT_DATE_NAISS.toString())))
             .andExpect(jsonPath("$.[*].lieuNaiss").value(hasItem(DEFAULT_LIEU_NAISS)))
@@ -209,7 +209,7 @@ class AgentResourceIT {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.id").value(agent.getId().intValue()))
             .andExpect(jsonPath("$.matricule").value(DEFAULT_MATRICULE))
-            .andExpect(jsonPath("$.nom").value(DEFAULT_NOM))
+            .andExpect(jsonPath("$.nomAgent").value(DEFAULT_NOM_AGENT))
             .andExpect(jsonPath("$.prenom").value(DEFAULT_PRENOM))
             .andExpect(jsonPath("$.dateNaiss").value(DEFAULT_DATE_NAISS.toString()))
             .andExpect(jsonPath("$.lieuNaiss").value(DEFAULT_LIEU_NAISS))
@@ -239,7 +239,7 @@ class AgentResourceIT {
         em.detach(updatedAgent);
         updatedAgent
             .matricule(UPDATED_MATRICULE)
-            .nom(UPDATED_NOM)
+            .nomAgent(UPDATED_NOM_AGENT)
             .prenom(UPDATED_PRENOM)
             .dateNaiss(UPDATED_DATE_NAISS)
             .lieuNaiss(UPDATED_LIEU_NAISS)
@@ -260,7 +260,7 @@ class AgentResourceIT {
         assertThat(agentList).hasSize(databaseSizeBeforeUpdate);
         Agent testAgent = agentList.get(agentList.size() - 1);
         assertThat(testAgent.getMatricule()).isEqualTo(UPDATED_MATRICULE);
-        assertThat(testAgent.getNom()).isEqualTo(UPDATED_NOM);
+        assertThat(testAgent.getNomAgent()).isEqualTo(UPDATED_NOM_AGENT);
         assertThat(testAgent.getPrenom()).isEqualTo(UPDATED_PRENOM);
         assertThat(testAgent.getDateNaiss()).isEqualTo(UPDATED_DATE_NAISS);
         assertThat(testAgent.getLieuNaiss()).isEqualTo(UPDATED_LIEU_NAISS);
@@ -357,7 +357,7 @@ class AgentResourceIT {
         assertThat(agentList).hasSize(databaseSizeBeforeUpdate);
         Agent testAgent = agentList.get(agentList.size() - 1);
         assertThat(testAgent.getMatricule()).isEqualTo(UPDATED_MATRICULE);
-        assertThat(testAgent.getNom()).isEqualTo(DEFAULT_NOM);
+        assertThat(testAgent.getNomAgent()).isEqualTo(DEFAULT_NOM_AGENT);
         assertThat(testAgent.getPrenom()).isEqualTo(DEFAULT_PRENOM);
         assertThat(testAgent.getDateNaiss()).isEqualTo(UPDATED_DATE_NAISS);
         assertThat(testAgent.getLieuNaiss()).isEqualTo(DEFAULT_LIEU_NAISS);
@@ -380,7 +380,7 @@ class AgentResourceIT {
 
         partialUpdatedAgent
             .matricule(UPDATED_MATRICULE)
-            .nom(UPDATED_NOM)
+            .nomAgent(UPDATED_NOM_AGENT)
             .prenom(UPDATED_PRENOM)
             .dateNaiss(UPDATED_DATE_NAISS)
             .lieuNaiss(UPDATED_LIEU_NAISS)
@@ -401,7 +401,7 @@ class AgentResourceIT {
         assertThat(agentList).hasSize(databaseSizeBeforeUpdate);
         Agent testAgent = agentList.get(agentList.size() - 1);
         assertThat(testAgent.getMatricule()).isEqualTo(UPDATED_MATRICULE);
-        assertThat(testAgent.getNom()).isEqualTo(UPDATED_NOM);
+        assertThat(testAgent.getNomAgent()).isEqualTo(UPDATED_NOM_AGENT);
         assertThat(testAgent.getPrenom()).isEqualTo(UPDATED_PRENOM);
         assertThat(testAgent.getDateNaiss()).isEqualTo(UPDATED_DATE_NAISS);
         assertThat(testAgent.getLieuNaiss()).isEqualTo(UPDATED_LIEU_NAISS);

@@ -27,7 +27,7 @@ describe('Agent Service', () => {
     elemDefault = {
       id: 0,
       matricule: 'AAAAAAA',
-      nom: 'AAAAAAA',
+      nomAgent: 'AAAAAAA',
       prenom: 'AAAAAAA',
       dateNaiss: currentDate,
       lieuNaiss: 'AAAAAAA',
@@ -81,7 +81,7 @@ describe('Agent Service', () => {
         {
           id: 1,
           matricule: 'BBBBBB',
-          nom: 'BBBBBB',
+          nomAgent: 'BBBBBB',
           prenom: 'BBBBBB',
           dateNaiss: currentDate.format(DATE_FORMAT),
           lieuNaiss: 'BBBBBB',
@@ -109,7 +109,7 @@ describe('Agent Service', () => {
     it('should partial update a Agent', () => {
       const patchObject = Object.assign(
         {
-          nom: 'BBBBBB',
+          nomAgent: 'BBBBBB',
           prenom: 'BBBBBB',
           lieuNaiss: 'BBBBBB',
           sexe: 'BBBBBB',
@@ -140,7 +140,7 @@ describe('Agent Service', () => {
         {
           id: 1,
           matricule: 'BBBBBB',
-          nom: 'BBBBBB',
+          nomAgent: 'BBBBBB',
           prenom: 'BBBBBB',
           dateNaiss: currentDate.format(DATE_FORMAT),
           lieuNaiss: 'BBBBBB',

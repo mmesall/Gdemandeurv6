@@ -39,8 +39,8 @@ class DiplomeResourceIT {
     private static final NomFiliere DEFAULT_DOMAINE = NomFiliere.AGRI_ELEVAGE;
     private static final NomFiliere UPDATED_DOMAINE = NomFiliere.AGRICULTURE;
 
-    private static final NiveauEtude DEFAULT_NIVEAU = NiveauEtude.Cinquieme;
-    private static final NiveauEtude UPDATED_NIVEAU = NiveauEtude.Quatrieme;
+    private static final NiveauEtude DEFAULT_NIVEAU = NiveauEtude.CINQUIEME;
+    private static final NiveauEtude UPDATED_NIVEAU = NiveauEtude.QUATRIEME;
 
     private static final Mention DEFAULT_MENTION = Mention.PASSABLE;
     private static final Mention UPDATED_MENTION = Mention.ASSEZ_BIEN;
