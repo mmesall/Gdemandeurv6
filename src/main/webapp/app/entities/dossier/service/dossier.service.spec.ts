@@ -50,7 +50,7 @@ describe('Dossier Service', () => {
       telephone1: 'AAAAAAA',
       telephone2: 'AAAAAAA',
       email: 'AAAAAAA',
-      niveauFormation: NiveauEtude.CINQUIEME,
+      niveauFormation: NiveauEtude.Cinquieme,
       specialite1: NomFiliere.AGRI_ELEVAGE,
       specialite2: NomSerie.STEG,
       diplomeRequis: DiplomeRequis.ATTESTATION,

@@ -1,8 +1,8 @@
 <div>
   <h2 id="page-heading" data-cy="CandidatureEHeading">
-    <span>Candidature ES</span>
+    <span>Les candidatures</span>
 
-    <div class="d-flex justify-content-end">
+    <div *jhiHasAnyAuthority="'ROLE_ADMIN'" class="d-flex justify-content-end">
       <button class="btn btn-info me-2" (click)="reset()" [disabled]="isLoading">
         <fa-icon icon="sync" [spin]="isLoading"></fa-icon>
         <span>Refresh List</span>
@@ -32,8 +32,8 @@
     <table class="table table-striped" aria-describedby="page-heading">
       <thead>
         <tr jhiSort [(predicate)]="predicate" [(ascending)]="ascending" (sortChange)="reset()">
-          <th scope="col" jhiSortBy="id"><span>ID</span> <fa-icon icon="sort"></fa-icon></th>
-          <th scope="col" jhiSortBy="offreFormation"><span>Offre Formation</span> <fa-icon icon="sort"></fa-icon></th>
+          <th *jhiHasAnyAuthority="'ROLE_ADMIN'" scope="col" jhiSortBy="id"><span>ID</span> <fa-icon icon="sort"></fa-icon></th>
+          <th scope="col" jhiSortBy="offreFormation"><span>Offre Formation en :</span> <fa-icon icon="sort"></fa-icon></th>
           <th scope="col" jhiSortBy="dateDebutOffre"><span>Date Debut Offre</span> <fa-icon icon="sort"></fa-icon></th>
           <th scope="col" jhiSortBy="dateFinOffre"><span>Date Fin Offre</span> <fa-icon icon="sort"></fa-icon></th>
           <th scope="col" jhiSortBy="dateDepot"><span>Date Depot</span> <fa-icon icon="sort"></fa-icon></th>
@@ -47,7 +47,7 @@
       </thead>
       <tbody infinite-scroll (scrolled)="loadPage(page + 1)" [infiniteScrollDisabled]="page >= links['last']" [infiniteScrollDistance]="0">
         <tr *ngFor="let candidatureE of candidatureES; trackBy: trackId" data-cy="entityTable">
-          <td>
+          <td *jhiHasAnyAuthority="'ROLE_ADMIN'">
             <a [routerLink]="['/candidature-e', candidatureE.id, 'view']">{{ candidatureE.id }}</a>
           </td>
           <td>{{ candidatureE.offreFormation }}</td>
@@ -80,7 +80,7 @@
             </div>
           </td>
           <td class="text-end">
-            <div class="btn-group">
+            <div *jhiHasAnyAuthority="'ROLE_ADMIN'" class="btn-group">
               <button
                 type="submit"
                 [routerLink]="['/candidature-e', candidatureE.id, 'view']"

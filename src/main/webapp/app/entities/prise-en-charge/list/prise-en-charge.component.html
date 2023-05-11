@@ -1,8 +1,8 @@
 <div>
   <h2 id="page-heading" data-cy="PriseEnChargeHeading">
-    <span>Prise En Charges</span>
+    <span>Liste des prise en charges octoyées</span>
 
-    <div class="d-flex justify-content-end">
+    <div *jhiHasAnyAuthority="'ROLE_ADMIN'" class="d-flex justify-content-end">
       <button class="btn btn-info me-2" (click)="reset()" [disabled]="isLoading">
         <fa-icon icon="sync" [spin]="isLoading"></fa-icon>
         <span>Refresh List</span>
@@ -32,7 +32,7 @@
     <table class="table table-striped" aria-describedby="page-heading">
       <thead>
         <tr jhiSort [(predicate)]="predicate" [(ascending)]="ascending" (sortChange)="reset()">
-          <th scope="col" jhiSortBy="id"><span>ID</span> <fa-icon icon="sort"></fa-icon></th>
+          <th *jhiHasAnyAuthority="'ROLE_ADMIN'" scope="col" jhiSortBy="id"><span>ID</span> <fa-icon icon="sort"></fa-icon></th>
           <th scope="col" jhiSortBy="libelle"><span>Libelle</span> <fa-icon icon="sort"></fa-icon></th>
           <th scope="col" jhiSortBy="montantPC"><span>Montant PC</span> <fa-icon icon="sort"></fa-icon></th>
           <th scope="col" jhiSortBy="formation.id"><span>Formation</span> <fa-icon icon="sort"></fa-icon></th>
@@ -42,7 +42,7 @@
       </thead>
       <tbody infinite-scroll (scrolled)="loadPage(page + 1)" [infiniteScrollDisabled]="page >= links['last']" [infiniteScrollDistance]="0">
         <tr *ngFor="let priseEnCharge of priseEnCharges; trackBy: trackId" data-cy="entityTable">
-          <td>
+          <td *jhiHasAnyAuthority="'ROLE_ADMIN'">
             <a [routerLink]="['/prise-en-charge', priseEnCharge.id, 'view']">{{ priseEnCharge.id }}</a>
           </td>
           <td>{{ priseEnCharge.libelle }}</td>
@@ -66,7 +66,7 @@
                 data-cy="entityDetailsButton"
               >
                 <fa-icon icon="eye"></fa-icon>
-                <span class="d-none d-md-inline">View</span>
+                <!-- <span class="d-none d-md-inline">View</span> -->
               </button>
 
               <button
@@ -76,12 +76,12 @@
                 data-cy="entityEditButton"
               >
                 <fa-icon icon="pencil-alt"></fa-icon>
-                <span class="d-none d-md-inline">Edit</span>
+                <!-- <span class="d-none d-md-inline">Edit</span> -->
               </button>
 
               <button type="submit" (click)="delete(priseEnCharge)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
                 <fa-icon icon="times"></fa-icon>
-                <span class="d-none d-md-inline">Delete</span>
+                <!-- <span class="d-none d-md-inline">Delete</span> -->
               </button>
             </div>
           </td>

@@ -1,8 +1,8 @@
 <div>
   <h2 id="page-heading" data-cy="BailleurHeading">
-    <span>Bailleurs</span>
+    <span>Les organismes de financement</span>
 
-    <div class="d-flex justify-content-end">
+    <div *jhiHasAnyAuthority="'ROLE_ADMIN'" class="d-flex justify-content-end">
       <button class="btn btn-info me-2" (click)="reset()" [disabled]="isLoading">
         <fa-icon icon="sync" [spin]="isLoading"></fa-icon>
         <span>Refresh List</span>
@@ -15,7 +15,7 @@
         [routerLink]="['/bailleur/new']"
       >
         <fa-icon icon="plus"></fa-icon>
-        <span> Create a new Bailleur </span>
+        <span> Creer un nouveau bailleur </span>
       </button>
     </div>
   </h2>
@@ -25,14 +25,14 @@
   <jhi-alert></jhi-alert>
 
   <div class="alert alert-warning" id="no-result" *ngIf="bailleurs?.length === 0">
-    <span>No bailleurs found</span>
+    <span>Aucun bailleur trouvé</span>
   </div>
 
   <div class="table-responsive" id="entities" *ngIf="bailleurs && bailleurs.length > 0">
     <table class="table table-striped" aria-describedby="page-heading">
       <thead>
         <tr jhiSort [(predicate)]="predicate" [(ascending)]="ascending" (sortChange)="reset()">
-          <th scope="col" jhiSortBy="id"><span>ID</span> <fa-icon icon="sort"></fa-icon></th>
+          <th *jhiHasAnyAuthority="'ROLE_ADMIN'" scope="col" jhiSortBy="id"><span>ID</span> <fa-icon icon="sort"></fa-icon></th>
           <th scope="col" jhiSortBy="nomBailleur"><span>Nom Bailleur</span> <fa-icon icon="sort"></fa-icon></th>
           <th scope="col" jhiSortBy="budgetPrevu"><span>Budget Prevu</span> <fa-icon icon="sort"></fa-icon></th>
           <th scope="col" jhiSortBy="budgetDepense"><span>Budget Depense</span> <fa-icon icon="sort"></fa-icon></th>
@@ -43,7 +43,7 @@
       </thead>
       <tbody infinite-scroll (scrolled)="loadPage(page + 1)" [infiniteScrollDisabled]="page >= links['last']" [infiniteScrollDistance]="0">
         <tr *ngFor="let bailleur of bailleurs; trackBy: trackId" data-cy="entityTable">
-          <td>
+          <td *jhiHasAnyAuthority="'ROLE_ADMIN'">
             <a [routerLink]="['/bailleur', bailleur.id, 'view']">{{ bailleur.id }}</a>
           </td>
           <td>{{ bailleur.nomBailleur }}</td>
@@ -60,10 +60,11 @@
                 data-cy="entityDetailsButton"
               >
                 <fa-icon icon="eye"></fa-icon>
-                <span class="d-none d-md-inline">View</span>
+                <!-- <span class="d-none d-md-inline">View</span> -->
               </button>
 
               <button
+                *jhiHasAnyAuthority="'ROLE_ADMIN'"
                 type="submit"
                 [routerLink]="['/bailleur', bailleur.id, 'edit']"
                 class="btn btn-primary btn-sm"
@@ -73,7 +74,13 @@
                 <span class="d-none d-md-inline">Edit</span>
               </button>
 
-              <button type="submit" (click)="delete(bailleur)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
+              <button
+                *jhiHasAnyAuthority="'ROLE_ADMIN'"
+                type="submit"
+                (click)="delete(bailleur)"
+                class="btn btn-danger btn-sm"
+                data-cy="entityDeleteButton"
+              >
                 <fa-icon icon="times"></fa-icon>
                 <span class="d-none d-md-inline">Delete</span>
               </button>

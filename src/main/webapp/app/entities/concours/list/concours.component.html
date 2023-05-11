@@ -2,7 +2,7 @@
   <h2 id="page-heading" data-cy="ConcoursHeading">
     <span>Concours</span>
 
-    <div class="d-flex justify-content-end">
+    <div *jhiHasAnyAuthority="'ROLE_ADMIN'" class="d-flex justify-content-end">
       <button class="btn btn-info me-2" (click)="reset()" [disabled]="isLoading">
         <fa-icon icon="sync" [spin]="isLoading"></fa-icon>
         <span>Refresh List</span>
@@ -25,14 +25,14 @@
   <jhi-alert></jhi-alert>
 
   <div class="alert alert-warning" id="no-result" *ngIf="concours?.length === 0">
-    <span>No concours found</span>
+    <span>Aucun concours disponiple</span>
   </div>
 
   <div class="table-responsive" id="entities" *ngIf="concours && concours.length > 0">
     <table class="table table-striped" aria-describedby="page-heading">
       <thead>
         <tr jhiSort [(predicate)]="predicate" [(ascending)]="ascending" (sortChange)="reset()">
-          <th scope="col" jhiSortBy="id"><span>ID</span> <fa-icon icon="sort"></fa-icon></th>
+          <th *jhiHasAnyAuthority="'ROLE_ADMIN'" scope="col" jhiSortBy="id"><span>ID</span> <fa-icon icon="sort"></fa-icon></th>
           <th scope="col" jhiSortBy="nomConcours"><span>Nom Concours</span> <fa-icon icon="sort"></fa-icon></th>
           <th scope="col" jhiSortBy="nomEtablissement"><span>Nom Etablissement</span> <fa-icon icon="sort"></fa-icon></th>
           <th scope="col" jhiSortBy="niveauEtude"><span>Niveau Etude</span> <fa-icon icon="sort"></fa-icon></th>
@@ -46,7 +46,7 @@
       </thead>
       <tbody infinite-scroll (scrolled)="loadPage(page + 1)" [infiniteScrollDisabled]="page >= links['last']" [infiniteScrollDistance]="0">
         <tr *ngFor="let concours of concours; trackBy: trackId" data-cy="entityTable">
-          <td>
+          <td *jhiHasAnyAuthority="'ROLE_ADMIN'">
             <a [routerLink]="['/concours', concours.id, 'view']">{{ concours.id }}</a>
           </td>
           <td>{{ concours.nomConcours }}</td>
@@ -79,22 +79,29 @@
                 data-cy="entityDetailsButton"
               >
                 <fa-icon icon="eye"></fa-icon>
-                <span class="d-none d-md-inline">View</span>
+                <!-- <span class="d-none d-md-inline">View</span> -->
               </button>
 
               <button
+                *jhiHasAnyAuthority="'ROLE_ADMIN'"
                 type="submit"
                 [routerLink]="['/concours', concours.id, 'edit']"
                 class="btn btn-primary btn-sm"
                 data-cy="entityEditButton"
               >
                 <fa-icon icon="pencil-alt"></fa-icon>
-                <span class="d-none d-md-inline">Edit</span>
+                <!-- <span class="d-none d-md-inline">Edit</span> -->
               </button>
 
-              <button type="submit" (click)="delete(concours)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
+              <button
+                *jhiHasAnyAuthority="'ROLE_ADMIN'"
+                type="submit"
+                (click)="delete(concours)"
+                class="btn btn-danger btn-sm"
+                data-cy="entityDeleteButton"
+              >
                 <fa-icon icon="times"></fa-icon>
-                <span class="d-none d-md-inline">Delete</span>
+                <!-- <span class="d-none d-md-inline">Delete</span> -->
               </button>
             </div>
           </td>

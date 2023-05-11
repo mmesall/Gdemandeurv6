@@ -11,7 +11,7 @@ const priseEnChargeRoute: Routes = [
   {
     path: '',
     component: PriseEnChargeComponent,
-    canActivate: [UserRouteAccessService],
+    // canActivate: [UserRouteAccessService],
   },
   {
     path: ':id/view',
