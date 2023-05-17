@@ -1,4 +1,7 @@
 export class Account {
+  identity() {
+    throw new Error('Method not implemented.');
+  }
   constructor(
     public activated: boolean,
     public authorities: string[],

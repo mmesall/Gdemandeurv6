@@ -2,9 +2,9 @@
   <nav data-cy="navbar" class="navbar navbar-dark navbar-expand-md">
     <div class="navbar-collapse collapse" id="navbarResponsive">
       <ul class="navbar-nav ms-auto">
-        <li class="nav-item dropdown pointer">
+        <!-- <li class="nav-item dropdown pointer">
           <a routerLink="../../dossier/" class="p1"> Mon dossier </a>
-        </li>
+        </li> -->
         <li class="nav-item dropdown pointer">
           <a routerLink="../../candidature-e/" class="p1"> Mes candidatures </a>
         </li>
@@ -113,6 +113,237 @@
               Votre e-mail ne peut pas dépasser 100 caractères .
             </small>
           </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="dateNaiss">Date Naiss</label>
+          <input
+            id="dateNaiss"
+            data-cy="dateNaiss"
+            type="text"
+            class="form-control"
+            name="dateNaiss"
+            placeholder="Mettre votre date de naissance"
+            formControlName="dateNaiss"
+          />
+          <!-- <button type="button" class="btn btn-secondary" (click)="dateNaissDp.toggle()"><fa-icon icon="calendar-alt"></fa-icon></button> -->
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="regionNaiss">Region Naiss</label>
+          <select class="form-control" name="regionNaiss" formControlName="regionNaiss" id="regionNaiss" data-cy="regionNaiss">
+            <option [ngValue]="null"></option>
+            <option value="DAKAR">Dakar</option>
+            <option value="THIES">Thies</option>
+            <option value="FATICK">Fatick</option>
+            <!-- <option *ngFor="let nomRegion of nomRegionValues" [value]="nomRegion">nomRegion</option> -->
+          </select>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="departementNaiss">Departement Naiss</label>
+          <select
+            class="form-control"
+            name="departementNaiss"
+            formControlName="departementNaiss"
+            id="departementNaiss"
+            data-cy="departementNaiss"
+          >
+            <option [ngValue]="null"></option>
+            <!-- <option *ngFor="let nomDepartement of nomDepartementValues" [value]="nomDepartement">nomDepartement</option> -->
+          </select>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="lieuNaiss">Lieu Naiss</label>
+          <input type="text" class="form-control" name="lieuNaiss" id="lieuNaiss" data-cy="lieuNaiss" formControlName="lieuNaiss" />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="typePiece">Type Piece</label>
+          <select class="form-control" name="typePiece" formControlName="typePiece" id="typePiece" data-cy="typePiece">
+            <option [ngValue]="null"></option>
+            <!-- <option *ngFor="let typePiece of typePieceValues" [value]="typePiece">typePiece</option> -->
+          </select>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="numeroPiece">Numero Piece</label>
+          <input
+            type="number"
+            class="form-control"
+            name="numeroPiece"
+            id="numeroPiece"
+            data-cy="numeroPiece"
+            formControlName="numeroPiece"
+          />
+          <div
+            *ngIf="
+              settingsForm.get('numeroPiece')!.invalid &&
+              (settingsForm.get('numeroPiece')!.dirty || settingsForm.get('numeroPiece')!.touched)
+            "
+          >
+            <small class="form-text text-danger" [hidden]="!settingsForm.get('numeroPiece')?.errors?.number">
+              This field should be a number.
+            </small>
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <label class="form-label" for="field_sexe">Sexe</label>
+          <select class="form-control" name="sexe" formControlName="sexe" id="field_sexe" data-cy="sexe">
+            <option [ngValue]="null"></option>
+            <option value="HOMME">Homme</option>
+            <option value="FEMME">Femme</option>
+            <!-- <option *ngFor="let sexe of sexeValues" [value]="sexe">sexe</option> -->
+          </select>
+        </div>
+
+        <div class="row mb-3">
+          <label class="form-label" for="field_regionResidence">Region Residence</label>
+          <select
+            class="form-control"
+            name="regionResidence"
+            formControlName="regionResidence"
+            id="field_regionResidence"
+            data-cy="regionResidence"
+          >
+            <option [ngValue]="null"></option>
+            <option value="DAKAR">Dakar</option>
+            <option value="PIKINE">Pikine</option>
+            <!-- <option *ngFor="let nomRegion of nomRegionValues" [value]="nomRegion">nomRegion</option> -->
+          </select>
+        </div>
+
+        <div class="row mb-3">
+          <label class="form-label" for="field_depResidence">Dep Residence</label>
+          <select class="form-control" name="depResidence" formControlName="depResidence" id="field_depResidence" data-cy="depResidence">
+            <option [ngValue]="null"></option>
+            <!-- <option *ngFor="let nomDepartement of nomDepartementValues" [value]="nomDepartement">nomDepartement</option> -->
+          </select>
+        </div>
+
+        <div class="row mb-3">
+          <label class="form-label" for="field_adresseResidence">Adresse Residence</label>
+          <input
+            type="text"
+            class="form-control"
+            name="adresseResidence"
+            id="field_adresseResidence"
+            data-cy="adresseResidence"
+            formControlName="adresseResidence"
+          />
+        </div>
+
+        <div class="row mb-3">
+          <label class="form-label" for="field_telephone1">Telephone 1</label>
+          <input
+            type="text"
+            class="form-control"
+            name="telephone1"
+            id="field_telephone1"
+            data-cy="telephone1"
+            formControlName="telephone1"
+          />
+        </div>
+
+        <div class="row mb-3">
+          <label class="form-label" for="field_telephone2">Telephone 2</label>
+          <input
+            type="text"
+            class="form-control"
+            name="telephone2"
+            id="field_telephone2"
+            data-cy="telephone2"
+            formControlName="telephone2"
+          />
+        </div>
+
+        <div class="row mb-3">
+          <label class="form-label" for="field_niveauFormation">Niveau Formation</label>
+          <select
+            class="form-control"
+            name="niveauFormation"
+            formControlName="niveauFormation"
+            id="field_niveauFormation"
+            data-cy="niveauFormation"
+          >
+            <option [ngValue]="null"></option>
+            <!-- <option *ngFor="let niveauEtude of niveauEtudeValues" [value]="niveauEtude">niveauEtude</option> -->
+          </select>
+        </div>
+
+        <div class="row mb-3">
+          <label class="form-label" for="field_specialite1">Specialite 1</label>
+          <select class="form-control" name="specialite1" formControlName="specialite1" id="field_specialite1" data-cy="specialite1">
+            <option [ngValue]="null"></option>
+            <!-- <option *ngFor="let nomFiliere of nomFiliereValues" [value]="nomFiliere">nomFiliere</option> -->
+          </select>
+        </div>
+
+        <div class="row mb-3">
+          <label class="form-label" for="field_specialite2">Specialite 2</label>
+          <select class="form-control" name="specialite2" formControlName="specialite2" id="field_specialite2" data-cy="specialite2">
+            <option [ngValue]="null"></option>
+            <!-- <option *ngFor="let nomSerie of nomSerieValues" [value]="nomSerie">nomSerie</option> -->
+          </select>
+        </div>
+
+        <div class="row mb-3">
+          <label class="form-label" for="field_diplomeRequis">Diplome Requis</label>
+          <select
+            class="form-control"
+            name="diplomeRequis"
+            formControlName="diplomeRequis"
+            id="field_diplomeRequis"
+            data-cy="diplomeRequis"
+          >
+            <option [ngValue]="null"></option>
+            <!-- <option *ngFor="let diplomeRequis of diplomeRequisValues" [value]="diplomeRequis">diplomeRequis</option> -->
+          </select>
+        </div>
+
+        <!-- <div class="row mb-3">
+          <label class="form-label" for="field_cv">Cv</label>
+          <div>
+            <div *ngIf="settingsForm.get('cv')!.value" class="form-text text-danger clearfix">
+              <a class="pull-start" (click)="openFile(settingsForm.get('cv')!.value, settingsForm.get('cvContentType')!.value)">open</a><br />
+              <span class="pull-start">{{ settingsForm.get('cvContentType')!.value }}, {{ byteSize(settingsForm.get('cv')!.value) }}</span>
+              <button
+                type="button"
+                (click)="settingsForm.patchValue({ cv: null }); settingsForm.patchValue({ cvContentType: null })"
+                class="btn btn-secondary btn-xs pull-end"
+              >
+                <fa-icon icon="times"></fa-icon>
+              </button>
+            </div>
+            <input type="file" id="file_cv" data-cy="cv" (change)="setFileData($event, 'cv', false)" />
+          </div>
+          <input type="hidden" class="form-control" name="cv" id="field_cv" data-cy="cv" formControlName="cv" />
+          <input type="hidden" class="form-control" name="cvContentType" id="field_cvContentType" formControlName="cvContentType" />
+        </div> -->
+
+        <div class="row mb-3">
+          <label class="form-label" for="field_lettreMotivation">Lettre Motivation</label>
+          <textarea
+            class="form-control"
+            name="lettreMotivation"
+            id="field_lettreMotivation"
+            data-cy="lettreMotivation"
+            formControlName="lettreMotivation"
+          ></textarea>
+        </div>
+
+        <div class="row mb-3">
+          <label class="form-label" for="field_profession">Profession</label>
+          <input
+            type="text"
+            class="form-control"
+            name="profession"
+            id="field_profession"
+            data-cy="profession"
+            formControlName="profession"
+          />
         </div>
 
         <button type="submit" [disabled]="settingsForm.invalid" class="btn btn-primary" data-cy="submit">Sauvegarder</button>

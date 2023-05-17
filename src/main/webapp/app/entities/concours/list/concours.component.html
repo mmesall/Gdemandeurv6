@@ -1,6 +1,6 @@
 <div>
   <h2 id="page-heading" data-cy="ConcoursHeading">
-    <span>Concours</span>
+    <span>Concours de formations professionnelles et techniques</span>
 
     <div *jhiHasAnyAuthority="'ROLE_ADMIN'" class="d-flex justify-content-end">
       <button class="btn btn-info me-2" (click)="reset()" [disabled]="isLoading">
@@ -15,7 +15,7 @@
         [routerLink]="['/concours/new']"
       >
         <fa-icon icon="plus"></fa-icon>
-        <span> Create a new Concours </span>
+        <span> Creer un nouveau concours </span>
       </button>
     </div>
   </h2>
