@@ -27,13 +27,13 @@ describe('RegisterService Service', () => {
   describe('Service methods', () => {
     it('should call register endpoint with correct values', () => {
       // GIVEN
-      const prenom = 'abc';
-      const nom = 'abc';
+      const firstName = 'abc';
+      const lastName = 'abc';
       const login = 'abc';
       const email = 'test@test.com';
       const password = 'pass';
       const langKey = 'FR';
-      const registration = new Registration(prenom, nom, login, email, password, langKey);
+      const registration = new Registration(firstName, lastName, login, email, password, langKey);
 
       // WHEN
       service.save(registration).subscribe();
@@ -44,7 +44,7 @@ describe('RegisterService Service', () => {
       });
 
       // THEN
-      expect(testRequest.request.body).toEqual({ email, langKey, login, password });
+      expect(testRequest.request.body).toEqual({ firstName, lastName, email, langKey, login, password });
     });
   });
 });

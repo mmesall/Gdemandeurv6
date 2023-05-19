@@ -11,8 +11,8 @@ import { RegisterService } from './register.service';
   styleUrls: ['./register.component.scss'],
 })
 export class RegisterComponent implements AfterViewInit {
-  @ViewChild('prenom', { static: false })
-  prenom?: ElementRef;
+  @ViewChild('firstName', { static: false })
+  firstName?: ElementRef;
 
   doNotMatch = false;
   error = false;
@@ -21,8 +21,8 @@ export class RegisterComponent implements AfterViewInit {
   success = false;
 
   registerForm = this.fb.group({
-    prenom: ['', [Validators.required]],
-    nom: ['', [Validators.required]],
+    firstName: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(50)]],
+    lastName: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(50)]],
     login: [
       '',
       [
@@ -40,8 +40,8 @@ export class RegisterComponent implements AfterViewInit {
   constructor(private registerService: RegisterService, private fb: FormBuilder) {}
 
   ngAfterViewInit(): void {
-    if (this.prenom) {
-      this.prenom.nativeElement.focus();
+    if (this.firstName) {
+      this.firstName.nativeElement.focus();
     }
   }
 
@@ -55,12 +55,12 @@ export class RegisterComponent implements AfterViewInit {
     if (password !== this.registerForm.get(['confirmPassword'])!.value) {
       this.doNotMatch = true;
     } else {
-      const prenom = this.registerForm.get(['prenom'])!.value;
-      const nom = this.registerForm.get(['nom'])!.value;
+      const firstName = this.registerForm.get(['firstName'])!.value;
+      const lastName = this.registerForm.get(['lastName'])!.value;
       const login = this.registerForm.get(['login'])!.value;
       const email = this.registerForm.get(['email'])!.value;
       this.registerService
-        .save({ prenom, nom, login, email, password, langKey: 'en' })
+        .save({ firstName, lastName, login, email, password, langKey: 'en' })
         .subscribe({ next: () => (this.success = true), error: response => this.processError(response) });
     }
   }
