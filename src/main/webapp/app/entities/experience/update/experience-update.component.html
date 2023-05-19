@@ -1,7 +1,13 @@
 <div class="d-flex justify-content-center">
   <div class="col-8">
     <form name="editForm" role="form" novalidate (ngSubmit)="save()" [formGroup]="editForm">
-      <h2 id="jhi-experience-heading" data-cy="ExperienceCreateUpdateHeading">Create or edit a Experience</h2>
+      <h2
+        id="jhi-experience-heading"
+        data-cy="ExperienceCreateUpdateHeading"
+        style="text-align: center; font-style: italic; font-weight: bold"
+      >
+        Ajouter une nouvelle experience
+      </h2>
 
       <div>
         <jhi-alert-error></jhi-alert-error>
@@ -90,7 +96,7 @@
           <textarea class="form-control" name="mission" id="field_mission" data-cy="mission" formControlName="mission"></textarea>
         </div>
 
-        <div class="row mb-3">
+        <div *jhiHasAnyAuthority="'ROLE_ADMIN'" class="row mb-3">
           <label class="form-label" for="field_eleve">Eleve</label>
           <select class="form-control" id="field_eleve" data-cy="eleve" name="eleve" formControlName="eleve">
             <option [ngValue]="null"></option>
@@ -103,7 +109,7 @@
           </select>
         </div>
 
-        <div class="row mb-3">
+        <div *jhiHasAnyAuthority="'ROLE_ADMIN'" class="row mb-3">
           <label class="form-label" for="field_etudiant">Etudiant</label>
           <select class="form-control" id="field_etudiant" data-cy="etudiant" name="etudiant" formControlName="etudiant">
             <option [ngValue]="null"></option>
@@ -116,7 +122,7 @@
           </select>
         </div>
 
-        <div class="row mb-3">
+        <div *jhiHasAnyAuthority="'ROLE_ADMIN'" class="row mb-3">
           <label class="form-label" for="field_professionnel">Professionnel</label>
           <select
             class="form-control"
@@ -139,7 +145,7 @@
           </select>
         </div>
 
-        <div class="row mb-3">
+        <div *jhiHasAnyAuthority="'ROLE_ADMIN'" class="row mb-3">
           <label class="form-label" for="field_demandeur">Demandeur</label>
           <select class="form-control" id="field_demandeur" data-cy="demandeur" name="demandeur" formControlName="demandeur">
             <option [ngValue]="null"></option>
@@ -155,7 +161,7 @@
 
       <div>
         <button type="button" id="cancel-save" data-cy="entityCreateCancelButton" class="btn btn-secondary" (click)="previousState()">
-          <fa-icon icon="ban"></fa-icon>&nbsp;<span>Cancel</span>
+          <fa-icon icon="ban"></fa-icon>&nbsp;<span>Annuler</span>
         </button>
 
         <button
@@ -165,7 +171,7 @@
           [disabled]="editForm.invalid || isSaving"
           class="btn btn-primary"
         >
-          <fa-icon icon="save"></fa-icon>&nbsp;<span>Save</span>
+          <fa-icon icon="save"></fa-icon>&nbsp;<span>Sauvegarder</span>
         </button>
       </div>
     </form>

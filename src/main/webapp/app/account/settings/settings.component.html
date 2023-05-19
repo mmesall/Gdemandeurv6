@@ -20,7 +20,8 @@
   <div class="d-flex justify-content-center">
     <div class="col-md-8">
       <h2 *ngIf="account">
-        Bienvenu(e) <strong>{{ account.login }}</strong>
+        Bienvenu(e) <strong>{{ account.login }}</strong
+        >, completer votre dossier
       </h2>
 
       <div class="alert alert-success" *ngIf="success">
@@ -66,7 +67,7 @@
             class="form-control"
             id="lastName"
             name="lastName"
-            placeholder="Your last name"
+            placeholder="Mettre votre nom"
             formControlName="lastName"
             data-cy="lastname"
           />
@@ -95,7 +96,7 @@
             class="form-control"
             id="email"
             name="email"
-            placeholder="Your email"
+            placeholder="Votre email"
             formControlName="email"
             data-cy="email"
           />
@@ -116,7 +117,7 @@
         </div>
 
         <div class="mb-3">
-          <label class="form-label" for="dateNaiss">Date Naiss</label>
+          <label class="form-label" for="dateNaiss">Date de naissance</label>
           <input
             id="dateNaiss"
             data-cy="dateNaiss"
@@ -125,19 +126,54 @@
             name="dateNaiss"
             placeholder="Mettre votre date de naissance"
             formControlName="dateNaiss"
+            data-cy="dateNaiss"
           />
-          <!-- <button type="button" class="btn btn-secondary" (click)="dateNaissDp.toggle()"><fa-icon icon="calendar-alt"></fa-icon></button> -->
+          <button type="button" class="btn btn-secondary" (click)="dateNaissDp.toggle()"><fa-icon icon="calendar-alt"></fa-icon></button>
         </div>
 
         <div class="mb-3">
-          <label class="form-label" for="regionNaiss">Region Naiss</label>
+          <label class="form-label" for="regionNaiss">Region de naissance</label>
           <select class="form-control" name="regionNaiss" formControlName="regionNaiss" id="regionNaiss" data-cy="regionNaiss">
             <option [ngValue]="null"></option>
-            <option value="DAKAR">Dakar</option>
+            <!-- <option value="DAKAR">Dakar</option>
             <option value="THIES">Thies</option>
-            <option value="FATICK">Fatick</option>
-            <!-- <option *ngFor="let nomRegion of nomRegionValues" [value]="nomRegion">nomRegion</option> -->
+            <option value="FATICK">Fatick</option> -->
+            <option *ngFor="let nomRegion of nomRegionValues" [value]="nomRegion">{{ nomRegion }}</option>
           </select>
+          <!-- ========================= REGION DE DAKAR ======================= -->
+          <div *ngIf="editForm.value.nomRegion === 'DAKAR'">
+            <div class="form-group">
+              <label class="form-label" for="departementNaiss">Departement de naissance</label>
+              <select
+                class="form-control"
+                name="departementNaiss"
+                formControlName="departementNaiss"
+                id="departementNaiss"
+                data-cy="departementNaiss"
+              >
+                <option [ngValue]="null"></option>
+                <option>Dakar</option>
+                <option>Rufisque</option>
+                <option>Pikine</option>
+                <option>Guediawaye</option>
+                <option>Keur_Massar</option>
+              </select>
+              <div
+                *ngIf="
+                  editForm.get('departementNaiss')!.invalid &&
+                  (editForm.get('departementNaiss')!.dirty || editForm.get('departementNaiss')!.touched)
+                "
+              >
+                <small class="form-text text-danger" *ngIf="editForm.get('departementNaiss')?.errors?.required">
+                  Ce champ est requis.
+                </small>
+              </div>
+            </div>
+          </div>
+          <!-- ========================= REGION DE THIES ======================= -->
+
+          <div *ngIf="editForm.value.nomRegion === 'THIES'"></div>
+          <!-- ========================= REGION DE FATICK ======================= -->
         </div>
 
         <div class="mb-3">

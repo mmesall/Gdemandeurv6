@@ -1,6 +1,6 @@
 <div>
-  <h2 id="page-heading" data-cy="ExperienceHeading">
-    <span>Experiences</span>
+  <h2 id="page-heading" data-cy="ExperienceHeading" style="text-align: center; font-style: italic; font-weight: bold">
+    <span>Mes experiences</span>
 
     <div class="d-flex justify-content-end">
       <!-- <button *jhiHasAnyAuthority="'ROLE_ADMIN'" class="btn btn-info me-2" (click)="reset()" [disabled]="isLoading">
@@ -59,22 +59,22 @@
           <td>{{ experience.nomEntreprise }}</td>
           <td>{{ experience.posteOccupe }}</td>
           <td>{{ experience.mission }}</td>
-          <td>
+          <td *jhiHasAnyAuthority="'ROLE_ADMIN'">
             <div *ngIf="experience.eleve">
               <a [routerLink]="['/eleve', experience.eleve?.id, 'view']">{{ experience.eleve?.niveauEtude }}</a>
             </div>
           </td>
-          <td>
+          <td *jhiHasAnyAuthority="'ROLE_ADMIN'">
             <div *ngIf="experience.etudiant">
               <a [routerLink]="['/etudiant', experience.etudiant?.id, 'view']">{{ experience.etudiant?.carteEtudiant }}</a>
             </div>
           </td>
-          <td>
+          <td *jhiHasAnyAuthority="'ROLE_ADMIN'">
             <div *ngIf="experience.professionnel">
               <a [routerLink]="['/professionnel', experience.professionnel?.id, 'view']">{{ experience.professionnel?.profession }}</a>
             </div>
           </td>
-          <td>
+          <td *jhiHasAnyAuthority="'ROLE_ADMIN'">
             <div *ngIf="experience.demandeur">
               <a [routerLink]="['/demandeur', experience.demandeur?.id, 'view']">{{ experience.demandeur?.profil }}</a>
             </div>
@@ -88,7 +88,7 @@
                 data-cy="entityDetailsButton"
               >
                 <fa-icon icon="eye"></fa-icon>
-                <span class="d-none d-md-inline">View</span>
+                <!-- <span class="d-none d-md-inline">Voir</span> -->
               </button>
 
               <button
@@ -98,12 +98,12 @@
                 data-cy="entityEditButton"
               >
                 <fa-icon icon="pencil-alt"></fa-icon>
-                <span class="d-none d-md-inline">Edit</span>
+                <!-- <span class="d-none d-md-inline">Modifier</span> -->
               </button>
 
               <button type="submit" (click)="delete(experience)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
                 <fa-icon icon="times"></fa-icon>
-                <span class="d-none d-md-inline">Delete</span>
+                <!-- <span class="d-none d-md-inline">Delete</span> -->
               </button>
             </div>
           </td>

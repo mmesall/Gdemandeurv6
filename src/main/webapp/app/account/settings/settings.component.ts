@@ -17,6 +17,9 @@ export class SettingsComponent implements OnInit {
     lastName: [undefined, [Validators.required, Validators.minLength(1), Validators.maxLength(50)]],
     email: [undefined, [Validators.required, Validators.minLength(5), Validators.maxLength(254), Validators.email]],
   });
+  dateNaissDp: any;
+  nomRegionValues: any;
+  editForm: any;
 
   constructor(private accountService: AccountService, private fb: FormBuilder) {}
 
