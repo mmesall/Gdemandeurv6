@@ -16,6 +16,7 @@ export class SettingsComponent implements OnInit {
     firstName: [undefined, [Validators.required, Validators.minLength(3), Validators.maxLength(50)]],
     lastName: [undefined, [Validators.required, Validators.minLength(3), Validators.maxLength(50)]],
     email: [undefined, [Validators.required, Validators.minLength(5), Validators.maxLength(254), Validators.email]],
+    dateNaiss: [undefined, [Validators.required]],
   });
   dateNaissDp: any;
   nomRegionValues: any;

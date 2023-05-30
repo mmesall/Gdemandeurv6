@@ -23,6 +23,9 @@ describe('SettingsComponent', () => {
     login: 'john',
     authorities: [],
     imageUrl: '',
+    identity: function (): void {
+      throw new Error('Function not implemented.');
+    },
   };
 
   beforeEach(

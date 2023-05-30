@@ -32,381 +32,488 @@
 
       <div class="accordion" id="accordionExample">
         <!-- =========================Informations personnelles ================= -->
-        <div class="accordion-item">
-          <h2 class="accordion-header" id="headingOne">
-            <button
-              class="accordion-button"
-              type="button"
-              data-bs-toggle="collapse"
-              data-bs-target="#collapseOne"
-              aria-expanded="true"
-              aria-controls="collapseOne"
-            >
-              Informations personnelles
-            </button>
-          </h2>
-          <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne">
-            <div class="accordion-body">
-              <form name="form" role="form" (ngSubmit)="save()" [formGroup]="settingsForm" *ngIf="account" novalidate>
-                <div class="mb-3">
-                  <label class="form-label" for="firstName">Prénom</label>
-                  <input
-                    type="text"
-                    class="form-control"
-                    id="firstName"
-                    name="firstName"
-                    placeholder="Your first name"
-                    formControlName="firstName"
-                    data-cy="firstname"
-                  />
+        <form name="form" role="form" (ngSubmit)="save()" [formGroup]="settingsForm" *ngIf="account" novalidate>
+          <div class="accordion-item">
+            <h2 class="accordion-header" id="headingOne">
+              <button
+                class="accordion-button"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#collapseOne"
+                aria-expanded="true"
+                aria-controls="collapseOne"
+              >
+                Informations personnelles
+              </button>
+            </h2>
+            <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne">
+              <div class="accordion-body">
+                <!-- ========================= PRENOM ============================= -->
+                <div class="mb-3 p">
+                  <div class="col-md-4 prenom">
+                    <label class="form-label" for="firstName">Prénom</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="firstName"
+                      name="firstName"
+                      placeholder="Your first name"
+                      formControlName="firstName"
+                      data-cy="firstname"
+                    />
 
-                  <div
-                    *ngIf="
-                      settingsForm.get('firstName')!.invalid &&
-                      (settingsForm.get('firstName')!.dirty || settingsForm.get('firstName')!.touched)
-                    "
-                  >
-                    <small class="form-text text-danger" *ngIf="settingsForm.get('firstName')?.errors?.required">
-                      Votre prénom est requis.
-                    </small>
+                    <div
+                      *ngIf="
+                        settingsForm.get('firstName')!.invalid &&
+                        (settingsForm.get('firstName')!.dirty || settingsForm.get('firstName')!.touched)
+                      "
+                    >
+                      <small class="form-text text-danger" *ngIf="settingsForm.get('firstName')?.errors?.required">
+                        Votre prénom est requis.
+                      </small>
 
-                    <small class="form-text text-danger" *ngIf="settingsForm.get('firstName')?.errors?.minlength">
-                      Votre prénom doit comporter au moins 1 caractère.
-                    </small>
+                      <small class="form-text text-danger" *ngIf="settingsForm.get('firstName')?.errors?.minlength">
+                        Votre prénom doit comporter au moins 1 caractère.
+                      </small>
 
-                    <small class="form-text text-danger" *ngIf="settingsForm.get('firstName')?.errors?.maxlength">
-                      Votre prénom ne peut pas dépasser 50 caractères.
-                    </small>
+                      <small class="form-text text-danger" *ngIf="settingsForm.get('firstName')?.errors?.maxlength">
+                        Votre prénom ne peut pas dépasser 50 caractères.
+                      </small>
+                    </div>
+                  </div>
+                  <!-- ========================== NOM ============================= -->
+                  <div class="col-md-3 prenom">
+                    <label class="form-label" for="lastName">Nom</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="lastName"
+                      name="lastName"
+                      placeholder="Mettre votre nom"
+                      formControlName="lastName"
+                      data-cy="lastname"
+                    />
+                    <div
+                      *ngIf="
+                        settingsForm.get('lastName')!.invalid &&
+                        (settingsForm.get('lastName')!.dirty || settingsForm.get('lastName')!.touched)
+                      "
+                    >
+                      <small class="form-text text-danger" *ngIf="settingsForm.get('lastName')?.errors?.required">
+                        Votre nom de famille est requis.
+                      </small>
+
+                      <small class="form-text text-danger" *ngIf="settingsForm.get('lastName')?.errors?.minlength">
+                        Votre nom de famille doit comporter au moins 1 caractère.
+                      </small>
+
+                      <small class="form-text text-danger" *ngIf="settingsForm.get('lastName')?.errors?.maxlength">
+                        Votre nom de famille ne peut pas dépasser 50 caractères.
+                      </small>
+                    </div>
+                  </div>
+
+                  <!-- ========================= EMAIL =========================== -->
+                  <div class="col-md-3">
+                    <label class="form-label" for="email">Email</label>
+                    <input
+                      type="email"
+                      class="form-control"
+                      id="email"
+                      name="email"
+                      placeholder="Votre email"
+                      formControlName="email"
+                      data-cy="email"
+                    />
+
+                    <div
+                      *ngIf="settingsForm.get('email')!.invalid && (settingsForm.get('email')!.dirty || settingsForm.get('email')!.touched)"
+                    >
+                      <small class="form-text text-danger" *ngIf="settingsForm.get('email')?.errors?.required">
+                        Votre email est requis.
+                      </small>
+
+                      <small class="form-text text-danger" *ngIf="settingsForm.get('email')?.errors?.email">
+                        Votre email est invalide.
+                      </small>
+
+                      <small class="form-text text-danger" *ngIf="settingsForm.get('email')?.errors?.minlength">
+                        Votre e-mail doit comporter au moins 5 caractères.
+                      </small>
+
+                      <small class="form-text text-danger" *ngIf="settingsForm.get('email')?.errors?.maxlength">
+                        Votre e-mail ne peut pas dépasser 100 caractères .
+                      </small>
+                    </div>
                   </div>
                 </div>
-
-                <div class="mb-3">
-                  <label class="form-label" for="lastName">Nom</label>
-                  <input
-                    type="text"
-                    class="form-control"
-                    id="lastName"
-                    name="lastName"
-                    placeholder="Mettre votre nom"
-                    formControlName="lastName"
-                    data-cy="lastname"
-                  />
-
-                  <div
-                    *ngIf="
-                      settingsForm.get('lastName')!.invalid &&
-                      (settingsForm.get('lastName')!.dirty || settingsForm.get('lastName')!.touched)
-                    "
-                  >
-                    <small class="form-text text-danger" *ngIf="settingsForm.get('lastName')?.errors?.required">
-                      Votre nom de famille est requis.
-                    </small>
-
-                    <small class="form-text text-danger" *ngIf="settingsForm.get('lastName')?.errors?.minlength">
-                      Votre nom de famille doit comporter au moins 1 caractère.
-                    </small>
-
-                    <small class="form-text text-danger" *ngIf="settingsForm.get('lastName')?.errors?.maxlength">
-                      Votre nom de famille ne peut pas dépasser 50 caractères.
-                    </small>
+                <!-- ========================= DATE DE NAISSANCE ================== -->
+                <div class="mb-3 p">
+                  <div class="col-md-3 prenom">
+                    <label class="form-label" for="dateNaiss">Date de naissance</label>
+                    <input
+                      id="dateNaiss"
+                      data-cy="dateNaiss"
+                      type="text"
+                      class="form-control"
+                      name="dateNaiss"
+                      placeholder="Mettre votre date de naissance"
+                      formControlName="dateNaiss"
+                      data-cy="dateNaiss"
+                    />
+                    <button type="button" class="btn btn-secondary" (click)="dateNaissDp.toggle()">
+                      <fa-icon icon="calendar-alt"></fa-icon>
+                    </button>
                   </div>
-                </div>
-
-                <div class="mb-3">
-                  <label class="form-label" for="email">Email</label>
-                  <input
-                    type="email"
-                    class="form-control"
-                    id="email"
-                    name="email"
-                    placeholder="Votre email"
-                    formControlName="email"
-                    data-cy="email"
-                  />
-
-                  <div
-                    *ngIf="settingsForm.get('email')!.invalid && (settingsForm.get('email')!.dirty || settingsForm.get('email')!.touched)"
-                  >
-                    <small class="form-text text-danger" *ngIf="settingsForm.get('email')?.errors?.required">
-                      Votre email est requis.
-                    </small>
-
-                    <small class="form-text text-danger" *ngIf="settingsForm.get('email')?.errors?.email">
-                      Votre email est invalide.
-                    </small>
-
-                    <small class="form-text text-danger" *ngIf="settingsForm.get('email')?.errors?.minlength">
-                      Votre e-mail doit comporter au moins 5 caractères.
-                    </small>
-
-                    <small class="form-text text-danger" *ngIf="settingsForm.get('email')?.errors?.maxlength">
-                      Votre e-mail ne peut pas dépasser 100 caractères .
-                    </small>
-                  </div>
-                </div>
-
-                <div class="mb-3">
-                  <label class="form-label" for="dateNaiss">Date de naissance</label>
-                  <input
-                    id="dateNaiss"
-                    data-cy="dateNaiss"
-                    type="text"
-                    class="form-control"
-                    name="dateNaiss"
-                    placeholder="Mettre votre date de naissance"
-                    formControlName="dateNaiss"
-                    data-cy="dateNaiss"
-                  />
-                  <button type="button" class="btn btn-secondary" (click)="dateNaissDp.toggle()">
-                    <fa-icon icon="calendar-alt"></fa-icon>
-                  </button>
-                </div>
-
-                <div class="mb-3">
-                  <label class="form-label" for="regionNaiss">Region de naissance</label>
-                  <select class="form-control" name="regionNaiss" formControlName="regionNaiss" id="regionNaiss" data-cy="regionNaiss">
-                    <option [ngValue]="null"></option>
-                    <!-- <option value="DAKAR">Dakar</option>
+                  <!-- ========================= REGION DE NAISSANCE ================= -->
+                  <div class="col-md-3 prenom">
+                    <label class="form-label" for="regionNaiss">Region de naissance</label>
+                    <select class="form-control" name="regionNaiss" formControlName="regionNaiss" id="regionNaiss" data-cy="regionNaiss">
+                      <option [ngValue]="null"></option>
+                      <option value="DAKAR">Dakar</option>
                       <option value="THIES">Thies</option>
-                      <option value="FATICK">Fatick</option> -->
-                    <option *ngFor="let nomRegion of nomRegionValues" [value]="nomRegion">{{ nomRegion }}</option>
-                  </select>
-                  <!-- ========================= REGION DE DAKAR ======================= -->
-                  <div *ngIf="editForm.value.nomRegion === 'DAKAR'">
-                    <div class="form-group">
-                      <label class="form-label" for="departementNaiss">Departement de naissance</label>
-                      <select
-                        class="form-control"
-                        name="departementNaiss"
-                        formControlName="departementNaiss"
-                        id="departementNaiss"
-                        data-cy="departementNaiss"
-                      >
-                        <option [ngValue]="null"></option>
-                        <option>Dakar</option>
-                        <option>Rufisque</option>
-                        <option>Pikine</option>
-                        <option>Guediawaye</option>
-                        <option>Keur_Massar</option>
-                      </select>
-                      <div
-                        *ngIf="
-                          editForm.get('departementNaiss')!.invalid &&
-                          (editForm.get('departementNaiss')!.dirty || editForm.get('departementNaiss')!.touched)
-                        "
-                      >
-                        <small class="form-text text-danger" *ngIf="editForm.get('departementNaiss')?.errors?.required">
-                          Ce champ est requis.
-                        </small>
+                      <option value="FATICK">Fatick</option>
+                      <!-- <option *ngFor="let nomRegion of nomRegionValues" [value]="nomRegion">{{ nomRegion }}</option> -->
+                    </select>
+                    <!-- ========================= REGION DE DAKAR ======================= -->
+                    <div *ngIf="editForm.value.nomRegion === 'DAKAR'">
+                      <div class="form-group">
+                        <label class="form-label" for="departementNaiss">Departement de naissance</label>
+                        <select
+                          class="form-control"
+                          name="departementNaiss"
+                          formControlName="departementNaiss"
+                          id="departementNaiss"
+                          data-cy="departementNaiss"
+                        >
+                          <option [ngValue]="null"></option>
+                          <option>Dakar</option>
+                          <option>Rufisque</option>
+                          <option>Pikine</option>
+                          <option>Guediawaye</option>
+                          <option>Keur_Massar</option>
+                        </select>
+                        <div
+                          *ngIf="
+                            editForm.get('departementNaiss')!.invalid &&
+                            (editForm.get('departementNaiss')!.dirty || editForm.get('departementNaiss')!.touched)
+                          "
+                        >
+                          <small class="form-text text-danger" *ngIf="editForm.get('departementNaiss')?.errors?.required">
+                            Ce champ est requis.
+                          </small>
+                        </div>
+                      </div>
+                    </div>
+                    <!-- ========================= REGION DE THIES ======================= -->
+
+                    <div *ngIf="editForm.value.nomRegion === 'THIES'">
+                      <div class="form-group">
+                        <label class="form-label" for="departementNaiss">Departement de naissance</label>
+                        <select
+                          class="form-control"
+                          name="departementNaiss"
+                          formControlName="departementNaiss"
+                          id="departementNaiss"
+                          data-cy="departementNaiss"
+                        >
+                          <option [ngValue]="null"></option>
+                          <option>THIES</option>
+                          <option>TIVAOUANE</option>
+                          <option>MBOUR</option>
+                        </select>
+                        <div
+                          *ngIf="
+                            editForm.get('departementNaiss')!.invalid &&
+                            (editForm.get('departementNaiss')!.dirty || editForm.get('departementNaiss')!.touched)
+                          "
+                        >
+                          <small class="form-text text-danger" *ngIf="editForm.get('departementNaiss')?.errors?.required">
+                            Ce champ est requis.
+                          </small>
+                        </div>
+                      </div>
+                    </div>
+                    <!-- ========================= REGION DE FATICK ======================= -->
+
+                    <div *ngIf="editForm.value.nomRegion === 'FATICK'">
+                      <div class="form-group">
+                        <label class="form-label" for="departementNaiss">Departement de naissance</label>
+                        <select
+                          class="form-control"
+                          name="departementNaiss"
+                          formControlName="departementNaiss"
+                          id="departementNaiss"
+                          data-cy="departementNaiss"
+                        >
+                          <option [ngValue]="null"></option>
+                          <option>FATICK</option>
+                          <option>FOUNDIOUGNE</option>
+                          <option>GOSSAS</option>
+                        </select>
+                        <div
+                          *ngIf="
+                            editForm.get('departementNaiss')!.invalid &&
+                            (editForm.get('departementNaiss')!.dirty || editForm.get('departementNaiss')!.touched)
+                          "
+                        >
+                          <small class="form-text text-danger" *ngIf="editForm.get('departementNaiss')?.errors?.required">
+                            Ce champ est requis.
+                          </small>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- ================================== REGION DE KAFFRINE ========================================= -->
+
+                    <div *ngIf="editForm.value.nomRegion === 'KAFFRINE'">
+                      <div class="form-group">
+                        <label class="form-label" for="departementNaiss">Departement de naissance</label>
+                        <select
+                          class="form-control"
+                          name="departementNaiss"
+                          formControlName="departementNaiss"
+                          id="departementNaiss"
+                          data-cy="departementNaiss"
+                        >
+                          <option [ngValue]="null"></option>
+                          <option>BIRKILANE</option>
+                          <option>KAFFRINE</option>
+                          <option>KOUNGHEUR</option>
+                          <option>MALEM_HODAR</option>
+                        </select>
+                        <div
+                          *ngIf="
+                            editForm.get('departementNaiss')!.invalid &&
+                            (editForm.get('departementNaiss')!.dirty || editForm.get('departementNaiss')!.touched)
+                          "
+                        >
+                          <small class="form-text text-danger" *ngIf="editForm.get('departementNaiss')?.errors?.required">
+                            Ce champ est requis.
+                          </small>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- ===============================  REGION DE KAOLACK   =================================== -->
+
+                    <div *ngIf="editForm.value.nomRegion === 'KAOLACK'">
+                      <div class="form-group">
+                        <label class="form-label" for="departementNaiss">Departement de naissance</label>
+                        <select
+                          class="form-control"
+                          name="departementNaiss"
+                          formControlName="departementNaiss"
+                          id="departementNaiss"
+                          data-cy="departementNaiss"
+                        >
+                          <option [ngValue]="null"></option>
+                          <option>GUINGUINEO</option>
+                          <option>KAOLOACK</option>
+                          <option>NIORO</option>
+                        </select>
+                        <div
+                          *ngIf="
+                            editForm.get('departementNaiss')!.invalid &&
+                            (editForm.get('departementNaiss')!.dirty || editForm.get('departementNaiss')!.touched)
+                          "
+                        >
+                          <small class="form-text text-danger" *ngIf="editForm.get('departementNaiss')?.errors?.required">
+                            Ce champ est requis.
+                          </small>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- ================================== REGION DE MATAM =================================================== -->
+                    <div *ngIf="editForm.value.nomRegion === 'MATAM'">
+                      <div class="form-group">
+                        <label class="form-label" for="departementNaiss">Departement de Naissance</label>
+                        <select
+                          class="form-control"
+                          name="departementNaiss"
+                          formControlName="departementNaiss"
+                          id="departementNaiss"
+                          data-cy="departementNaiss"
+                        >
+                          <option [ngValue]="null"></option>
+                          <option>KANELKANEL</option>
+                          <option>MATAM</option>
+                          <option>RANEROU_FERLO</option>
+                          <!-- <option *ngFor="let nomDepartement of nomDepartementValues" [value]="nomDepartement">nomDepartement</option> -->
+                        </select>
+                        <div
+                          *ngIf="
+                            editForm.get('departementNaiss')!.invalid &&
+                            (editForm.get('departementNaiss')!.dirty || editForm.get('departementNaiss')!.touched)
+                          "
+                        >
+                          <small class="form-text text-danger" *ngIf="editForm.get('departementNaiss')?.errors?.required">
+                            Ce champ est requis.
+                          </small>
+                        </div>
                       </div>
                     </div>
                   </div>
-                  <!-- ========================= REGION DE THIES ======================= -->
 
-                  <div *ngIf="editForm.value.nomRegion === 'THIES'"></div>
-                  <!-- ========================= REGION DE FATICK ======================= -->
+                  <!-- ========================= LIEU DE NAISSANCE ======================================== -->
+                  <div class="col-md-3">
+                    <label class="form-label" for="lieuNaiss">Lieu de Naissance</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      name="lieuNaiss"
+                      id="lieuNaiss"
+                      data-cy="lieuNaiss"
+                      formControlName="lieuNaiss"
+                    />
+                  </div>
                 </div>
+                <!-- ========================= TYPE PIECE ======================================= -->
+                <div class="col-md-7 p">
+                  <div class="col-md-4 prenom">
+                    <label class="form-label" for="typePiece">Type Piece</label>
+                    <select class="form-control" name="typePiece" formControlName="typePiece" id="typePiece" data-cy="typePiece">
+                      <option [ngValue]="null"></option>
+                      <!-- <option *ngFor="let typePiece of typePieceValues" [value]="typePiece">{{typePiece}}</option> -->
+                      <option value="CNI">CNI</option>
+                      <option value="PASSEPORT">PASSEPORT</option>
+                    </select>
+                  </div>
+                  <!-- NUMERO PIECE -->
+                  <div class="col-md-4 prenom">
+                    <label class="form-label" for="numeroPiece">Numero Piece</label>
+                    <input
+                      type="number"
+                      class="form-control"
+                      name="numeroPiece"
+                      id="numeroPiece"
+                      data-cy="numeroPiece"
+                      formControlName="numeroPiece"
+                    />
+                    <div
+                      *ngIf="
+                        settingsForm.get('numeroPiece')!.invalid &&
+                        (settingsForm.get('numeroPiece')!.dirty || settingsForm.get('numeroPiece')!.touched)
+                      "
+                    >
+                      <small class="form-text text-danger" [hidden]="!settingsForm.get('numeroPiece')?.errors?.number">
+                        This field should be a number.
+                      </small>
+                    </div>
+                  </div>
 
-                <div class="mb-3">
-                  <label class="form-label" for="departementNaiss">Departement Naiss</label>
-                  <select
-                    class="form-control"
-                    name="departementNaiss"
-                    formControlName="departementNaiss"
-                    id="departementNaiss"
-                    data-cy="departementNaiss"
-                  >
-                    <option [ngValue]="null"></option>
-                    <!-- <option *ngFor="let nomDepartement of nomDepartementValues" [value]="nomDepartement">nomDepartement</option> -->
-                  </select>
-                </div>
-
-                <div class="mb-3">
-                  <label class="form-label" for="lieuNaiss">Lieu Naiss</label>
-                  <input type="text" class="form-control" name="lieuNaiss" id="lieuNaiss" data-cy="lieuNaiss" formControlName="lieuNaiss" />
-                </div>
-
-                <div class="mb-3">
-                  <label class="form-label" for="typePiece">Type Piece</label>
-                  <select class="form-control" name="typePiece" formControlName="typePiece" id="typePiece" data-cy="typePiece">
-                    <option [ngValue]="null"></option>
-                    <!-- <option *ngFor="let typePiece of typePieceValues" [value]="typePiece">typePiece</option> -->
-                  </select>
-                </div>
-
-                <div class="mb-3">
-                  <label class="form-label" for="numeroPiece">Numero Piece</label>
-                  <input
-                    type="number"
-                    class="form-control"
-                    name="numeroPiece"
-                    id="numeroPiece"
-                    data-cy="numeroPiece"
-                    formControlName="numeroPiece"
-                  />
-                  <div
-                    *ngIf="
-                      settingsForm.get('numeroPiece')!.invalid &&
-                      (settingsForm.get('numeroPiece')!.dirty || settingsForm.get('numeroPiece')!.touched)
-                    "
-                  >
-                    <small class="form-text text-danger" [hidden]="!settingsForm.get('numeroPiece')?.errors?.number">
-                      This field should be a number.
-                    </small>
+                  <div class="col-md-4">
+                    <label class="form-label" for="field_sexe">Sexe</label>
+                    <select class="form-control" name="sexe" formControlName="sexe" id="field_sexe" data-cy="sexe">
+                      <option [ngValue]="null"></option>
+                      <option value="HOMME">Homme</option>
+                      <option value="FEMME">Femme</option>
+                      <!-- <option *ngFor="let sexe of sexeValues" [value]="sexe">sexe</option> -->
+                    </select>
                   </div>
                 </div>
 
-                <div class="row mb-3">
-                  <label class="form-label" for="field_sexe">Sexe</label>
-                  <select class="form-control" name="sexe" formControlName="sexe" id="field_sexe" data-cy="sexe">
-                    <option [ngValue]="null"></option>
-                    <option value="HOMME">Homme</option>
-                    <option value="FEMME">Femme</option>
-                    <!-- <option *ngFor="let sexe of sexeValues" [value]="sexe">sexe</option> -->
-                  </select>
-                </div>
+                <div class="col-md-7 p">
+                  <div class="col-md-4 prenom">
+                    <label class="form-label" for="field_regionResidence">Region Residence</label>
+                    <select
+                      class="form-control"
+                      name="regionResidence"
+                      formControlName="regionResidence"
+                      id="field_regionResidence"
+                      data-cy="regionResidence"
+                    >
+                      <option [ngValue]="null"></option>
+                      <option value="DAKAR">Dakar</option>
+                      <option value="THIES">Thies</option>
+                      <option value="FATICK">Fatick</option>
+                      <option value="KAOLACK">Kaolack</option>
+                      <option value="MATAM">Matam</option>
+                      <option value="KAFFRINE">Kaffrine</option>
+                      <option value="SAINT_LOUIS">Saint Louis</option>
+                      <option value="LOUGA">Louga</option>
+                      <option value="KOLDA">Kolda</option>
+                      <option value="KEDOUGOU">Kedougou</option>
+                      <option value="ZIGINCHOR">Ziguinchor</option>
+                      <option value="SEDHIOU">SEDHIOU</option>
+                      <option value="PIKINE">SEDHIOU</option>
+                      <option value="PIKINE">TAMBACOUNDA</option>
+                      <!-- <option *ngFor="let nomRegion of nomRegionValues" [value]="nomRegion">nomRegion</option> -->
+                    </select>
+                  </div>
 
-                <div class="row mb-3">
-                  <label class="form-label" for="field_regionResidence">Region Residence</label>
-                  <select
-                    class="form-control"
-                    name="regionResidence"
-                    formControlName="regionResidence"
-                    id="field_regionResidence"
-                    data-cy="regionResidence"
-                  >
-                    <option [ngValue]="null"></option>
-                    <option value="DAKAR">Dakar</option>
-                    <option value="PIKINE">Pikine</option>
-                    <!-- <option *ngFor="let nomRegion of nomRegionValues" [value]="nomRegion">nomRegion</option> -->
-                  </select>
-                </div>
+                  <!-- <div class="row mb-3">
+                      <label class="form-label" for="field_depResidence">Dep Residence</label>
+                      <select
+                        class="form-control"
+                        name="depResidence"
+                        formControlName="depResidence"
+                        id="field_depResidence"
+                        data-cy="depResidence"
+                      >
+                        <option [ngValue]="null"></option>
+                        <option></option>
+                        <option *ngFor="let nomDepartement of nomDepartementValues" [value]="nomDepartement">{{nomDepartement}}</option>
+                      </select>
+                    </div> -->
 
-                <div class="row mb-3">
-                  <label class="form-label" for="field_depResidence">Dep Residence</label>
-                  <select
-                    class="form-control"
-                    name="depResidence"
-                    formControlName="depResidence"
-                    id="field_depResidence"
-                    data-cy="depResidence"
-                  >
-                    <option [ngValue]="null"></option>
-                    <!-- <option *ngFor="let nomDepartement of nomDepartementValues" [value]="nomDepartement">nomDepartement</option> -->
-                  </select>
-                </div>
+                  <div class="col-md-4 prenom">
+                    <label class="form-label" for="field_adresseResidence">Adresse Residence</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      name="adresseResidence"
+                      id="field_adresseResidence"
+                      data-cy="adresseResidence"
+                      formControlName="adresseResidence"
+                    />
+                  </div>
 
-                <div class="row mb-3">
-                  <label class="form-label" for="field_adresseResidence">Adresse Residence</label>
-                  <input
-                    type="text"
-                    class="form-control"
-                    name="adresseResidence"
-                    id="field_adresseResidence"
-                    data-cy="adresseResidence"
-                    formControlName="adresseResidence"
-                  />
-                </div>
+                  <div class="col-md-4 prenom">
+                    <label class="form-label" for="field_telephone1">Telephone 1</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      name="telephone1"
+                      id="field_telephone1"
+                      data-cy="telephone1"
+                      formControlName="telephone1"
+                    />
+                  </div>
 
-                <div class="row mb-3">
-                  <label class="form-label" for="field_telephone1">Telephone 1</label>
-                  <input
-                    type="text"
-                    class="form-control"
-                    name="telephone1"
-                    id="field_telephone1"
-                    data-cy="telephone1"
-                    formControlName="telephone1"
-                  />
-                </div>
-
-                <div class="row mb-3">
-                  <label class="form-label" for="field_telephone2">Telephone 2</label>
-                  <input
-                    type="text"
-                    class="form-control"
-                    name="telephone2"
-                    id="field_telephone2"
-                    data-cy="telephone2"
-                    formControlName="telephone2"
-                  />
-                </div>
-
-                <div class="row mb-3">
-                  <label class="form-label" for="field_niveauFormation">Niveau Formation</label>
-                  <select
-                    class="form-control"
-                    name="niveauFormation"
-                    formControlName="niveauFormation"
-                    id="field_niveauFormation"
-                    data-cy="niveauFormation"
-                  >
-                    <option [ngValue]="null"></option>
-                    <!-- <option *ngFor="let niveauEtude of niveauEtudeValues" [value]="niveauEtude">niveauEtude</option> -->
-                  </select>
-                </div>
-
-                <div class="row mb-3">
-                  <label class="form-label" for="field_specialite1">Specialite 1</label>
-                  <select
-                    class="form-control"
-                    name="specialite1"
-                    formControlName="specialite1"
-                    id="field_specialite1"
-                    data-cy="specialite1"
-                  >
-                    <option [ngValue]="null"></option>
-                    <!-- <option *ngFor="let nomFiliere of nomFiliereValues" [value]="nomFiliere">nomFiliere</option> -->
-                  </select>
-                </div>
-
-                <div class="row mb-3">
-                  <label class="form-label" for="field_specialite2">Specialite 2</label>
-                  <select
-                    class="form-control"
-                    name="specialite2"
-                    formControlName="specialite2"
-                    id="field_specialite2"
-                    data-cy="specialite2"
-                  >
-                    <option [ngValue]="null"></option>
-                    <!-- <option *ngFor="let nomSerie of nomSerieValues" [value]="nomSerie">nomSerie</option> -->
-                  </select>
-                </div>
-
-                <div class="row mb-3">
-                  <label class="form-label" for="field_diplomeRequis">Diplome Requis</label>
-                  <select
-                    class="form-control"
-                    name="diplomeRequis"
-                    formControlName="diplomeRequis"
-                    id="field_diplomeRequis"
-                    data-cy="diplomeRequis"
-                  >
-                    <option [ngValue]="null"></option>
-                    <!-- <option *ngFor="let diplomeRequis of diplomeRequisValues" [value]="diplomeRequis">diplomeRequis</option> -->
-                  </select>
+                  <div class="col-md-4">
+                    <label class="form-label" for="field_telephone2">Telephone 2</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      name="telephone2"
+                      id="field_telephone2"
+                      data-cy="telephone2"
+                      formControlName="telephone2"
+                    />
+                  </div>
                 </div>
 
                 <!-- <div class="row mb-3">
-                    <label class="form-label" for="field_cv">Cv</label>
-                    <div>
-                      <div *ngIf="settingsForm.get('cv')!.value" class="form-text text-danger clearfix">
-                        <a class="pull-start" (click)="openFile(settingsForm.get('cv')!.value, settingsForm.get('cvContentType')!.value)">open</a><br />
-                        <span class="pull-start">{{ settingsForm.get('cvContentType')!.value }}, {{ byteSize(settingsForm.get('cv')!.value) }}</span>
-                        <button
-                          type="button"
-                          (click)="settingsForm.patchValue({ cv: null }); settingsForm.patchValue({ cvContentType: null })"
-                          class="btn btn-secondary btn-xs pull-end"
-                        >
-                          <fa-icon icon="times"></fa-icon>
-                        </button>
-                      </div>
-                      <input type="file" id="file_cv" data-cy="cv" (change)="setFileData($event, 'cv', false)" />
-                    </div>
-                    <input type="hidden" class="form-control" name="cv" id="field_cv" data-cy="cv" formControlName="cv" />
-                    <input type="hidden" class="form-control" name="cvContentType" id="field_cvContentType" formControlName="cvContentType" />
-                  </div> -->
+                        <label class="form-label" for="field_cv">Cv</label>
+                        <div>
+                          <div *ngIf="settingsForm.get('cv')!.value" class="form-text text-danger clearfix">
+                            <a class="pull-start" (click)="openFile(settingsForm.get('cv')!.value, settingsForm.get('cvContentType')!.value)">open</a><br />
+                            <span class="pull-start">{{ settingsForm.get('cvContentType')!.value }}, {{ byteSize(settingsForm.get('cv')!.value) }}</span>
+                            <button
+                              type="button"
+                              (click)="settingsForm.patchValue({ cv: null }); settingsForm.patchValue({ cvContentType: null })"
+                              class="btn btn-secondary btn-xs pull-end"
+                            >
+                              <fa-icon icon="times"></fa-icon>
+                            </button>
+                          </div>
+                          <input type="file" id="file_cv" data-cy="cv" (change)="setFileData($event, 'cv', false)" />
+                        </div>
+                        <input type="hidden" class="form-control" name="cv" id="field_cv" data-cy="cv" formControlName="cv" />
+                        <input type="hidden" class="form-control" name="cvContentType" id="field_cvContentType" formControlName="cvContentType" />
+                      </div> -->
 
                 <div class="row mb-3">
                   <label class="form-label" for="field_lettreMotivation">Lettre Motivation</label>
@@ -419,87 +526,163 @@
                   ></textarea>
                 </div>
 
-                <div class="row mb-3">
-                  <label class="form-label" for="field_profession">Profession</label>
-                  <input
-                    type="text"
-                    class="form-control"
-                    name="profession"
-                    id="field_profession"
-                    data-cy="profession"
-                    formControlName="profession"
-                  />
-                </div>
-
                 <!-- <button type="submit" [disabled]="settingsForm.invalid" class="btn btn-primary" data-cy="submit">Sauvegarder</button> -->
-              </form>
+              </div>
             </div>
           </div>
-        </div>
 
-        <!-- ======================== Formations ============================== -->
-        <div class="accordion-item">
-          <h2 class="accordion-header" id="headingTwo">
-            <button
-              class="accordion-button collapsed"
-              type="button"
-              data-bs-toggle="collapse"
-              data-bs-target="#collapseTwo"
-              aria-expanded="false"
-              aria-controls="collapseTwo"
-            >
-              Formations
-            </button>
-          </h2>
-          <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo">
-            <div class="accordion-body">
-              <form></form>
+          <!-- ======================== Formations ============================== -->
+          <div class="accordion-item">
+            <h2 class="accordion-header" id="headingTwo">
+              <button
+                class="accordion-button collapsed"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#collapseTwo"
+                aria-expanded="false"
+                aria-controls="collapseTwo"
+              >
+                Formations
+              </button>
+            </h2>
+            <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo">
+              <div class="accordion-body">
+                <div class="col-md-7 p">
+                  <div class="col-md-4 prenom">
+                    <label class="form-label" for="field_niveauFormation">Niveau Formation</label>
+                    <select
+                      class="form-control"
+                      name="niveauFormation"
+                      formControlName="niveauFormation"
+                      id="field_niveauFormation"
+                      data-cy="niveauFormation"
+                    >
+                      <option [ngValue]="null"></option>
+                      <option></option>
+                      <option></option>
+                      <!-- <option *ngFor="let niveauEtude of niveauEtudeValues" [value]="niveauEtude">niveauEtude</option> -->
+                    </select>
+                  </div>
+
+                  <div class="col-md-4 prenom">
+                    <label class="form-label" for="field_specialite1">Specialite 1</label>
+                    <select
+                      class="form-control"
+                      name="specialite1"
+                      formControlName="specialite1"
+                      id="field_specialite1"
+                      data-cy="specialite1"
+                    >
+                      <option [ngValue]="null"></option>
+                      <!-- <option *ngFor="let nomFiliere of nomFiliereValues" [value]="nomFiliere">nomFiliere</option> -->
+                    </select>
+                  </div>
+
+                  <div class="col-md-4 prenom">
+                    <label class="form-label" for="field_specialite2">Specialite 2</label>
+                    <select
+                      class="form-control"
+                      name="specialite2"
+                      formControlName="specialite2"
+                      id="field_specialite2"
+                      data-cy="specialite2"
+                    >
+                      <option [ngValue]="null"></option>
+                      <!-- <option *ngFor="let nomSerie of nomSerieValues" [value]="nomSerie">nomSerie</option> -->
+                    </select>
+                  </div>
+
+                  <div class="col-md-4 prenom">
+                    <label class="form-label" for="field_diplomeRequis">Diplome Requis</label>
+                    <select
+                      class="form-control"
+                      name="diplomeRequis"
+                      formControlName="diplomeRequis"
+                      id="field_diplomeRequis"
+                      data-cy="diplomeRequis"
+                    >
+                      <option [ngValue]="null"></option>
+                      <!-- <option *ngFor="let diplomeRequis of diplomeRequisValues" [value]="diplomeRequis">diplomeRequis</option> -->
+                    </select>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
-        <!-- =========================Experiences professionnelles ================= -->
-        <div class="accordion-item">
-          <h2 class="accordion-header" id="headingThree">
-            <button
-              class="accordion-button collapsed"
-              type="button"
-              data-bs-toggle="collapse"
-              data-bs-target="#collapseThree"
-              aria-expanded="false"
-              aria-controls="collapseThree"
-            >
-              Experiences professionnelles
-            </button>
-          </h2>
-          <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree">
-            <div class="accordion-body">
-              <form></form>
+          <!-- =========================Experiences professionnelles ================= -->
+          <div class="accordion-item">
+            <h2 class="accordion-header" id="headingThree">
+              <button
+                class="accordion-button collapsed"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#collapseThree"
+                aria-expanded="false"
+                aria-controls="collapseThree"
+              >
+                Experiences professionnelles
+              </button>
+            </h2>
+            <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree">
+              <div class="accordion-body">
+                <div class="col-md-7 p">
+                  <div class="row mb-3">
+                    <label class="form-label" for="field_profession">Profession</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      name="profession"
+                      id="field_profession"
+                      data-cy="profession"
+                      formControlName="profession"
+                    />
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
-        <!-- ========================= Competences linguistiques ================= -->
-        <div class="accordion-item">
-          <h2 class="accordion-header" id="headingFour">
-            <button
-              class="accordion-button collapsed"
-              type="button"
-              data-bs-toggle="collapse"
-              data-bs-target="#collapseFour"
-              aria-expanded="false"
-              aria-controls="collapseFour"
-            >
-              Competences linguistiques
-            </button>
-          </h2>
-          <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingFour">
-            <div class="accordion-body">
-              <form></form>
+          <!-- ========================= Competences linguistiques ================= -->
+          <div class="accordion-item">
+            <h2 class="accordion-header" id="headingFour">
+              <button
+                class="accordion-button collapsed"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#collapseFour"
+                aria-expanded="false"
+                aria-controls="collapseFour"
+              >
+                Competences linguistiques
+              </button>
+            </h2>
+            <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingFour">
+              <div class="accordion-body">
+                <div class="col-md-7 p">
+                  <div class="col-md-4 prenom">
+                    <label class="form-label" for="field_profession">Français</label>
+                    <select class="form-control" name="francais" formControlName="francais" id="field_francais" data-cy="francais">
+                      <option [ngValue]="null"></option>
+                      <option>lu, parlé</option>
+                      <option>lu, parlé, écrit</option>
+                    </select>
+                  </div>
+
+                  <div class="col-md-4">
+                    <label class="form-label" for="field_profession">Anglais</label>
+                    <select class="form-control" name="anglais" formControlName="anglais" id="field_anglais" data-cy="anglais">
+                      <option [ngValue]="null"></option>
+                      <option>lu, parlé</option>
+                      <option>lu, parlé, écrit</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
+
+          <button type="submit" [disabled]="settingsForm.invalid" class="btn btn-primary" data-cy="submit">Sauvegarder</button>
+        </form>
       </div>
-
-      <button type="submit" [disabled]="settingsForm.invalid" class="btn btn-primary" data-cy="submit">Sauvegarder</button>
     </div>
   </div>
 </div>
