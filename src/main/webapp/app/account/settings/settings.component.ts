@@ -20,6 +20,7 @@ export class SettingsComponent implements OnInit {
   });
   dateNaissDp: any;
   nomRegionValues: any;
+  niveauEtudeValues: any;
   editForm: any;
 
   constructor(private accountService: AccountService, private fb: FormBuilder) {}

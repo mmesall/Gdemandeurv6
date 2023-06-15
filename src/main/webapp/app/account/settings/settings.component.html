@@ -20,7 +20,7 @@
   <div class="d-flex justify-content-center">
     <div class="col-md-8">
       <h2 *ngIf="account" style="text-align: center; font-style: italic; font-weight: bold">
-        Bienvenu(e) <strong>{{ account.login }}</strong
+        Bienvenu(e) <strong>{{ account.firstName }} {{ account.lastName }}</strong
         >, completer votre dossier
       </h2>
 
@@ -43,7 +43,7 @@
                 aria-expanded="true"
                 aria-controls="collapseOne"
               >
-                Informations personnelles
+                1. Informations personnelles
               </button>
             </h2>
             <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne">
@@ -152,27 +152,50 @@
                   <div class="col-md-3 prenom">
                     <label class="form-label" for="dateNaiss">Date de naissance</label>
                     <input
-                      id="dateNaiss"
+                      id="field_dateNaiss"
                       data-cy="dateNaiss"
                       type="text"
                       class="form-control"
                       name="dateNaiss"
-                      placeholder="Mettre votre date de naissance"
+                      ngbDatepicker
+                      #dateNaissDp="ngbDatepicker"
                       formControlName="dateNaiss"
-                      data-cy="dateNaiss"
                     />
                     <button type="button" class="btn btn-secondary" (click)="dateNaissDp.toggle()">
                       <fa-icon icon="calendar-alt"></fa-icon>
                     </button>
                   </div>
-                  <!-- ========================= REGION DE NAISSANCE ================= -->
+
+                  <!-- ========================= LIEU DE NAISSANCE ======================================== -->
                   <div class="col-md-3 prenom">
+                    <label class="form-label" for="lieuNaiss">Lieu de Naissance</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      name="lieuNaiss"
+                      id="lieuNaiss"
+                      data-cy="lieuNaiss"
+                      formControlName="lieuNaiss"
+                    />
+                  </div>
+
+                  <!-- ========================= REGION DE NAISSANCE ================= -->
+                  <div class="col-md-3">
                     <label class="form-label" for="regionNaiss">Region de naissance</label>
                     <select class="form-control" name="regionNaiss" formControlName="regionNaiss" id="regionNaiss" data-cy="regionNaiss">
                       <option [ngValue]="null"></option>
                       <option value="DAKAR">Dakar</option>
                       <option value="THIES">Thies</option>
                       <option value="FATICK">Fatick</option>
+                      <option value="KAOLACK">Kaolack</option>
+                      <option value="DIOURBEL">Diourbel</option>
+                      <option value="LOUGA">Louga</option>
+                      <option value="MATAM">Matam</option>
+                      <option value="SAINT_LOUIS">Saint Louis</option>
+                      <option value="SEDHIOU">Sedhiou</option>
+                      <option value="KOLDA">Kolda</option>
+                      <option value="TAMBACOUNDA">Tambacounda</option>
+                      <option value="ZIGINCHOR">Ziguinchor</option>
                       <!-- <option *ngFor="let nomRegion of nomRegionValues" [value]="nomRegion">{{ nomRegion }}</option> -->
                     </select>
                     <!-- ========================= REGION DE DAKAR ======================= -->
@@ -355,19 +378,6 @@
                       </div>
                     </div>
                   </div>
-
-                  <!-- ========================= LIEU DE NAISSANCE ======================================== -->
-                  <div class="col-md-3">
-                    <label class="form-label" for="lieuNaiss">Lieu de Naissance</label>
-                    <input
-                      type="text"
-                      class="form-control"
-                      name="lieuNaiss"
-                      id="lieuNaiss"
-                      data-cy="lieuNaiss"
-                      formControlName="lieuNaiss"
-                    />
-                  </div>
                 </div>
                 <!-- ========================= TYPE PIECE ======================================= -->
                 <div class="col-md-7 p">
@@ -380,7 +390,7 @@
                       <option value="PASSEPORT">PASSEPORT</option>
                     </select>
                   </div>
-                  <!-- NUMERO PIECE -->
+                  <!-- +++====================================NUMERO PIECE ====================================-->
                   <div class="col-md-4 prenom">
                     <label class="form-label" for="numeroPiece">Numero Piece</label>
                     <input
@@ -402,7 +412,7 @@
                       </small>
                     </div>
                   </div>
-
+                  <!-- ================================ CHOISIR LE SEXE  ================================================= -->
                   <div class="col-md-4">
                     <label class="form-label" for="field_sexe">Sexe</label>
                     <select class="form-control" name="sexe" formControlName="sexe" id="field_sexe" data-cy="sexe">
@@ -413,7 +423,7 @@
                     </select>
                   </div>
                 </div>
-
+                <!-- ==========================================REGION DE RESIDENCE +++++++=========================== -->
                 <div class="col-md-7 p">
                   <div class="col-md-4 prenom">
                     <label class="form-label" for="field_regionResidence">Region Residence</label>
@@ -515,7 +525,7 @@
                         <input type="hidden" class="form-control" name="cvContentType" id="field_cvContentType" formControlName="cvContentType" />
                       </div> -->
 
-                <div class="row mb-3">
+                <!-- <div class="row mb-3">
                   <label class="form-label" for="field_lettreMotivation">Lettre Motivation</label>
                   <textarea
                     class="form-control"
@@ -524,7 +534,7 @@
                     data-cy="lettreMotivation"
                     formControlName="lettreMotivation"
                   ></textarea>
-                </div>
+                </div> -->
 
                 <!-- <button type="submit" [disabled]="settingsForm.invalid" class="btn btn-primary" data-cy="submit">Sauvegarder</button> -->
               </div>
@@ -542,14 +552,78 @@
                 aria-expanded="false"
                 aria-controls="collapseTwo"
               >
-                Formations
+                2. Formations
               </button>
             </h2>
             <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo">
               <div class="accordion-body">
                 <div class="col-md-7 p">
                   <div class="col-md-4 prenom">
-                    <label class="form-label" for="field_niveauFormation">Niveau Formation</label>
+                    <label class="form-label" for="field_nomFormation">Nom de la formation </label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      name="nomFormation"
+                      id="field_nomFormation"
+                      data-cy="nomFormation"
+                      formControlName="nomFormation"
+                    />
+                  </div>
+
+                  <div class="col-md-4 prenom">
+                    <label class="form-label" for="field_dateDebut">Date debut formation </label>
+                    <div class="input-group">
+                      <input
+                        id="field_dateDebut"
+                        data-cy="dateDebut"
+                        type="text"
+                        class="form-control"
+                        name="dateDebut"
+                        ngbDatepicker
+                        #dateDebutDp="ngbDatepicker"
+                        formControlName="dateDebut"
+                      />
+                    </div>
+                    <button type="button" class="btn btn-secondary" (click)="dateDebutDp.toggle()">
+                      <fa-icon icon="calendar-alt"></fa-icon>
+                    </button>
+                  </div>
+
+                  <div class="col-md-4 prenom">
+                    <label class="form-label" for="field_dateFin">Date fin de formation </label>
+                    <div class="input-group">
+                      <input
+                        id="field_dateFin"
+                        data-cy="dateFin"
+                        type="text"
+                        class="form-control"
+                        name="dateFin"
+                        ngbDatepicker
+                        #dateFinDp="ngbDatepicker"
+                        formControlName="dateFin"
+                      />
+                    </div>
+                    <button type="button" class="btn btn-secondary" (click)="dateFinDp.toggle()">
+                      <fa-icon icon="calendar-alt"></fa-icon>
+                    </button>
+                  </div>
+
+                  <div class="col-md-4 prenom">
+                    <label class="form-label" for="field_etab_freq"> Nom Etablissement frequenté</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      name="etab_freq"
+                      id="field_etab_freq"
+                      data-cy="etab_freq"
+                      formControlName="etab_freq"
+                    />
+                  </div>
+                </div>
+
+                <div class="col-md-7 p">
+                  <div class="col-md-4 prenom">
+                    <label class="form-label" for="field_niveauFormation">Niveau d'etude/ de qualification</label>
                     <select
                       class="form-control"
                       name="niveauFormation"
@@ -558,14 +632,51 @@
                       data-cy="niveauFormation"
                     >
                       <option [ngValue]="null"></option>
-                      <option></option>
-                      <option></option>
+                      <option value="CINQUIEME">Cinquiéme</option>
+                      <option value="QUATRIEME">Quatriéme</option>
+                      <option value="TROISIEME">Troisiéme</option>
+                      <option value="BFEM">BFEM</option>
+                      <option value="EQUIVALENT_BFEM">Equivalent BFEM</option>
+                      <option value="SECONDE">SECONDE</option>
+                      <option value="PREMIERE">PREMIERE</option>
+                      <option value="TERMINAL">TERMINAL</option>
+                      <option value="BAC">BAC</option>
+                      <option value="EQUIVALENT_BAC">Equivalent BAC</option>
+                      <option value="LICENCE1">LICENCE1</option>
+                      <option value="LICENCE2">LICENCE2</option>
+                      <option value="LICEMCE3">LICEMCE3</option>
+                      <option value="MASTER">MASTER</option>
+                      <option value="DOCTORAT">DOCTORAT</option>
+                      <option value="ATTESTATION">ATTESTATION</option>
+                      <option value="CAP">CAP</option>
+                      <option value="CAP1">CAP1</option>
+                      <option value="CAP2">CAP2</option>
+                      <option value="CAP3">CAP3</option>
+                      <option value="CPS">CPS</option>
+                      <option value="BEP">BEP</option>
+                      <option value="BEP1">BEP1</option>
+                      <option value="BEP2">BEP2</option>
+                      <option value="BT">BT</option>
+                      <option value="BT1">BT1</option>
+                      <option value="BT2">BT2</option>
+                      <option value="BT3">BT3</option>
+                      <option value="BTS">BTS</option>
+                      <option value="BTS1">BTS1</option>
+                      <option value="BTS2">BTS2</option>
+                      <option value="CQP">CQP</option>
+                      <option value="CHEFEQUIPE">Chef d'équipe</option>
+                      <option value="CHEF_DE_CHANTIER">Chef de Chantier</option>
+                      <option value="TECHNICIENSPECIALISE">Technicien spécialisé</option>
+                      <option value="METP">METP</option>
+                      <option value="BTI">BTI</option>
+                      <option value="TITRE_PROFESSIONNEL">Titre professionnel</option>
+                      <option value="AUTRE">Autre</option>
                       <!-- <option *ngFor="let niveauEtude of niveauEtudeValues" [value]="niveauEtude">niveauEtude</option> -->
                     </select>
                   </div>
 
                   <div class="col-md-4 prenom">
-                    <label class="form-label" for="field_specialite1">Specialite 1</label>
+                    <label class="form-label" for="field_specialite1">Specialite </label>
                     <select
                       class="form-control"
                       name="specialite1"
@@ -574,12 +685,39 @@
                       data-cy="specialite1"
                     >
                       <option [ngValue]="null"></option>
+                      <option value="AGRI_ELEVAGE">AGRI_ELEVAGE</option>
+                      <option value="AGRICULTURE">AGRICULTURE</option>
+                      <option value="PECHE">PECHE</option>
+                      <option value="ELEVAGE">ELEVAGE</option>
+                      <option value="MINE_CARRIERES">MINE_CARRIERES</option>
+                      <option value="ARTISANAT">ARTISANAT</option>
+                      <option value="BATIMAT_TRAVAUX_PUBLIQUES">BATIMAT_TRAVAUX_PUBLIQUES</option>
+                      <option value="MECANIQUE">MECANIQUE</option>
+                      <option value="MENUISERIE_BOIS">MENUISERIE_BOIS</option>
+                      <option value="HABILLEMENT">HABILLEMENT</option>
+                      <option value="AGROALIMENTAIRE">AGROALIMENTAIRE</option>
+                      <option value="ELECTROTECHNIQUE_ELECTRIQUE_ENERGETIQUE">ELECTROTECHNIQUE_ELECTRIQUE_ENERGETIQUE</option>
+                      <option value="HYDRAULIQUE">HYDRAULIQUE</option>
+                      <option value="STRUCTURE_METALLIQUE">STRUCTURE_METALLIQUE</option>
+                      <option value="STRUCTURE_PLASTIQUE">STRUCTURE_PLASTIQUE</option>
+                      <option value="BEAUTE_ESTHETIQUE">BEAUTE_ESTHETIQUE</option>
+                      <option value="DEVELOPPEMENT_TERRITORIAL">DEVELOPPEMENT_TERRITORIAL</option>
+                      <option value="DROIT">DROIT</option>
+                      <option value="ECONOMIE_GESTION_COMMERCE_LOGISTIQUE">ECONOMIE_GESTION_COMMERCE_LOGISTIQUE</option>
+                      <option value="INSDUSTRIE_CULTURELLE_ET_CREATIVE">INSDUSTRIE_CULTURELLE_ET_CREATIVE</option>
+                      <option value="INFORMATIQUE_ET_NUMERIQUE">INFORMATIQUE_ET_NUMERIQUE</option>
+                      <option value="RESTAURATION_ET_HOTELLORIE">RESTAURATION_ET_HOTELLORIE</option>
+                      <option value="SANTE_BIOLOGIE_CHIMIE">SANTE_BIOLOGIE_CHIMIE</option>
+                      <option value="SPORT">SPORT</option>
+                      <option value="TOURISME">TOURISME</option>
+                      <option value="ENVIRONNEMENT">ENVIRONNEMENT</option>
+                      <option value="AUTRE">AUTRE</option>
                       <!-- <option *ngFor="let nomFiliere of nomFiliereValues" [value]="nomFiliere">nomFiliere</option> -->
                     </select>
                   </div>
 
                   <div class="col-md-4 prenom">
-                    <label class="form-label" for="field_specialite2">Specialite 2</label>
+                    <label class="form-label" for="field_specialite2">Status actuel</label>
                     <select
                       class="form-control"
                       name="specialite2"
@@ -588,12 +726,16 @@
                       data-cy="specialite2"
                     >
                       <option [ngValue]="null"></option>
+                      <option value="ELEVE">Eleve</option>
+                      <option value="ETUDIANT">Etudiant</option>
+                      <option value="PROFESSIONNEL">Professionnel</option>
+                      <option value="AUTRE">Autre</option>
                       <!-- <option *ngFor="let nomSerie of nomSerieValues" [value]="nomSerie">nomSerie</option> -->
                     </select>
                   </div>
 
                   <div class="col-md-4 prenom">
-                    <label class="form-label" for="field_diplomeRequis">Diplome Requis</label>
+                    <label class="form-label" for="field_diplomeRequis">Perspective de formation</label>
                     <select
                       class="form-control"
                       name="diplomeRequis"
@@ -620,14 +762,14 @@
                 aria-expanded="false"
                 aria-controls="collapseThree"
               >
-                Experiences professionnelles
+                3. Experiences professionnelles
               </button>
             </h2>
             <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree">
               <div class="accordion-body">
                 <div class="col-md-7 p">
-                  <div class="row mb-3">
-                    <label class="form-label" for="field_profession">Profession</label>
+                  <div class="col-md-4 prenom">
+                    <label class="form-label" for="field_profession">Structure fréquenté</label>
                     <input
                       type="text"
                       class="form-control"
@@ -636,6 +778,59 @@
                       data-cy="profession"
                       formControlName="profession"
                     />
+                  </div>
+
+                  <div class="col-md-4 prenom">
+                    <label class="form-label" for="field_profession">Titre ou Profession</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      name="profession"
+                      id="field_profession"
+                      data-cy="profession"
+                      formControlName="profession"
+                    />
+                  </div>
+
+                  <div class="col-md-4 prenom">
+                    <label class="form-label" for="field_specialite2">Secteur d'activité</label>
+                    <select
+                      class="form-control"
+                      name="specialite2"
+                      formControlName="specialite2"
+                      id="field_specialite2"
+                      data-cy="specialite2"
+                    >
+                      <option [ngValue]="null"></option>
+                      <option value="AGRI_ELEVAGE">AGRI_ELEVAGE</option>
+                      <option value="AGRICULTURE">AGRICULTURE</option>
+                      <option value="PECHE">PECHE</option>
+                      <option value="ELEVAGE">ELEVAGE</option>
+                      <option value="MINE_CARRIERES">MINE_CARRIERES</option>
+                      <option value="ARTISANAT">ARTISANAT</option>
+                      <option value="BATIMAT_TRAVAUX_PUBLIQUES">BATIMAT_TRAVAUX_PUBLIQUES</option>
+                      <option value="MECANIQUE">MECANIQUE</option>
+                      <option value="MENUISERIE_BOIS">MENUISERIE_BOIS</option>
+                      <option value="HABILLEMENT">HABILLEMENT</option>
+                      <option value="AGROALIMENTAIRE">AGROALIMENTAIRE</option>
+                      <option value="ELECTROTECHNIQUE_ELECTRIQUE_ENERGETIQUE">ELECTROTECHNIQUE_ELECTRIQUE_ENERGETIQUE</option>
+                      <option value="HYDRAULIQUE">HYDRAULIQUE</option>
+                      <option value="STRUCTURE_METALLIQUE">STRUCTURE_METALLIQUE</option>
+                      <option value="STRUCTURE_PLASTIQUE">STRUCTURE_PLASTIQUE</option>
+                      <option value="BEAUTE_ESTHETIQUE">BEAUTE_ESTHETIQUE</option>
+                      <option value="DEVELOPPEMENT_TERRITORIAL">DEVELOPPEMENT_TERRITORIAL</option>
+                      <option value="DROIT">DROIT</option>
+                      <option value="ECONOMIE_GESTION_COMMERCE_LOGISTIQUE">ECONOMIE_GESTION_COMMERCE_LOGISTIQUE</option>
+                      <option value="INSDUSTRIE_CULTURELLE_ET_CREATIVE">INSDUSTRIE_CULTURELLE_ET_CREATIVE</option>
+                      <option value="INFORMATIQUE_ET_NUMERIQUE">INFORMATIQUE_ET_NUMERIQUE</option>
+                      <option value="RESTAURATION_ET_HOTELLORIE">RESTAURATION_ET_HOTELLORIE</option>
+                      <option value="SANTE_BIOLOGIE_CHIMIE">SANTE_BIOLOGIE_CHIMIE</option>
+                      <option value="SPORT">SPORT</option>
+                      <option value="TOURISME">TOURISME</option>
+                      <option value="ENVIRONNEMENT">ENVIRONNEMENT</option>
+                      <option value="AUTRE">AUTRE</option>
+                      <!-- <option *ngFor="let nomSerie of nomSerieValues" [value]="nomSerie">nomSerie</option> -->
+                    </select>
                   </div>
                 </div>
               </div>
@@ -652,7 +847,7 @@
                 aria-expanded="false"
                 aria-controls="collapseFour"
               >
-                Competences linguistiques
+                4. Competences linguistiques
               </button>
             </h2>
             <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingFour">
