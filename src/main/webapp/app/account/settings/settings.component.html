@@ -164,6 +164,25 @@
                     <button type="button" class="btn btn-secondary" (click)="dateNaissDp.toggle()">
                       <fa-icon icon="calendar-alt"></fa-icon>
                     </button>
+
+                    <div
+                      *ngIf="
+                        settingsForm.get('dateNaiss')!.invalid &&
+                        (settingsForm.get('dateNaiss')!.dirty || settingsForm.get('dateNaiss')!.touched)
+                      "
+                    >
+                      <small class="form-text text-danger" *ngIf="settingsForm.get('dateNaiss')?.errors?.required">
+                        Votre date de naissance est requis.
+                      </small>
+
+                      <small class="form-text text-danger" *ngIf="settingsForm.get('dateNaiss')?.errors?.minlength">
+                        Votre date de naissance doit comporter au moins 1 caractère.
+                      </small>
+
+                      <small class="form-text text-danger" *ngIf="settingsForm.get('dateNaiss')?.errors?.maxlength">
+                        Votre date de naissance ne peut pas dépasser 50 caractères.
+                      </small>
+                    </div>
                   </div>
 
                   <!-- ========================= LIEU DE NAISSANCE ======================================== -->
@@ -177,6 +196,24 @@
                       data-cy="lieuNaiss"
                       formControlName="lieuNaiss"
                     />
+                    <div
+                      *ngIf="
+                        settingsForm.get('lieuNaiss')!.invalid &&
+                        (settingsForm.get('lieuNaiss')!.dirty || settingsForm.get('lieuNaiss')!.touched)
+                      "
+                    >
+                      <small class="form-text text-danger" *ngIf="settingsForm.get('lieuNaiss')?.errors?.required">
+                        Votre lieu de naissance est requis.
+                      </small>
+
+                      <small class="form-text text-danger" *ngIf="settingsForm.get('lieuNaiss')?.errors?.minlength">
+                        Votre lieu de naissance doit comporter au moins 1 caractère.
+                      </small>
+
+                      <small class="form-text text-danger" *ngIf="settingsForm.get('lieuNaiss')?.errors?.maxlength">
+                        Votre lieu de naissance ne peut pas dépasser 50 caractères.
+                      </small>
+                    </div>
                   </div>
 
                   <!-- ========================= REGION DE NAISSANCE ================= -->
@@ -196,8 +233,17 @@
                       <option value="KOLDA">Kolda</option>
                       <option value="TAMBACOUNDA">Tambacounda</option>
                       <option value="ZIGINCHOR">Ziguinchor</option>
-                      <!-- <option *ngFor="let nomRegion of nomRegionValues" [value]="nomRegion">{{ nomRegion }}</option> -->
                     </select>
+                    <div
+                      *ngIf="
+                        settingsForm.get('regionNaiss')!.invalid &&
+                        (settingsForm.get('regionNaiss')!.dirty || settingsForm.get('regionNaiss')!.touched)
+                      "
+                    >
+                      <small class="form-text text-danger" *ngIf="settingsForm.get('regionNaiss')?.errors?.required">
+                        Votre region de naissance est requis.
+                      </small>
+                    </div>
                     <!-- ========================= REGION DE DAKAR ======================= -->
                     <div *ngIf="editForm.value.nomRegion === 'DAKAR'">
                       <div class="form-group">
@@ -363,7 +409,6 @@
                           <option>KANELKANEL</option>
                           <option>MATAM</option>
                           <option>RANEROU_FERLO</option>
-                          <!-- <option *ngFor="let nomDepartement of nomDepartementValues" [value]="nomDepartement">nomDepartement</option> -->
                         </select>
                         <div
                           *ngIf="
@@ -385,7 +430,6 @@
                     <label class="form-label" for="typePiece">Type Piece</label>
                     <select class="form-control" name="typePiece" formControlName="typePiece" id="typePiece" data-cy="typePiece">
                       <option [ngValue]="null"></option>
-                      <!-- <option *ngFor="let typePiece of typePieceValues" [value]="typePiece">{{typePiece}}</option> -->
                       <option value="CNI">CNI</option>
                       <option value="PASSEPORT">PASSEPORT</option>
                     </select>
@@ -408,7 +452,15 @@
                       "
                     >
                       <small class="form-text text-danger" [hidden]="!settingsForm.get('numeroPiece')?.errors?.number">
-                        This field should be a number.
+                        Votre numero de piece est requis.
+                      </small>
+
+                      <small class="form-text text-danger" *ngIf="settingsForm.get('numeroPiece')?.errors?.minlength">
+                        Votre numero de piece doit comporter au moins 13 caractères.
+                      </small>
+
+                      <small class="form-text text-danger" *ngIf="settingsForm.get('numeroPiece')?.errors?.maxlength">
+                        Votre numero de piece ne peut pas dépasser 14 caractères.
                       </small>
                     </div>
                   </div>
@@ -419,8 +471,14 @@
                       <option [ngValue]="null"></option>
                       <option value="HOMME">Homme</option>
                       <option value="FEMME">Femme</option>
-                      <!-- <option *ngFor="let sexe of sexeValues" [value]="sexe">sexe</option> -->
                     </select>
+                    <div
+                      *ngIf="settingsForm.get('sexe')!.invalid && (settingsForm.get('sexe')!.dirty || settingsForm.get('sexe')!.touched)"
+                    >
+                      <small class="form-text text-danger" *ngIf="settingsForm.get('sexe')?.errors?.required">
+                        Votre sexe est requis.
+                      </small>
+                    </div>
                   </div>
                 </div>
                 <!-- ==========================================REGION DE RESIDENCE +++++++=========================== -->
@@ -446,28 +504,23 @@
                       <option value="KOLDA">Kolda</option>
                       <option value="KEDOUGOU">Kedougou</option>
                       <option value="ZIGINCHOR">Ziguinchor</option>
-                      <option value="SEDHIOU">SEDHIOU</option>
-                      <option value="PIKINE">SEDHIOU</option>
-                      <option value="PIKINE">TAMBACOUNDA</option>
-                      <!-- <option *ngFor="let nomRegion of nomRegionValues" [value]="nomRegion">nomRegion</option> -->
+                      <option value="DIOURBEL">Diourbel</option>
+                      <option value="SEDHIOU">Sedhiou</option>
+                      <option value="TAMBACOUNDA">Tambacounda</option>
                     </select>
+
+                    <div
+                      *ngIf="
+                        settingsForm.get('regionResidence')!.invalid &&
+                        (settingsForm.get('regionResidence')!.dirty || settingsForm.get('regionResidence')!.touched)
+                      "
+                    >
+                      <small class="form-text text-danger" *ngIf="settingsForm.get('regionResidence')?.errors?.required">
+                        Votre region de residence est requis.
+                      </small>
+                    </div>
                   </div>
-
-                  <!-- <div class="row mb-3">
-                      <label class="form-label" for="field_depResidence">Dep Residence</label>
-                      <select
-                        class="form-control"
-                        name="depResidence"
-                        formControlName="depResidence"
-                        id="field_depResidence"
-                        data-cy="depResidence"
-                      >
-                        <option [ngValue]="null"></option>
-                        <option></option>
-                        <option *ngFor="let nomDepartement of nomDepartementValues" [value]="nomDepartement">{{nomDepartement}}</option>
-                      </select>
-                    </div> -->
-
+                  <!--======================================== ADRESSE DE RESIDENCE  ==========================================================  -->
                   <div class="col-md-4 prenom">
                     <label class="form-label" for="field_adresseResidence">Adresse Residence</label>
                     <input
@@ -478,8 +531,18 @@
                       data-cy="adresseResidence"
                       formControlName="adresseResidence"
                     />
+                    <div
+                      *ngIf="
+                        settingsForm.get('adresseResidence')!.invalid &&
+                        (settingsForm.get('adresseResidence')!.dirty || settingsForm.get('adresseResidence')!.touched)
+                      "
+                    >
+                      <small class="form-text text-danger" *ngIf="settingsForm.get('adresseResidence')?.errors?.required">
+                        Votre adresse de residence est requis.
+                      </small>
+                    </div>
                   </div>
-
+                  <!-- ========================================== TELEPHONE 1 ============================================================ -->
                   <div class="col-md-4 prenom">
                     <label class="form-label" for="field_telephone1">Telephone 1</label>
                     <input
@@ -490,8 +553,27 @@
                       data-cy="telephone1"
                       formControlName="telephone1"
                     />
+                    <div
+                      *ngIf="
+                        settingsForm.get('telephone1')!.invalid &&
+                        (settingsForm.get('telephone1')!.dirty || settingsForm.get('telephone1')!.touched)
+                      "
+                    >
+                      <small class="form-text text-danger" *ngIf="settingsForm.get('telephone1')?.errors?.required">
+                        Votre numero de telephone est requis.
+                      </small>
+
+                      <small class="form-text text-danger" *ngIf="settingsForm.get('telephone1')?.errors?.minlength">
+                        Votre numero de telephone doit comporter au moins 9 caractères.
+                      </small>
+
+                      <small class="form-text text-danger" *ngIf="settingsForm.get('telephone1')?.errors?.maxlength">
+                        Votre numero de telephone ne peut pas dépasser 14 caractères.
+                      </small>
+                    </div>
                   </div>
 
+                  <!-- ========================================= TELEPHONE 2 ================================================== -->
                   <div class="col-md-4">
                     <label class="form-label" for="field_telephone2">Telephone 2</label>
                     <input
@@ -502,41 +584,26 @@
                       data-cy="telephone2"
                       formControlName="telephone2"
                     />
+                    <div
+                      *ngIf="
+                        settingsForm.get('telephone2')!.invalid &&
+                        (settingsForm.get('telephone2')!.dirty || settingsForm.get('telephone2')!.touched)
+                      "
+                    >
+                      <small class="form-text text-danger" *ngIf="settingsForm.get('telephone2')?.errors?.required">
+                        Votre numero de telephone est requis.
+                      </small>
+
+                      <small class="form-text text-danger" *ngIf="settingsForm.get('telephone2')?.errors?.minlength">
+                        Votre numero de telephone doit comporter au moins 9 caractères.
+                      </small>
+
+                      <small class="form-text text-danger" *ngIf="settingsForm.get('telephone2')?.errors?.maxlength">
+                        Votre numero de telephone ne peut pas dépasser 14 caractères.
+                      </small>
+                    </div>
                   </div>
                 </div>
-
-                <!-- <div class="row mb-3">
-                        <label class="form-label" for="field_cv">Cv</label>
-                        <div>
-                          <div *ngIf="settingsForm.get('cv')!.value" class="form-text text-danger clearfix">
-                            <a class="pull-start" (click)="openFile(settingsForm.get('cv')!.value, settingsForm.get('cvContentType')!.value)">open</a><br />
-                            <span class="pull-start">{{ settingsForm.get('cvContentType')!.value }}, {{ byteSize(settingsForm.get('cv')!.value) }}</span>
-                            <button
-                              type="button"
-                              (click)="settingsForm.patchValue({ cv: null }); settingsForm.patchValue({ cvContentType: null })"
-                              class="btn btn-secondary btn-xs pull-end"
-                            >
-                              <fa-icon icon="times"></fa-icon>
-                            </button>
-                          </div>
-                          <input type="file" id="file_cv" data-cy="cv" (change)="setFileData($event, 'cv', false)" />
-                        </div>
-                        <input type="hidden" class="form-control" name="cv" id="field_cv" data-cy="cv" formControlName="cv" />
-                        <input type="hidden" class="form-control" name="cvContentType" id="field_cvContentType" formControlName="cvContentType" />
-                      </div> -->
-
-                <!-- <div class="row mb-3">
-                  <label class="form-label" for="field_lettreMotivation">Lettre Motivation</label>
-                  <textarea
-                    class="form-control"
-                    name="lettreMotivation"
-                    id="field_lettreMotivation"
-                    data-cy="lettreMotivation"
-                    formControlName="lettreMotivation"
-                  ></textarea>
-                </div> -->
-
-                <!-- <button type="submit" [disabled]="settingsForm.invalid" class="btn btn-primary" data-cy="submit">Sauvegarder</button> -->
               </div>
             </div>
           </div>
@@ -568,8 +635,27 @@
                       data-cy="nomFormation"
                       formControlName="nomFormation"
                     />
+                    <div
+                      *ngIf="
+                        settingsForm.get('nomFormation')!.invalid &&
+                        (settingsForm.get('nomFormation')!.dirty || settingsForm.get('nomFormation')!.touched)
+                      "
+                    >
+                      <small class="form-text text-danger" *ngIf="settingsForm.get('nomFormation')?.errors?.required">
+                        Le nom de la formation est requis.
+                      </small>
+
+                      <small class="form-text text-danger" *ngIf="settingsForm.get('nomFormation')?.errors?.minlength">
+                        Le nom de la formation doit comporter au moins 3 caractère.
+                      </small>
+
+                      <small class="form-text text-danger" *ngIf="settingsForm.get('nomFormation')?.errors?.maxlength">
+                        Le nom de la formation ne peut pas dépasser 50 caractères.
+                      </small>
+                    </div>
                   </div>
 
+                  <!-- ======================================== DATE DE DEBUT DE FORMATION ==================================================== -->
                   <div class="col-md-4 prenom">
                     <label class="form-label" for="field_dateDebut">Date debut formation </label>
                     <div class="input-group">
@@ -587,8 +673,19 @@
                     <button type="button" class="btn btn-secondary" (click)="dateDebutDp.toggle()">
                       <fa-icon icon="calendar-alt"></fa-icon>
                     </button>
+                    <div
+                      *ngIf="
+                        settingsForm.get('dateDebut')!.invalid &&
+                        (settingsForm.get('dateDebut')!.dirty || settingsForm.get('dateDebut')!.touched)
+                      "
+                    >
+                      <small class="form-text text-danger" *ngIf="settingsForm.get('dateDebut')?.errors?.required">
+                        La date de debut est requis.
+                      </small>
+                    </div>
                   </div>
 
+                  <!-- ======================================= DATE DE FIN DE FORMATION ======================================================== -->
                   <div class="col-md-4 prenom">
                     <label class="form-label" for="field_dateFin">Date fin de formation </label>
                     <div class="input-group">
@@ -606,8 +703,18 @@
                     <button type="button" class="btn btn-secondary" (click)="dateFinDp.toggle()">
                       <fa-icon icon="calendar-alt"></fa-icon>
                     </button>
+                    <div
+                      *ngIf="
+                        settingsForm.get('dateFin')!.invalid && (settingsForm.get('dateFin')!.dirty || settingsForm.get('dateFin')!.touched)
+                      "
+                    >
+                      <small class="form-text text-danger" *ngIf="settingsForm.get('dateFin')?.errors?.required">
+                        La date de fin est requis.
+                      </small>
+                    </div>
                   </div>
 
+                  <!-- ======================================= NOM ETABLISSEMENT FREQUENTE ===================================================== -->
                   <div class="col-md-4 prenom">
                     <label class="form-label" for="field_etab_freq"> Nom Etablissement frequenté</label>
                     <input
@@ -618,9 +725,28 @@
                       data-cy="etab_freq"
                       formControlName="etab_freq"
                     />
+                    <div
+                      *ngIf="
+                        settingsForm.get('etab_freq')!.invalid &&
+                        (settingsForm.get('etab_freq')!.dirty || settingsForm.get('etab_freq')!.touched)
+                      "
+                    >
+                      <small class="form-text text-danger" *ngIf="settingsForm.get('etab_freq')?.errors?.required">
+                        Votre etablissement est requis.
+                      </small>
+
+                      <small class="form-text text-danger" *ngIf="settingsForm.get('etab_freq')?.errors?.minlength">
+                        Le nom de l'etablissement doit comporter au moins 1 caractère.
+                      </small>
+
+                      <small class="form-text text-danger" *ngIf="settingsForm.get('etab_freq')?.errors?.maxlength">
+                        Le nom de l'etablissement ne peut pas dépasser 50 caractères.
+                      </small>
+                    </div>
                   </div>
                 </div>
 
+                <!-- ====================================== NIVEAU DE QUALIFICATION ======================================================= -->
                 <div class="col-md-7 p">
                   <div class="col-md-4 prenom">
                     <label class="form-label" for="field_niveauFormation">Niveau d'etude/ de qualification</label>
@@ -671,10 +797,19 @@
                       <option value="BTI">BTI</option>
                       <option value="TITRE_PROFESSIONNEL">Titre professionnel</option>
                       <option value="AUTRE">Autre</option>
-                      <!-- <option *ngFor="let niveauEtude of niveauEtudeValues" [value]="niveauEtude">niveauEtude</option> -->
                     </select>
+                    <div
+                      *ngIf="
+                        settingsForm.get('niveauFormation')!.invalid &&
+                        (settingsForm.get('niveauFormation')!.dirty || settingsForm.get('niveauFormation')!.touched)
+                      "
+                    >
+                      <small class="form-text text-danger" *ngIf="settingsForm.get('niveauFormation')?.errors?.required">
+                        Votre niveau de formation est requis.
+                      </small>
+                    </div>
                   </div>
-
+                  <!-- =================================== SPECIALITE ============================================================= -->
                   <div class="col-md-4 prenom">
                     <label class="form-label" for="field_specialite1">Specialite </label>
                     <select
@@ -712,40 +847,65 @@
                       <option value="TOURISME">TOURISME</option>
                       <option value="ENVIRONNEMENT">ENVIRONNEMENT</option>
                       <option value="AUTRE">AUTRE</option>
-                      <!-- <option *ngFor="let nomFiliere of nomFiliereValues" [value]="nomFiliere">nomFiliere</option> -->
                     </select>
+                    <div
+                      *ngIf="
+                        settingsForm.get('specialite1')!.invalid &&
+                        (settingsForm.get('specialite1')!.dirty || settingsForm.get('specialite1')!.touched)
+                      "
+                    >
+                      <small class="form-text text-danger" *ngIf="settingsForm.get('specialite1')?.errors?.required">
+                        Votre specialité est requis.
+                      </small>
+                    </div>
                   </div>
 
+                  <!-- ================================== STATUS ACTUEL =========================================================== -->
                   <div class="col-md-4 prenom">
-                    <label class="form-label" for="field_specialite2">Status actuel</label>
-                    <select
-                      class="form-control"
-                      name="specialite2"
-                      formControlName="specialite2"
-                      id="field_specialite2"
-                      data-cy="specialite2"
-                    >
+                    <label class="form-label" for="field_status">Status actuel</label>
+                    <select class="form-control" name="status" formControlName="status" id="field_status" data-cy="status">
                       <option [ngValue]="null"></option>
                       <option value="ELEVE">Eleve</option>
                       <option value="ETUDIANT">Etudiant</option>
                       <option value="PROFESSIONNEL">Professionnel</option>
                       <option value="AUTRE">Autre</option>
-                      <!-- <option *ngFor="let nomSerie of nomSerieValues" [value]="nomSerie">nomSerie</option> -->
                     </select>
+                    <div
+                      *ngIf="
+                        settingsForm.get('status')!.invalid && (settingsForm.get('status')!.dirty || settingsForm.get('status')!.touched)
+                      "
+                    >
+                      <small class="form-text text-danger" *ngIf="settingsForm.get('status')?.errors?.required">
+                        Votre status est requis.
+                      </small>
+                    </div>
                   </div>
 
+                  <!-- ================================= PERSPECTIVE DE FORMATION ============================================================== -->
                   <div class="col-md-4 prenom">
-                    <label class="form-label" for="field_diplomeRequis">Perspective de formation</label>
+                    <label class="form-label" for="field_perspective">Perspective de formation</label>
                     <select
                       class="form-control"
-                      name="diplomeRequis"
-                      formControlName="diplomeRequis"
-                      id="field_diplomeRequis"
-                      data-cy="diplomeRequis"
+                      name="perspective"
+                      formControlName="perspective"
+                      id="field_perspective"
+                      data-cy="perspective"
                     >
                       <option [ngValue]="null"></option>
-                      <!-- <option *ngFor="let diplomeRequis of diplomeRequisValues" [value]="diplomeRequis">diplomeRequis</option> -->
+                      <option>Renforcement de capacite</option>
+                      <option>Création d'entreprise</option>
                     </select>
+
+                    <div
+                      *ngIf="
+                        settingsForm.get('perspective')!.invalid &&
+                        (settingsForm.get('perspective')!.dirty || settingsForm.get('perspective')!.touched)
+                      "
+                    >
+                      <small class="form-text text-danger" *ngIf="settingsForm.get('perspective')?.errors?.required">
+                        Votre perspective est requis.
+                      </small>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -769,15 +929,33 @@
               <div class="accordion-body">
                 <div class="col-md-7 p">
                   <div class="col-md-4 prenom">
-                    <label class="form-label" for="field_profession">Structure fréquenté</label>
+                    <label class="form-label" for="field_structure">Structure fréquenté</label>
                     <input
                       type="text"
                       class="form-control"
-                      name="profession"
-                      id="field_profession"
-                      data-cy="profession"
-                      formControlName="profession"
+                      name="structure"
+                      id="field_structure"
+                      data-cy="structure"
+                      formControlName="structure"
                     />
+                    <div
+                      *ngIf="
+                        settingsForm.get('structure')!.invalid &&
+                        (settingsForm.get('structure')!.dirty || settingsForm.get('structure')!.touched)
+                      "
+                    >
+                      <small class="form-text text-danger" *ngIf="settingsForm.get('structure')?.errors?.required">
+                        Votre structure est requis.
+                      </small>
+
+                      <small class="form-text text-danger" *ngIf="settingsForm.get('structure')?.errors?.minlength">
+                        Votre structure doit comporter au moins 3 caractère.
+                      </small>
+
+                      <small class="form-text text-danger" *ngIf="settingsForm.get('structure')?.errors?.maxlength">
+                        Votre structure ne peut pas dépasser 50 caractères.
+                      </small>
+                    </div>
                   </div>
 
                   <div class="col-md-4 prenom">
@@ -790,17 +968,29 @@
                       data-cy="profession"
                       formControlName="profession"
                     />
+                    <div
+                      *ngIf="
+                        settingsForm.get('profession')!.invalid &&
+                        (settingsForm.get('profession')!.dirty || settingsForm.get('profession')!.touched)
+                      "
+                    >
+                      <small class="form-text text-danger" *ngIf="settingsForm.get('profession')?.errors?.required">
+                        Votre profession est requis.
+                      </small>
+
+                      <small class="form-text text-danger" *ngIf="settingsForm.get('profession')?.errors?.minlength">
+                        Votre profession doit comporter au moins 3 caractères.
+                      </small>
+
+                      <small class="form-text text-danger" *ngIf="settingsForm.get('profession')?.errors?.maxlength">
+                        Votre profession ne peut pas dépasser 50 caractères.
+                      </small>
+                    </div>
                   </div>
 
                   <div class="col-md-4 prenom">
-                    <label class="form-label" for="field_specialite2">Secteur d'activité</label>
-                    <select
-                      class="form-control"
-                      name="specialite2"
-                      formControlName="specialite2"
-                      id="field_specialite2"
-                      data-cy="specialite2"
-                    >
+                    <label class="form-label" for="field_secteur">Secteur d'activité</label>
+                    <select class="form-control" name="secteur" formControlName="secteur" id="field_secteur" data-cy="secteur">
                       <option [ngValue]="null"></option>
                       <option value="AGRI_ELEVAGE">AGRI_ELEVAGE</option>
                       <option value="AGRICULTURE">AGRICULTURE</option>
@@ -829,8 +1019,17 @@
                       <option value="TOURISME">TOURISME</option>
                       <option value="ENVIRONNEMENT">ENVIRONNEMENT</option>
                       <option value="AUTRE">AUTRE</option>
-                      <!-- <option *ngFor="let nomSerie of nomSerieValues" [value]="nomSerie">nomSerie</option> -->
                     </select>
+
+                    <div
+                      *ngIf="
+                        settingsForm.get('secteur')!.invalid && (settingsForm.get('secteur')!.dirty || settingsForm.get('secteur')!.touched)
+                      "
+                    >
+                      <small class="form-text text-danger" *ngIf="settingsForm.get('secteur')?.errors?.required">
+                        Votre secteur est requis.
+                      </small>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -854,21 +1053,39 @@
               <div class="accordion-body">
                 <div class="col-md-7 p">
                   <div class="col-md-4 prenom">
-                    <label class="form-label" for="field_profession">Français</label>
-                    <select class="form-control" name="francais" formControlName="francais" id="field_francais" data-cy="francais">
+                    <label class="form-label" for="field_langue1">Français</label>
+                    <select class="form-control" name="langue1" formControlName="langue1" id="field_langue1" data-cy="langue1">
                       <option [ngValue]="null"></option>
-                      <option>lu, parlé</option>
-                      <option>lu, parlé, écrit</option>
+                      <option value="NIVEAU1">lu, parlé</option>
+                      <option value="NIVEAU2">lu, parlé, écrit</option>
                     </select>
+                    <div
+                      *ngIf="
+                        settingsForm.get('langue1')!.invalid && (settingsForm.get('langue1')!.dirty || settingsForm.get('langue1')!.touched)
+                      "
+                    >
+                      <small class="form-text text-danger" *ngIf="settingsForm.get('langue1')?.errors?.required">
+                        Votre niveau en français est requis.
+                      </small>
+                    </div>
                   </div>
 
                   <div class="col-md-4">
-                    <label class="form-label" for="field_profession">Anglais</label>
-                    <select class="form-control" name="anglais" formControlName="anglais" id="field_anglais" data-cy="anglais">
+                    <label class="form-label" for="field_langue2">Anglais</label>
+                    <select class="form-control" name="langue2" formControlName="langue2" id="field_langue2" data-cy="langue2">
                       <option [ngValue]="null"></option>
-                      <option>lu, parlé</option>
-                      <option>lu, parlé, écrit</option>
+                      <option value="NIVEAU1">lu, parlé</option>
+                      <option value="NIVEAU2">lu, parlé, écrit</option>
                     </select>
+                    <div
+                      *ngIf="
+                        settingsForm.get('langue2')!.invalid && (settingsForm.get('langue2')!.dirty || settingsForm.get('langue2')!.touched)
+                      "
+                    >
+                      <small class="form-text text-danger" *ngIf="settingsForm.get('langue2')?.errors?.required">
+                        Votre niveau d'anglais est requis.
+                      </small>
+                    </div>
                   </div>
                 </div>
               </div>
