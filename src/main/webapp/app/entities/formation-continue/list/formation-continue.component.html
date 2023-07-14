@@ -50,7 +50,7 @@
           <th scope="col" jhiSortBy="nomDiplome"><span>Nom Diplome</span> <fa-icon icon="sort"></fa-icon></th>
           <th scope="col" jhiSortBy="autreDiplome"><span>Autre Diplome</span> <fa-icon icon="sort"></fa-icon></th>
           <th scope="col" jhiSortBy="nomDebouche"><span>Nom Debouche</span> <fa-icon icon="sort"></fa-icon></th>
-          <th scope="col" jhiSortBy="formation.id"><span>Formation</span> <fa-icon icon="sort"></fa-icon></th> -->
+          <th scope="col" jhiSortBy="formation.nomFormation"><span>Formation</span> <fa-icon icon="sort"></fa-icon></th> -->
           <th scope="col"></th>
         </tr>
       </thead>
@@ -87,7 +87,7 @@
           <td>{{ formationContinue.nomDebouche }}</td> -->
           <!-- <td>
             <div *ngIf="formationContinue.formation">
-              <a [routerLink]="['/formation', formationContinue.formation?.id, 'view']">{{ formationContinue.formation?.id }}</a>
+              <a [routerLink]="['/formation', formationContinue.formation?.nomFormation, 'view']">{{ formationContinue.formation?.nomFormation }}</a>
             </div>
           </td> -->
           <td class="text-end">
@@ -100,7 +100,7 @@
                 data-cy="entityDetailsButton"
               >
                 <fa-icon icon="eye"></fa-icon>
-                <span class="d-none d-md-inline">View</span>
+                <!-- <span class="d-none d-md-inline">View</span> -->
               </button>
 
               <button type="submit" routerLink="/candidature-p/new" class="btn btn-success btn-sm" data-cy="entityDetailsButton">
@@ -116,7 +116,7 @@
                 data-cy="entityEditButton"
               >
                 <fa-icon icon="pencil-alt"></fa-icon>
-                <span class="d-none d-md-inline">Edit</span>
+                <!-- <span class="d-none d-md-inline">Edit</span> -->
               </button>
 
               <button
@@ -127,7 +127,7 @@
                 data-cy="entityDeleteButton"
               >
                 <fa-icon icon="times"></fa-icon>
-                <span class="d-none d-md-inline">Delete</span>
+                <!-- <span class="d-none d-md-inline">Delete</span> -->
               </button>
             </div>
           </td>

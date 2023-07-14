@@ -6,5 +6,9 @@ export class Registration {
     public email: string,
     public password: string,
     public langKey: string
-  ) {}
+  ) // public dateNaiss: Date,
+  // public lieuNaiss: string,
+  // public regionNaiss: string,
+
+  {}
 }

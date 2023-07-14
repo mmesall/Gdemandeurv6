@@ -4,8 +4,10 @@
       <h1 data-cy="registerTitle">Inscription</h1>
 
       <div class="alert alert-success" *ngIf="success">
-        <strong>Inscription enregistrée !</strong> Veuillez vérifier votre e-mail pour confirmation
-        <a href="https://accounts.google.com/">ici</a> .
+        <strong>Inscription enregistrée !</strong> Veuillez créer votre dossier
+        <!-- Veuillez vérifier votre e-mail pour confirmation -->
+        <!-- <a href="https://accounts.google.com/">ici</a> . -->
+        <a href="/dossier/new">ici</a>
       </div>
 
       <div class="alert alert-danger" *ngIf="error"><strong>Échec de l'enregistrement!</strong> Veuillez réessayer plus tard.</div>

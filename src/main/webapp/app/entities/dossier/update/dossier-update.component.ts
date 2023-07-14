@@ -24,12 +24,14 @@ import { NiveauEtude } from 'app/entities/enumerations/niveau-etude.model';
 import { NomFiliere } from 'app/entities/enumerations/nom-filiere.model';
 import { NomSerie } from 'app/entities/enumerations/nom-serie.model';
 import { DiplomeRequis } from 'app/entities/enumerations/diplome-requis.model';
+import { Account } from 'app/core/auth/account.model';
 
 @Component({
   selector: 'jhi-dossier-update',
   templateUrl: './dossier-update.component.html',
 })
 export class DossierUpdateComponent implements OnInit {
+  account!: Account;
   isSaving = false;
   nomRegionValues = Object.keys(NomRegion);
   nomDepartementValues = Object.keys(NomDepartement);

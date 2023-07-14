@@ -23,6 +23,8 @@ describe('SettingsComponent', () => {
     login: 'john',
     authorities: [],
     imageUrl: '',
+    dateNaiss: '2020-01-12',
+    lieuNaiss: 'dakar',
     identity: function (): void {
       throw new Error('Function not implemented.');
     },
@@ -55,6 +57,8 @@ describe('SettingsComponent', () => {
       firstName: 'John',
       lastName: 'Doe',
       email: 'john.doe@mail.com',
+      dateNaiss: '2020-01-12',
+      lieuNaiss: 'dakar',
     };
 
     // WHEN

@@ -26,8 +26,8 @@ const dossierRoute: Routes = [
     component: DossierUpdateComponent,
     resolve: {
       dossier: DossierRoutingResolveService,
-    },
-    canActivate: [UserRouteAccessService],
+    }, //,
+    // canActivate: [UserRouteAccessService],
   },
   {
     path: ':id/edit',

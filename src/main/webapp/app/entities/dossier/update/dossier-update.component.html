@@ -1,7 +1,9 @@
 <div class="d-flex justify-content-center">
   <div class="col-8">
     <form name="editForm" role="form" novalidate (ngSubmit)="save()" [formGroup]="editForm">
-      <h2 id="jhi-dossier-heading" data-cy="DossierCreateUpdateHeading">Create or edit a Dossier</h2>
+      <h2 id="jhi-dossier-heading" style="text-align: center; font-style: italic; font-weight: bold" data-cy="DossierCreateUpdateHeading">
+        Créer un dossier
+      </h2>
 
       <div>
         <jhi-alert-error></jhi-alert-error>
@@ -11,7 +13,7 @@
           <input type="number" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
         </div>
 
-        <div class="form-group">
+        <!-- <div class="form-group">
           <label class="form-label" for="field_numDossier">Num Dossier</label>
           <input
             type="text"
@@ -24,24 +26,7 @@
           <div
             *ngIf="editForm.get('numDossier')!.invalid && (editForm.get('numDossier')!.dirty || editForm.get('numDossier')!.touched)"
           ></div>
-        </div>
-
-        <div class="form-group">
-          <label class="form-label" for="field_dateNaiss">Date Naiss</label>
-          <div class="input-group">
-            <input
-              id="field_dateNaiss"
-              data-cy="dateNaiss"
-              type="text"
-              class="form-control"
-              name="dateNaiss"
-              ngbDatepicker
-              #dateNaissDp="ngbDatepicker"
-              formControlName="dateNaiss"
-            />
-            <button type="button" class="btn btn-secondary" (click)="dateNaissDp.toggle()"><fa-icon icon="calendar-alt"></fa-icon></button>
-          </div>
-        </div>
+        </div> -->
 
         <div class="form-group">
           <label class="form-label" for="field_prenom">Prenom</label>
@@ -69,6 +54,23 @@
             data-cy="nomUtilisateur"
             formControlName="nomUtilisateur"
           />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="field_dateNaiss">Date Naiss</label>
+          <div class="input-group">
+            <input
+              id="field_dateNaiss"
+              data-cy="dateNaiss"
+              type="text"
+              class="form-control"
+              name="dateNaiss"
+              ngbDatepicker
+              #dateNaissDp="ngbDatepicker"
+              formControlName="dateNaiss"
+            />
+            <button type="button" class="btn btn-secondary" (click)="dateNaissDp.toggle()"><fa-icon icon="calendar-alt"></fa-icon></button>
+          </div>
         </div>
 
         <div class="form-group">
@@ -120,7 +122,7 @@
           <label class="form-label" for="field_typePiece">Type Piece</label>
           <select class="form-control" name="typePiece" formControlName="typePiece" id="field_typePiece" data-cy="typePiece">
             <option [ngValue]="null"></option>
-            <option *ngFor="let typePiece of typePieceValues" [value]="typePiece">typePiece</option>
+            <option *ngFor="let typePiece of typePieceValues" [value]="typePiece">{{ typePiece }}</option>
           </select>
         </div>
 
@@ -145,7 +147,7 @@
           <label class="form-label" for="field_sexe">Sexe</label>
           <select class="form-control" name="sexe" formControlName="sexe" id="field_sexe" data-cy="sexe">
             <option [ngValue]="null"></option>
-            <option *ngFor="let sexe of sexeValues" [value]="sexe">sexe</option>
+            <option *ngFor="let sexe of sexeValues" [value]="sexe">{{ sexe }}</option>
           </select>
         </div>
 
@@ -351,7 +353,7 @@
 
       <div>
         <button type="button" id="cancel-save" data-cy="entityCreateCancelButton" class="btn btn-secondary" (click)="previousState()">
-          <fa-icon icon="ban"></fa-icon>&nbsp;<span>Cancel</span>
+          <fa-icon icon="ban"></fa-icon>&nbsp;<span>Annuler</span>
         </button>
 
         <button
@@ -361,7 +363,7 @@
           [disabled]="editForm.invalid || isSaving"
           class="btn btn-primary"
         >
-          <fa-icon icon="save"></fa-icon>&nbsp;<span>Save</span>
+          <fa-icon icon="save"></fa-icon>&nbsp;<span>Sauvegarder</span>
         </button>
       </div>
     </form>

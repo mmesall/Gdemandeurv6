@@ -1,7 +1,7 @@
 <div class="d-flex justify-content-center">
   <div class="col-8">
     <form name="editForm" role="form" novalidate (ngSubmit)="save()" [formGroup]="editForm">
-      <h2 id="jhi-formation-continue-heading" data-cy="FormationContinueCreateUpdateHeading">Create or edit a Formation Continue</h2>
+      <h2 id="jhi-formation-continue-heading" data-cy="FormationContinueCreateUpdateHeading">Ajouter un nouvelle formation Continue</h2>
 
       <div>
         <jhi-alert-error></jhi-alert-error>
@@ -32,7 +32,7 @@
           <label class="form-label" for="field_admission">Admission</label>
           <select class="form-control" name="admission" formControlName="admission" id="field_admission" data-cy="admission">
             <option [ngValue]="null"></option>
-            <option *ngFor="let admission of admissionValues" [value]="admission">admission</option>
+            <option *ngFor="let admission of admissionValues" [value]="admission">{{ admission }}</option>
           </select>
         </div>
 
@@ -46,7 +46,7 @@
             data-cy="diplomeRequis"
           >
             <option [ngValue]="null"></option>
-            <option *ngFor="let diplomeRequis of diplomeRequisValues" [value]="diplomeRequis">diplomeRequis</option>
+            <option *ngFor="let diplomeRequis of diplomeRequisValues" [value]="diplomeRequis">{{ diplomeRequis }}</option>
           </select>
         </div>
 
@@ -54,7 +54,7 @@
           <label class="form-label" for="field_niveauEtude">Niveau Etude</label>
           <select class="form-control" name="niveauEtude" formControlName="niveauEtude" id="field_niveauEtude" data-cy="niveauEtude">
             <option [ngValue]="null"></option>
-            <option *ngFor="let niveauEtude of niveauEtudeValues" [value]="niveauEtude">niveauEtude</option>
+            <option *ngFor="let niveauEtude of niveauEtudeValues" [value]="niveauEtude">{{ niveauEtude }}</option>
           </select>
         </div>
 
@@ -62,7 +62,7 @@
           <label class="form-label" for="field_filiere">Filiere</label>
           <select class="form-control" name="filiere" formControlName="filiere" id="field_filiere" data-cy="filiere">
             <option [ngValue]="null"></option>
-            <option *ngFor="let nomFiliere of nomFiliereValues" [value]="nomFiliere">nomFiliere</option>
+            <option *ngFor="let nomFiliere of nomFiliereValues" [value]="nomFiliere">{{ nomFiliere }}</option>
           </select>
         </div>
 
@@ -70,7 +70,7 @@
           <label class="form-label" for="field_serie">Serie</label>
           <select class="form-control" name="serie" formControlName="serie" id="field_serie" data-cy="serie">
             <option [ngValue]="null"></option>
-            <option *ngFor="let nomSerie of nomSerieValues" [value]="nomSerie">nomSerie</option>
+            <option *ngFor="let nomSerie of nomSerieValues" [value]="nomSerie">{{ nomSerie }}</option>
           </select>
         </div>
 
@@ -78,7 +78,7 @@
           <label class="form-label" for="field_cfp">Cfp</label>
           <select class="form-control" name="cfp" formControlName="cfp" id="field_cfp" data-cy="cfp">
             <option [ngValue]="null"></option>
-            <option *ngFor="let cFP of cFPValues" [value]="cFP">cFP</option>
+            <option *ngFor="let cFP of cFPValues" [value]="cFP">{{ cFP }}</option>
           </select>
         </div>
 
@@ -86,7 +86,7 @@
           <label class="form-label" for="field_lycee">Lycee</label>
           <select class="form-control" name="lycee" formControlName="lycee" id="field_lycee" data-cy="lycee">
             <option [ngValue]="null"></option>
-            <option *ngFor="let lYCEE of lYCEEValues" [value]="lYCEE">lYCEE</option>
+            <option *ngFor="let lYCEE of lYCEEValues" [value]="lYCEE">{{ lYCEE }}</option>
           </select>
         </div>
 
@@ -167,7 +167,7 @@
           <label class="form-label" for="field_nomDiplome">Nom Diplome</label>
           <select class="form-control" name="nomDiplome" formControlName="nomDiplome" id="field_nomDiplome" data-cy="nomDiplome">
             <option [ngValue]="null"></option>
-            <option *ngFor="let diplomeObtenu of diplomeObtenuValues" [value]="diplomeObtenu">diplomeObtenu</option>
+            <option *ngFor="let diplomeObtenu of diplomeObtenuValues" [value]="diplomeObtenu">{{ diplomeObtenu }}</option>
           </select>
         </div>
 
@@ -200,10 +200,14 @@
           <select class="form-control" id="field_formation" data-cy="formation" name="formation" formControlName="formation">
             <option [ngValue]="null"></option>
             <option
-              [ngValue]="formationOption.id === editForm.get('formation')!.value?.id ? editForm.get('formation')!.value : formationOption"
+              [ngValue]="
+                formationOption.nomFormation === editForm.get('formation')!.value?.nomFormation
+                  ? editForm.get('formation')!.value
+                  : formationOption
+              "
               *ngFor="let formationOption of formationsCollection; trackBy: trackFormationById"
             >
-              {{ formationOption.id }}
+              {{ formationOption.nomFormation }}
             </option>
           </select>
         </div>

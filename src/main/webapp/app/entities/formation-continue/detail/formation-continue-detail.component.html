@@ -88,7 +88,9 @@
         <dt><span>Formation</span></dt>
         <dd>
           <div *ngIf="formationContinue.formation">
-            <a [routerLink]="['/formation', formationContinue.formation?.id, 'view']">{{ formationContinue.formation?.id }}</a>
+            <a [routerLink]="['/formation', formationContinue.formation?.nomFormation, 'view']">{{
+              formationContinue.formation?.nomFormation
+            }}</a>
           </div>
         </dd>
       </dl>

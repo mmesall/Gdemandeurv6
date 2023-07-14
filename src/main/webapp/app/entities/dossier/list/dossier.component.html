@@ -20,7 +20,7 @@
         [routerLink]="['/dossier/new']"
       >
         <fa-icon icon="plus"></fa-icon>
-        <span> Create a new Dossier </span>
+        <span> Créer un nouveau dossier </span>
       </button>
     </div>
   </h2>
@@ -43,7 +43,7 @@
           <th scope="col" jhiSortBy="prenom"><span>Prenom</span> <fa-icon icon="sort"></fa-icon></th>
           <th scope="col" jhiSortBy="nom"><span>Nom</span> <fa-icon icon="sort"></fa-icon></th>
           <th scope="col" jhiSortBy="nomUtilisateur"><span>Nom Utilisateur</span> <fa-icon icon="sort"></fa-icon></th>
-          <th scope="col" jhiSortBy="regionNaiss"><span>Region Naiss</span> <fa-icon icon="sort"></fa-icon></th>
+          <!-- <th scope="col" jhiSortBy="regionNaiss"><span>Region Naiss</span> <fa-icon icon="sort"></fa-icon></th>
           <th scope="col" jhiSortBy="departementNaiss"><span>Departement Naiss</span> <fa-icon icon="sort"></fa-icon></th>
           <th scope="col" jhiSortBy="lieuNaiss"><span>Lieu Naiss</span> <fa-icon icon="sort"></fa-icon></th>
           <th scope="col" jhiSortBy="typePiece"><span>Type Piece</span> <fa-icon icon="sort"></fa-icon></th>
@@ -64,7 +64,7 @@
           <th scope="col" jhiSortBy="profession"><span>Profession</span> <fa-icon icon="sort"></fa-icon></th>
           <th scope="col" jhiSortBy="eleve.niveauEtude"><span>Eleve</span> <fa-icon icon="sort"></fa-icon></th>
           <th scope="col" jhiSortBy="etudiant.carteEtudiant"><span>Etudiant</span> <fa-icon icon="sort"></fa-icon></th>
-          <th scope="col" jhiSortBy="professionnel.profession"><span>Professionnel</span> <fa-icon icon="sort"></fa-icon></th>
+          <th scope="col" jhiSortBy="professionnel.profession"><span>Professionnel</span> <fa-icon icon="sort"></fa-icon></th> -->
           <th scope="col"></th>
         </tr>
       </thead>
@@ -78,7 +78,7 @@
           <td>{{ dossier.prenom }}</td>
           <td>{{ dossier.nom }}</td>
           <td>{{ dossier.nomUtilisateur }}</td>
-          <td>{{ dossier.regionNaiss }}</td>
+          <!-- <td>{{ dossier.regionNaiss }}</td>
           <td>{{ dossier.departementNaiss }}</td>
           <td>{{ dossier.lieuNaiss }}</td>
           <td>{{ dossier.typePiece }}</td>
@@ -114,7 +114,7 @@
             <div *ngIf="dossier.professionnel">
               <a [routerLink]="['/professionnel', dossier.professionnel?.id, 'view']">{{ dossier.professionnel?.profession }}</a>
             </div>
-          </td>
+          </td> -->
           <td class="text-end">
             <div class="btn-group">
               <button
@@ -135,7 +135,7 @@
                 data-cy="entityEditButton"
               >
                 <fa-icon icon="pencil-alt"></fa-icon>
-                <span class="d-none d-md-inline">Edit</span>
+                <span class="d-none d-md-inline">Modifier mon dossier</span>
               </button>
 
               <button

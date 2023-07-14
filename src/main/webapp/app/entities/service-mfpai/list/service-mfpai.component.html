@@ -3,10 +3,10 @@
     <span>Directions et Services rattaches du MFPAI</span>
 
     <div *jhiHasAnyAuthority="'ROLE_ADMIN'" class="d-flex justify-content-end">
-      <button class="btn btn-info me-2" (click)="reset()" [disabled]="isLoading">
+      <!-- <button class="btn btn-info me-2" (click)="reset()" [disabled]="isLoading">
         <fa-icon icon="sync" [spin]="isLoading"></fa-icon>
         <span>Refresh List</span>
-      </button>
+      </button> -->
 
       <button
         id="jh-create-entity"
@@ -15,7 +15,7 @@
         [routerLink]="['/service-mfpai/new']"
       >
         <fa-icon icon="plus"></fa-icon>
-        <span> Create a new Service MFPAI </span>
+        <span> Ajouter un Service MFPAI </span>
       </button>
     </div>
   </h2>

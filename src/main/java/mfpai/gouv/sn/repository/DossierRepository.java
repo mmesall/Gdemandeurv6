@@ -41,4 +41,7 @@ public interface DossierRepository extends JpaRepository<Dossier, Long> {
         "select dossier from Dossier dossier left join fetch dossier.eleve left join fetch dossier.etudiant left join fetch dossier.professionnel where dossier.id =:id"
     )
     Optional<Dossier> findOneWithToOneRelationships(@Param("id") Long id);
+    // @Query(value = "select max(id) from dossier"
+    // )
+    // public Long  findOneByIdDesc( );
 }
