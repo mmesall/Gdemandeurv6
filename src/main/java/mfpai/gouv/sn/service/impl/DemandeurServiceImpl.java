@@ -33,6 +33,12 @@ public class DemandeurServiceImpl implements DemandeurService {
     }
 
     @Override
+    public Demandeur update(Demandeur demandeur) {
+        log.debug("Request to update Demandeur : {}", demandeur);
+        return demandeurRepository.save(demandeur);
+    }
+
+    @Override
     public Optional<Demandeur> partialUpdate(Demandeur demandeur) {
         log.debug("Request to partially update Demandeur : {}", demandeur);
 

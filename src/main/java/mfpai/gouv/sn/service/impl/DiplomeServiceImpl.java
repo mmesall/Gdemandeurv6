@@ -33,6 +33,12 @@ public class DiplomeServiceImpl implements DiplomeService {
     }
 
     @Override
+    public Diplome update(Diplome diplome) {
+        log.debug("Request to update Diplome : {}", diplome);
+        return diplomeRepository.save(diplome);
+    }
+
+    @Override
     public Optional<Diplome> partialUpdate(Diplome diplome) {
         log.debug("Request to partially update Diplome : {}", diplome);
 

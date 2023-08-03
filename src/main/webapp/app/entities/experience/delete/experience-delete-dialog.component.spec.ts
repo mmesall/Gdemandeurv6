@@ -18,8 +18,7 @@ describe('Experience Management Delete Component', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
-      declarations: [ExperienceDeleteDialogComponent],
+      imports: [HttpClientTestingModule, ExperienceDeleteDialogComponent],
       providers: [NgbActiveModal],
     })
       .overrideTemplate(ExperienceDeleteDialogComponent, '')

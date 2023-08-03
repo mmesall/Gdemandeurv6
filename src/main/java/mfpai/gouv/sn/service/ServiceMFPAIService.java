@@ -19,6 +19,14 @@ public interface ServiceMFPAIService {
     ServiceMFPAI save(ServiceMFPAI serviceMFPAI);
 
     /**
+     * Updates a serviceMFPAI.
+     *
+     * @param serviceMFPAI the entity to update.
+     * @return the persisted entity.
+     */
+    ServiceMFPAI update(ServiceMFPAI serviceMFPAI);
+
+    /**
      * Partially updates a serviceMFPAI.
      *
      * @param serviceMFPAI the entity to update partially.
@@ -33,6 +41,7 @@ public interface ServiceMFPAIService {
      * @return the list of entities.
      */
     Page<ServiceMFPAI> findAll(Pageable pageable);
+
     /**
      * Get all the ServiceMFPAI where Agent is {@code null}.
      *

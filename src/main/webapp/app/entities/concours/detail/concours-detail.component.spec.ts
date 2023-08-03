@@ -1,5 +1,6 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ActivatedRoute } from '@angular/router';
+import { TestBed } from '@angular/core/testing';
+import { provideRouter, withComponentInputBinding } from '@angular/router';
+import { RouterTestingHarness, RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
 
 import { DataUtils } from 'app/core/util/data-util.service';
@@ -7,35 +8,37 @@ import { DataUtils } from 'app/core/util/data-util.service';
 import { ConcoursDetailComponent } from './concours-detail.component';
 
 describe('Concours Management Detail Component', () => {
-  let comp: ConcoursDetailComponent;
-  let fixture: ComponentFixture<ConcoursDetailComponent>;
   let dataUtils: DataUtils;
 
-  beforeEach(() => {
-    TestBed.configureTestingModule({
-      declarations: [ConcoursDetailComponent],
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [ConcoursDetailComponent, RouterTestingModule.withRoutes([], { bindToComponentInputs: true })],
       providers: [
-        {
-          provide: ActivatedRoute,
-          useValue: { data: of({ concours: { id: 123 } }) },
-        },
+        provideRouter(
+          [
+            {
+              path: '**',
+              component: ConcoursDetailComponent,
+              resolve: { concours: () => of({ id: 123 }) },
+            },
+          ],
+          withComponentInputBinding()
+        ),
       ],
     })
       .overrideTemplate(ConcoursDetailComponent, '')
       .compileComponents();
-    fixture = TestBed.createComponent(ConcoursDetailComponent);
-    comp = fixture.componentInstance;
     dataUtils = TestBed.inject(DataUtils);
     jest.spyOn(window, 'open').mockImplementation(() => null);
   });
 
   describe('OnInit', () => {
-    it('Should load concours on init', () => {
-      // WHEN
-      comp.ngOnInit();
+    it('Should load concours on init', async () => {
+      const harness = await RouterTestingHarness.create();
+      const instance = await harness.navigateByUrl('/', ConcoursDetailComponent);
 
       // THEN
-      expect(comp.concours).toEqual(expect.objectContaining({ id: 123 }));
+      expect(instance.concours).toEqual(expect.objectContaining({ id: 123 }));
     });
   });
 
@@ -44,6 +47,8 @@ describe('Concours Management Detail Component', () => {
       // GIVEN
       jest.spyOn(dataUtils, 'byteSize');
       const fakeBase64 = 'fake base64';
+      const fixture = TestBed.createComponent(ConcoursDetailComponent);
+      const comp = fixture.componentInstance;
 
       // WHEN
       comp.byteSize(fakeBase64);
@@ -58,12 +63,14 @@ describe('Concours Management Detail Component', () => {
       const newWindow = { ...window };
       newWindow.document.write = jest.fn();
       window.open = jest.fn(() => newWindow);
-      window.onload = jest.fn(() => newWindow);
-      window.URL.createObjectURL = jest.fn();
+      window.onload = jest.fn(() => newWindow) as any;
+      window.URL.createObjectURL = jest.fn() as any;
       // GIVEN
       jest.spyOn(dataUtils, 'openFile');
       const fakeContentType = 'fake content type';
       const fakeBase64 = 'fake base64';
+      const fixture = TestBed.createComponent(ConcoursDetailComponent);
+      const comp = fixture.componentInstance;
 
       // WHEN
       comp.openFile(fakeBase64, fakeContentType);

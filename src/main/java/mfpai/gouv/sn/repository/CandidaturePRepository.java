@@ -10,7 +10,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 /**
- * Spring Data SQL repository for the CandidatureP entity.
+ * Spring Data JPA repository for the CandidatureP entity.
  */
 @Repository
 public interface CandidaturePRepository extends JpaRepository<CandidatureP, Long> {
@@ -27,13 +27,13 @@ public interface CandidaturePRepository extends JpaRepository<CandidatureP, Long
     }
 
     @Query(
-        value = "select distinct candidatureP from CandidatureP candidatureP left join fetch candidatureP.professionnel left join fetch candidatureP.formationContinue left join fetch candidatureP.etablissement",
-        countQuery = "select count(distinct candidatureP) from CandidatureP candidatureP"
+        value = "select candidatureP from CandidatureP candidatureP left join fetch candidatureP.professionnel left join fetch candidatureP.formationContinue left join fetch candidatureP.etablissement",
+        countQuery = "select count(candidatureP) from CandidatureP candidatureP"
     )
     Page<CandidatureP> findAllWithToOneRelationships(Pageable pageable);
 
     @Query(
-        "select distinct candidatureP from CandidatureP candidatureP left join fetch candidatureP.professionnel left join fetch candidatureP.formationContinue left join fetch candidatureP.etablissement"
+        "select candidatureP from CandidatureP candidatureP left join fetch candidatureP.professionnel left join fetch candidatureP.formationContinue left join fetch candidatureP.etablissement"
     )
     List<CandidatureP> findAllWithToOneRelationships();
 

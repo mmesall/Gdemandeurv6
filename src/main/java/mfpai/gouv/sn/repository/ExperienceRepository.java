@@ -10,7 +10,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 /**
- * Spring Data SQL repository for the Experience entity.
+ * Spring Data JPA repository for the Experience entity.
  */
 @Repository
 public interface ExperienceRepository extends JpaRepository<Experience, Long> {
@@ -27,13 +27,13 @@ public interface ExperienceRepository extends JpaRepository<Experience, Long> {
     }
 
     @Query(
-        value = "select distinct experience from Experience experience left join fetch experience.eleve left join fetch experience.etudiant left join fetch experience.professionnel left join fetch experience.demandeur",
-        countQuery = "select count(distinct experience) from Experience experience"
+        value = "select experience from Experience experience left join fetch experience.eleve left join fetch experience.etudiant left join fetch experience.professionnel left join fetch experience.demandeur",
+        countQuery = "select count(experience) from Experience experience"
     )
     Page<Experience> findAllWithToOneRelationships(Pageable pageable);
 
     @Query(
-        "select distinct experience from Experience experience left join fetch experience.eleve left join fetch experience.etudiant left join fetch experience.professionnel left join fetch experience.demandeur"
+        "select experience from Experience experience left join fetch experience.eleve left join fetch experience.etudiant left join fetch experience.professionnel left join fetch experience.demandeur"
     )
     List<Experience> findAllWithToOneRelationships();
 

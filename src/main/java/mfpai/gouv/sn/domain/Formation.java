@@ -1,11 +1,11 @@
 package mfpai.gouv.sn.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
-import javax.persistence.*;
-import javax.validation.constraints.*;
 import mfpai.gouv.sn.domain.enumeration.Admission;
 import mfpai.gouv.sn.domain.enumeration.DiplomeRequis;
 import mfpai.gouv.sn.domain.enumeration.TypeFormation;
@@ -18,6 +18,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Entity
 @Table(name = "formation")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+@SuppressWarnings("common-java:DuplicatedBlocks")
 public class Formation implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -59,7 +60,7 @@ public class Formation implements Serializable {
     @Column(name = "fiche_formation_content_type")
     private String ficheFormationContentType;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     @NotNull
     @JoinTable(
         name = "rel_formation__etablissement",
@@ -71,8 +72,20 @@ public class Formation implements Serializable {
     private Set<Etablissement> etablissements = new HashSet<>();
 
     @JsonIgnoreProperties(value = { "formation", "bailleur" }, allowSetters = true)
-    @OneToOne(mappedBy = "formation")
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "formation")
     private PriseEnCharge priseEnCharge;
+
+    @JsonIgnoreProperties(value = { "formation", "candidatureES" }, allowSetters = true)
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "formation")
+    private FormationInitiale formationInitiale;
+
+    @JsonIgnoreProperties(value = { "formation", "candidaturePS" }, allowSetters = true)
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "formation")
+    private FormationContinue formationContinue;
+
+    @JsonIgnoreProperties(value = { "formation" }, allowSetters = true)
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "formation")
+    private Concours concours;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
@@ -247,6 +260,63 @@ public class Formation implements Serializable {
 
     public Formation priseEnCharge(PriseEnCharge priseEnCharge) {
         this.setPriseEnCharge(priseEnCharge);
+        return this;
+    }
+
+    public FormationInitiale getFormationInitiale() {
+        return this.formationInitiale;
+    }
+
+    public void setFormationInitiale(FormationInitiale formationInitiale) {
+        if (this.formationInitiale != null) {
+            this.formationInitiale.setFormation(null);
+        }
+        if (formationInitiale != null) {
+            formationInitiale.setFormation(this);
+        }
+        this.formationInitiale = formationInitiale;
+    }
+
+    public Formation formationInitiale(FormationInitiale formationInitiale) {
+        this.setFormationInitiale(formationInitiale);
+        return this;
+    }
+
+    public FormationContinue getFormationContinue() {
+        return this.formationContinue;
+    }
+
+    public void setFormationContinue(FormationContinue formationContinue) {
+        if (this.formationContinue != null) {
+            this.formationContinue.setFormation(null);
+        }
+        if (formationContinue != null) {
+            formationContinue.setFormation(this);
+        }
+        this.formationContinue = formationContinue;
+    }
+
+    public Formation formationContinue(FormationContinue formationContinue) {
+        this.setFormationContinue(formationContinue);
+        return this;
+    }
+
+    public Concours getConcours() {
+        return this.concours;
+    }
+
+    public void setConcours(Concours concours) {
+        if (this.concours != null) {
+            this.concours.setFormation(null);
+        }
+        if (concours != null) {
+            concours.setFormation(this);
+        }
+        this.concours = concours;
+    }
+
+    public Formation concours(Concours concours) {
+        this.setConcours(concours);
         return this;
     }
 

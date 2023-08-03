@@ -1,11 +1,11 @@
 <div>
-  <h2 id="page-heading" data-cy="FormationContinueHeading" style="text-align: center; font-style: italic; font-weight: bold">
-    <span>Les formation continues</span>
+  <h2 id="page-heading" data-cy="FormationContinueHeading">
+    <span jhiTranslate="jhipsterProjectBaseJwtApp.formationContinue.home.title">FormationContinues</span>
 
-    <div *jhiHasAnyAuthority="'ROLE_ADMIN'" class="d-flex justify-content-end">
-      <button class="btn btn-info me-2" (click)="reset()" [disabled]="isLoading">
+    <div class="d-flex justify-content-end">
+      <button class="btn btn-info me-2" (click)="load()" [disabled]="isLoading">
         <fa-icon icon="sync" [spin]="isLoading"></fa-icon>
-        <span>Refresh List</span>
+        <span jhiTranslate="jhipsterProjectBaseJwtApp.formationContinue.home.refreshListLabel">Actualiser la liste</span>
       </button>
 
       <button
@@ -15,7 +15,7 @@
         [routerLink]="['/formation-continue/new']"
       >
         <fa-icon icon="plus"></fa-icon>
-        <span> Create a new Formation Continue </span>
+        <span jhiTranslate="jhipsterProjectBaseJwtApp.formationContinue.home.createLabel"> Créer un nouveau Formation Continue </span>
       </button>
     </div>
   </h2>
@@ -25,109 +25,205 @@
   <jhi-alert></jhi-alert>
 
   <div class="alert alert-warning" id="no-result" *ngIf="formationContinues?.length === 0">
-    <span>No formationContinues found</span>
+    <span jhiTranslate="jhipsterProjectBaseJwtApp.formationContinue.home.notFound">Aucun Formation Continue trouvé</span>
   </div>
 
-  <div class="table-responsive" id="entities" *ngIf="formationContinues && formationContinues.length > 0">
+  <div class="table-responsive table-entities" id="entities" *ngIf="formationContinues && formationContinues.length > 0">
     <table class="table table-striped" aria-describedby="page-heading">
       <thead>
-        <tr jhiSort [(predicate)]="predicate" [(ascending)]="ascending" (sortChange)="reset()">
-          <th *jhiHasAnyAuthority="'ROLE_ADMIN'" scope="col" jhiSortBy="id"><span>ID</span> <fa-icon icon="sort"></fa-icon></th>
-          <th scope="col" jhiSortBy="nomFormationC"><span>Nom Formation C</span> <fa-icon icon="sort"></fa-icon></th>
-          <th scope="col" jhiSortBy="duree"><span>Duree</span> <fa-icon icon="sort"></fa-icon></th>
-          <th scope="col" jhiSortBy="admission"><span>Admission</span> <fa-icon icon="sort"></fa-icon></th>
-          <!-- <th scope="col" jhiSortBy="diplomeRequis"><span>Diplome Requis</span> <fa-icon icon="sort"></fa-icon></th> -->
-          <th scope="col" jhiSortBy="niveauEtude"><span>Niveau Etude</span> <fa-icon icon="sort"></fa-icon></th>
-          <!-- <th scope="col" jhiSortBy="filiere"><span>Filiere</span> <fa-icon icon="sort"></fa-icon></th>
-          <th scope="col" jhiSortBy="serie"><span>Serie</span> <fa-icon icon="sort"></fa-icon></th>
-          <th scope="col" jhiSortBy="cfp"><span>Cfp</span> <fa-icon icon="sort"></fa-icon></th>
-          <th scope="col" jhiSortBy="lycee"><span>Lycee</span> <fa-icon icon="sort"></fa-icon></th>
-          <th scope="col" jhiSortBy="ficheFormation"><span>Fiche Formation</span> <fa-icon icon="sort"></fa-icon></th>
-          <th scope="col" jhiSortBy="libellePC"><span>Libelle PC</span> <fa-icon icon="sort"></fa-icon></th>
-          <th scope="col" jhiSortBy="montantPriseEnCharge"><span>Montant Prise En Charge</span> <fa-icon icon="sort"></fa-icon></th>
-          <th scope="col" jhiSortBy="coutFormation"><span>Cout Formation</span> <fa-icon icon="sort"></fa-icon></th> -->
-          <!-- <th scope="col" jhiSortBy="detailPC"><span>Detail PC</span> <fa-icon icon="sort"></fa-icon></th>
-          <th scope="col" jhiSortBy="nomDiplome"><span>Nom Diplome</span> <fa-icon icon="sort"></fa-icon></th>
-          <th scope="col" jhiSortBy="autreDiplome"><span>Autre Diplome</span> <fa-icon icon="sort"></fa-icon></th>
-          <th scope="col" jhiSortBy="nomDebouche"><span>Nom Debouche</span> <fa-icon icon="sort"></fa-icon></th>
-          <th scope="col" jhiSortBy="formation.nomFormation"><span>Formation</span> <fa-icon icon="sort"></fa-icon></th> -->
+        <tr jhiSort [(predicate)]="predicate" [(ascending)]="ascending" (sortChange)="navigateToWithComponentValues()">
+          <th scope="col" jhiSortBy="id">
+            <div class="d-flex">
+              <span jhiTranslate="global.field.id">ID</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="nomFormationC">
+            <div class="d-flex">
+              <span jhiTranslate="jhipsterProjectBaseJwtApp.formationContinue.nomFormationC">Nom Formation C</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="duree">
+            <div class="d-flex">
+              <span jhiTranslate="jhipsterProjectBaseJwtApp.formationContinue.duree">Duree</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="admission">
+            <div class="d-flex">
+              <span jhiTranslate="jhipsterProjectBaseJwtApp.formationContinue.admission">Admission</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="diplomeRequis">
+            <div class="d-flex">
+              <span jhiTranslate="jhipsterProjectBaseJwtApp.formationContinue.diplomeRequis">Diplome Requis</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="niveauEtude">
+            <div class="d-flex">
+              <span jhiTranslate="jhipsterProjectBaseJwtApp.formationContinue.niveauEtude">Niveau Etude</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="filiere">
+            <div class="d-flex">
+              <span jhiTranslate="jhipsterProjectBaseJwtApp.formationContinue.filiere">Filiere</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="serie">
+            <div class="d-flex">
+              <span jhiTranslate="jhipsterProjectBaseJwtApp.formationContinue.serie">Serie</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="cfp">
+            <div class="d-flex">
+              <span jhiTranslate="jhipsterProjectBaseJwtApp.formationContinue.cfp">Cfp</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="lycee">
+            <div class="d-flex">
+              <span jhiTranslate="jhipsterProjectBaseJwtApp.formationContinue.lycee">Lycee</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="ficheFormation">
+            <div class="d-flex">
+              <span jhiTranslate="jhipsterProjectBaseJwtApp.formationContinue.ficheFormation">Fiche Formation</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="libellePC">
+            <div class="d-flex">
+              <span jhiTranslate="jhipsterProjectBaseJwtApp.formationContinue.libellePC">Libelle PC</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="montantPriseEnCharge">
+            <div class="d-flex">
+              <span jhiTranslate="jhipsterProjectBaseJwtApp.formationContinue.montantPriseEnCharge">Montant Prise En Charge</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="coutFormation">
+            <div class="d-flex">
+              <span jhiTranslate="jhipsterProjectBaseJwtApp.formationContinue.coutFormation">Cout Formation</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="detailPC">
+            <div class="d-flex">
+              <span jhiTranslate="jhipsterProjectBaseJwtApp.formationContinue.detailPC">Detail PC</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="nomDiplome">
+            <div class="d-flex">
+              <span jhiTranslate="jhipsterProjectBaseJwtApp.formationContinue.nomDiplome">Nom Diplome</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="autreDiplome">
+            <div class="d-flex">
+              <span jhiTranslate="jhipsterProjectBaseJwtApp.formationContinue.autreDiplome">Autre Diplome</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="nomDebouche">
+            <div class="d-flex">
+              <span jhiTranslate="jhipsterProjectBaseJwtApp.formationContinue.nomDebouche">Nom Debouche</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="formation.id">
+            <div class="d-flex">
+              <span jhiTranslate="jhipsterProjectBaseJwtApp.formationContinue.formation">Formation</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
           <th scope="col"></th>
         </tr>
       </thead>
-      <tbody infinite-scroll (scrolled)="loadPage(page + 1)" [infiniteScrollDisabled]="page >= links['last']" [infiniteScrollDistance]="0">
+      <tbody
+        infinite-scroll
+        (scrolled)="loadPage(page + 1)"
+        [infiniteScrollDisabled]="page - 1 >= links['last']"
+        [infiniteScrollDistance]="0"
+      >
         <tr *ngFor="let formationContinue of formationContinues; trackBy: trackId" data-cy="entityTable">
-          <td *jhiHasAnyAuthority="'ROLE_ADMIN'">
+          <td>
             <a [routerLink]="['/formation-continue', formationContinue.id, 'view']">{{ formationContinue.id }}</a>
           </td>
           <td>{{ formationContinue.nomFormationC }}</td>
           <td>{{ formationContinue.duree }}</td>
-          <td>{{ formationContinue.admission }}</td>
-          <!-- <td>{{ formationContinue.diplomeRequis }}</td> -->
-          <td>{{ formationContinue.niveauEtude }}</td>
-          <!-- <td>{{ formationContinue.filiere }}</td>
-          <td>{{ formationContinue.serie }}</td>
-          <td>{{ formationContinue.cfp }}</td>
-          <td>{{ formationContinue.lycee }}</td> -->
-          <!-- <td>
+          <td jhiTranslate="{{ 'jhipsterProjectBaseJwtApp.Admission.' + formationContinue.admission }}">
+            {{ formationContinue.admission }}
+          </td>
+          <td jhiTranslate="{{ 'jhipsterProjectBaseJwtApp.DiplomeRequis.' + formationContinue.diplomeRequis }}">
+            {{ formationContinue.diplomeRequis }}
+          </td>
+          <td jhiTranslate="{{ 'jhipsterProjectBaseJwtApp.NiveauEtude.' + formationContinue.niveauEtude }}">
+            {{ formationContinue.niveauEtude }}
+          </td>
+          <td jhiTranslate="{{ 'jhipsterProjectBaseJwtApp.NomFiliere.' + formationContinue.filiere }}">{{ formationContinue.filiere }}</td>
+          <td jhiTranslate="{{ 'jhipsterProjectBaseJwtApp.NomSerie.' + formationContinue.serie }}">{{ formationContinue.serie }}</td>
+          <td jhiTranslate="{{ 'jhipsterProjectBaseJwtApp.CFP.' + formationContinue.cfp }}">{{ formationContinue.cfp }}</td>
+          <td jhiTranslate="{{ 'jhipsterProjectBaseJwtApp.LYCEE.' + formationContinue.lycee }}">{{ formationContinue.lycee }}</td>
+          <td>
             <a
               *ngIf="formationContinue.ficheFormation"
               (click)="openFile(formationContinue.ficheFormation, formationContinue.ficheFormationContentType)"
-              >open</a
+              jhiTranslate="entity.action.open"
+              >Ouvrir</a
             >
             <span *ngIf="formationContinue.ficheFormation"
               >{{ formationContinue.ficheFormationContentType }}, {{ byteSize(formationContinue.ficheFormation) }}</span
             >
-          </td> -->
-          <!-- <td>{{ formationContinue.libellePC }}</td>
+          </td>
+          <td>{{ formationContinue.libellePC }}</td>
           <td>{{ formationContinue.montantPriseEnCharge }}</td>
           <td>{{ formationContinue.coutFormation }}</td>
           <td>{{ formationContinue.detailPC }}</td>
-          <td>{{ formationContinue.nomDiplome }}</td>
+          <td jhiTranslate="{{ 'jhipsterProjectBaseJwtApp.DiplomeObtenu.' + formationContinue.nomDiplome }}">
+            {{ formationContinue.nomDiplome }}
+          </td>
           <td>{{ formationContinue.autreDiplome }}</td>
-          <td>{{ formationContinue.nomDebouche }}</td> -->
-          <!-- <td>
+          <td>{{ formationContinue.nomDebouche }}</td>
+          <td>
             <div *ngIf="formationContinue.formation">
-              <a [routerLink]="['/formation', formationContinue.formation?.nomFormation, 'view']">{{ formationContinue.formation?.nomFormation }}</a>
+              <a [routerLink]="['/formation', formationContinue.formation.id, 'view']">{{ formationContinue.formation.id }}</a>
             </div>
-          </td> -->
+          </td>
           <td class="text-end">
             <div class="btn-group">
               <button
-                *jhiHasAnyAuthority="'ROLE_ADMIN'"
                 type="submit"
                 [routerLink]="['/formation-continue', formationContinue.id, 'view']"
                 class="btn btn-info btn-sm"
                 data-cy="entityDetailsButton"
               >
                 <fa-icon icon="eye"></fa-icon>
-                <!-- <span class="d-none d-md-inline">View</span> -->
-              </button>
-
-              <button type="submit" routerLink="/candidature-p/new" class="btn btn-success btn-sm" data-cy="entityDetailsButton">
-                <!-- <fa-icon icon="eye"></fa-icon> -->
-                <span class="d-none d-md-inline">Postuler</span>
+                <span class="d-none d-md-inline" jhiTranslate="entity.action.view">Voir</span>
               </button>
 
               <button
-                *jhiHasAnyAuthority="'ROLE_ADMIN'"
                 type="submit"
                 [routerLink]="['/formation-continue', formationContinue.id, 'edit']"
                 class="btn btn-primary btn-sm"
                 data-cy="entityEditButton"
               >
                 <fa-icon icon="pencil-alt"></fa-icon>
-                <!-- <span class="d-none d-md-inline">Edit</span> -->
+                <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Editer</span>
               </button>
 
-              <button
-                *jhiHasAnyAuthority="'ROLE_ADMIN'"
-                type="submit"
-                (click)="delete(formationContinue)"
-                class="btn btn-danger btn-sm"
-                data-cy="entityDeleteButton"
-              >
+              <button type="submit" (click)="delete(formationContinue)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
                 <fa-icon icon="times"></fa-icon>
-                <!-- <span class="d-none d-md-inline">Delete</span> -->
+                <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Supprimer</span>
               </button>
             </div>
           </td>

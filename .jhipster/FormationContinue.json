@@ -1,8 +1,6 @@
 {
   "applications": "*",
   "changelogDate": "20230328104848",
-  "dto": "no",
-  "embedded": false,
   "entityTableName": "formation_continue",
   "fields": [
     {
@@ -84,25 +82,23 @@
       "fieldType": "String"
     }
   ],
-  "fluentMethods": true,
-  "jpaMetamodelFiltering": false,
   "name": "FormationContinue",
   "pagination": "infinite-scroll",
-  "readOnly": false,
   "relationships": [
     {
       "otherEntityName": "formation",
-      "otherEntityRelationshipName": "formationContinue",
-      "ownerSide": true,
       "relationshipName": "formation",
+      "relationshipSide": "left",
       "relationshipType": "one-to-one"
     },
     {
       "otherEntityName": "candidatureP",
       "otherEntityRelationshipName": "formationContinue",
       "relationshipName": "candidatureP",
+      "relationshipSide": "left",
       "relationshipType": "one-to-many"
     }
   ],
+  "searchEngine": "no",
   "service": "serviceImpl"
 }

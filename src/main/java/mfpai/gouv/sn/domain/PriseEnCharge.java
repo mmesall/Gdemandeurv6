@@ -1,8 +1,8 @@
 package mfpai.gouv.sn.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import jakarta.persistence.*;
 import java.io.Serializable;
-import javax.persistence.*;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -12,6 +12,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Entity
 @Table(name = "prise_en_charge")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+@SuppressWarnings("common-java:DuplicatedBlocks")
 public class PriseEnCharge implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -27,12 +28,15 @@ public class PriseEnCharge implements Serializable {
     @Column(name = "montant_pc")
     private Double montantPC;
 
-    @JsonIgnoreProperties(value = { "etablissements", "priseEnCharge" }, allowSetters = true)
-    @OneToOne
+    @JsonIgnoreProperties(
+        value = { "etablissements", "priseEnCharge", "formationInitiale", "formationContinue", "concours" },
+        allowSetters = true
+    )
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(unique = true)
     private Formation formation;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnoreProperties(value = { "priseEnCharges" }, allowSetters = true)
     private Bailleur bailleur;
 

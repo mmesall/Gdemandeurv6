@@ -1,20 +1,23 @@
 import { TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
-import dayjs from 'dayjs/esm';
 
 import { DATE_FORMAT } from 'app/config/input.constants';
-import { NomFiliere } from 'app/entities/enumerations/nom-filiere.model';
-import { Resultat } from 'app/entities/enumerations/resultat.model';
-import { ICandidatureP, CandidatureP } from '../candidature-p.model';
+import { ICandidatureP } from '../candidature-p.model';
+import { sampleWithRequiredData, sampleWithNewData, sampleWithPartialData, sampleWithFullData } from '../candidature-p.test-samples';
 
-import { CandidaturePService } from './candidature-p.service';
+import { CandidaturePService, RestCandidatureP } from './candidature-p.service';
+
+const requireRestSample: RestCandidatureP = {
+  ...sampleWithRequiredData,
+  dateDebutOffre: sampleWithRequiredData.dateDebutOffre?.format(DATE_FORMAT),
+  dateFinOffre: sampleWithRequiredData.dateFinOffre?.format(DATE_FORMAT),
+  dateDepot: sampleWithRequiredData.dateDepot?.format(DATE_FORMAT),
+};
 
 describe('CandidatureP Service', () => {
   let service: CandidaturePService;
   let httpMock: HttpTestingController;
-  let elemDefault: ICandidatureP;
   let expectedResult: ICandidatureP | ICandidatureP[] | boolean | null;
-  let currentDate: dayjs.Dayjs;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -23,57 +26,27 @@ describe('CandidatureP Service', () => {
     expectedResult = null;
     service = TestBed.inject(CandidaturePService);
     httpMock = TestBed.inject(HttpTestingController);
-    currentDate = dayjs();
-
-    elemDefault = {
-      id: 0,
-      offreFormation: NomFiliere.AGRI_ELEVAGE,
-      dateDebutOffre: currentDate,
-      dateFinOffre: currentDate,
-      dateDepot: currentDate,
-      resultat: Resultat.SOUMIS,
-    };
   });
 
   describe('Service methods', () => {
     it('should find an element', () => {
-      const returnedFromService = Object.assign(
-        {
-          dateDebutOffre: currentDate.format(DATE_FORMAT),
-          dateFinOffre: currentDate.format(DATE_FORMAT),
-          dateDepot: currentDate.format(DATE_FORMAT),
-        },
-        elemDefault
-      );
+      const returnedFromService = { ...requireRestSample };
+      const expected = { ...sampleWithRequiredData };
 
       service.find(123).subscribe(resp => (expectedResult = resp.body));
 
       const req = httpMock.expectOne({ method: 'GET' });
       req.flush(returnedFromService);
-      expect(expectedResult).toMatchObject(elemDefault);
+      expect(expectedResult).toMatchObject(expected);
     });
 
     it('should create a CandidatureP', () => {
-      const returnedFromService = Object.assign(
-        {
-          id: 0,
-          dateDebutOffre: currentDate.format(DATE_FORMAT),
-          dateFinOffre: currentDate.format(DATE_FORMAT),
-          dateDepot: currentDate.format(DATE_FORMAT),
-        },
-        elemDefault
-      );
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const candidatureP = { ...sampleWithNewData };
+      const returnedFromService = { ...requireRestSample };
+      const expected = { ...sampleWithRequiredData };
 
-      const expected = Object.assign(
-        {
-          dateDebutOffre: currentDate,
-          dateFinOffre: currentDate,
-          dateDepot: currentDate,
-        },
-        returnedFromService
-      );
-
-      service.create(new CandidatureP()).subscribe(resp => (expectedResult = resp.body));
+      service.create(candidatureP).subscribe(resp => (expectedResult = resp.body));
 
       const req = httpMock.expectOne({ method: 'POST' });
       req.flush(returnedFromService);
@@ -81,28 +54,11 @@ describe('CandidatureP Service', () => {
     });
 
     it('should update a CandidatureP', () => {
-      const returnedFromService = Object.assign(
-        {
-          id: 1,
-          offreFormation: 'BBBBBB',
-          dateDebutOffre: currentDate.format(DATE_FORMAT),
-          dateFinOffre: currentDate.format(DATE_FORMAT),
-          dateDepot: currentDate.format(DATE_FORMAT),
-          resultat: 'BBBBBB',
-        },
-        elemDefault
-      );
+      const candidatureP = { ...sampleWithRequiredData };
+      const returnedFromService = { ...requireRestSample };
+      const expected = { ...sampleWithRequiredData };
 
-      const expected = Object.assign(
-        {
-          dateDebutOffre: currentDate,
-          dateFinOffre: currentDate,
-          dateDepot: currentDate,
-        },
-        returnedFromService
-      );
-
-      service.update(expected).subscribe(resp => (expectedResult = resp.body));
+      service.update(candidatureP).subscribe(resp => (expectedResult = resp.body));
 
       const req = httpMock.expectOne({ method: 'PUT' });
       req.flush(returnedFromService);
@@ -110,25 +66,9 @@ describe('CandidatureP Service', () => {
     });
 
     it('should partial update a CandidatureP', () => {
-      const patchObject = Object.assign(
-        {
-          offreFormation: 'BBBBBB',
-          dateDepot: currentDate.format(DATE_FORMAT),
-          resultat: 'BBBBBB',
-        },
-        new CandidatureP()
-      );
-
-      const returnedFromService = Object.assign(patchObject, elemDefault);
-
-      const expected = Object.assign(
-        {
-          dateDebutOffre: currentDate,
-          dateFinOffre: currentDate,
-          dateDepot: currentDate,
-        },
-        returnedFromService
-      );
+      const patchObject = { ...sampleWithPartialData };
+      const returnedFromService = { ...requireRestSample };
+      const expected = { ...sampleWithRequiredData };
 
       service.partialUpdate(patchObject).subscribe(resp => (expectedResult = resp.body));
 
@@ -138,81 +78,66 @@ describe('CandidatureP Service', () => {
     });
 
     it('should return a list of CandidatureP', () => {
-      const returnedFromService = Object.assign(
-        {
-          id: 1,
-          offreFormation: 'BBBBBB',
-          dateDebutOffre: currentDate.format(DATE_FORMAT),
-          dateFinOffre: currentDate.format(DATE_FORMAT),
-          dateDepot: currentDate.format(DATE_FORMAT),
-          resultat: 'BBBBBB',
-        },
-        elemDefault
-      );
+      const returnedFromService = { ...requireRestSample };
 
-      const expected = Object.assign(
-        {
-          dateDebutOffre: currentDate,
-          dateFinOffre: currentDate,
-          dateDepot: currentDate,
-        },
-        returnedFromService
-      );
+      const expected = { ...sampleWithRequiredData };
 
       service.query().subscribe(resp => (expectedResult = resp.body));
 
       const req = httpMock.expectOne({ method: 'GET' });
       req.flush([returnedFromService]);
       httpMock.verify();
-      expect(expectedResult).toContainEqual(expected);
+      expect(expectedResult).toMatchObject([expected]);
     });
 
     it('should delete a CandidatureP', () => {
+      const expected = true;
+
       service.delete(123).subscribe(resp => (expectedResult = resp.ok));
 
       const req = httpMock.expectOne({ method: 'DELETE' });
       req.flush({ status: 200 });
-      expect(expectedResult);
+      expect(expectedResult).toBe(expected);
     });
 
     describe('addCandidaturePToCollectionIfMissing', () => {
       it('should add a CandidatureP to an empty array', () => {
-        const candidatureP: ICandidatureP = { id: 123 };
+        const candidatureP: ICandidatureP = sampleWithRequiredData;
         expectedResult = service.addCandidaturePToCollectionIfMissing([], candidatureP);
         expect(expectedResult).toHaveLength(1);
         expect(expectedResult).toContain(candidatureP);
       });
 
       it('should not add a CandidatureP to an array that contains it', () => {
-        const candidatureP: ICandidatureP = { id: 123 };
+        const candidatureP: ICandidatureP = sampleWithRequiredData;
         const candidaturePCollection: ICandidatureP[] = [
           {
             ...candidatureP,
           },
-          { id: 456 },
+          sampleWithPartialData,
         ];
         expectedResult = service.addCandidaturePToCollectionIfMissing(candidaturePCollection, candidatureP);
         expect(expectedResult).toHaveLength(2);
       });
 
       it("should add a CandidatureP to an array that doesn't contain it", () => {
-        const candidatureP: ICandidatureP = { id: 123 };
-        const candidaturePCollection: ICandidatureP[] = [{ id: 456 }];
+        const candidatureP: ICandidatureP = sampleWithRequiredData;
+        const candidaturePCollection: ICandidatureP[] = [sampleWithPartialData];
         expectedResult = service.addCandidaturePToCollectionIfMissing(candidaturePCollection, candidatureP);
         expect(expectedResult).toHaveLength(2);
         expect(expectedResult).toContain(candidatureP);
       });
 
       it('should add only unique CandidatureP to an array', () => {
-        const candidaturePArray: ICandidatureP[] = [{ id: 123 }, { id: 456 }, { id: 33052 }];
-        const candidaturePCollection: ICandidatureP[] = [{ id: 123 }];
+        const candidaturePArray: ICandidatureP[] = [sampleWithRequiredData, sampleWithPartialData, sampleWithFullData];
+        const candidaturePCollection: ICandidatureP[] = [sampleWithRequiredData];
         expectedResult = service.addCandidaturePToCollectionIfMissing(candidaturePCollection, ...candidaturePArray);
         expect(expectedResult).toHaveLength(3);
       });
 
       it('should accept varargs', () => {
-        const candidatureP: ICandidatureP = { id: 123 };
-        const candidatureP2: ICandidatureP = { id: 456 };
+        const candidatureP: ICandidatureP = sampleWithRequiredData;
+        const candidatureP2: ICandidatureP = sampleWithPartialData;
         expectedResult = service.addCandidaturePToCollectionIfMissing([], candidatureP, candidatureP2);
         expect(expectedResult).toHaveLength(2);
         expect(expectedResult).toContain(candidatureP);
@@ -220,16 +145,60 @@ describe('CandidatureP Service', () => {
       });
 
       it('should accept null and undefined values', () => {
-        const candidatureP: ICandidatureP = { id: 123 };
+        const candidatureP: ICandidatureP = sampleWithRequiredData;
         expectedResult = service.addCandidaturePToCollectionIfMissing([], null, candidatureP, undefined);
         expect(expectedResult).toHaveLength(1);
         expect(expectedResult).toContain(candidatureP);
       });
 
       it('should return initial array if no CandidatureP is added', () => {
-        const candidaturePCollection: ICandidatureP[] = [{ id: 123 }];
+        const candidaturePCollection: ICandidatureP[] = [sampleWithRequiredData];
         expectedResult = service.addCandidaturePToCollectionIfMissing(candidaturePCollection, undefined, null);
         expect(expectedResult).toEqual(candidaturePCollection);
+      });
+    });
+
+    describe('compareCandidatureP', () => {
+      it('Should return true if both entities are null', () => {
+        const entity1 = null;
+        const entity2 = null;
+
+        const compareResult = service.compareCandidatureP(entity1, entity2);
+
+        expect(compareResult).toEqual(true);
+      });
+
+      it('Should return false if one entity is null', () => {
+        const entity1 = { id: 123 };
+        const entity2 = null;
+
+        const compareResult1 = service.compareCandidatureP(entity1, entity2);
+        const compareResult2 = service.compareCandidatureP(entity2, entity1);
+
+        expect(compareResult1).toEqual(false);
+        expect(compareResult2).toEqual(false);
+      });
+
+      it('Should return false if primaryKey differs', () => {
+        const entity1 = { id: 123 };
+        const entity2 = { id: 456 };
+
+        const compareResult1 = service.compareCandidatureP(entity1, entity2);
+        const compareResult2 = service.compareCandidatureP(entity2, entity1);
+
+        expect(compareResult1).toEqual(false);
+        expect(compareResult2).toEqual(false);
+      });
+
+      it('Should return false if primaryKey matches', () => {
+        const entity1 = { id: 123 };
+        const entity2 = { id: 123 };
+
+        const compareResult1 = service.compareCandidatureP(entity1, entity2);
+        const compareResult2 = service.compareCandidatureP(entity2, entity1);
+
+        expect(compareResult1).toEqual(true);
+        expect(compareResult2).toEqual(true);
       });
     });
   });

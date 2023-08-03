@@ -1,12 +1,12 @@
 <div>
-  <h2 id="page-heading" data-cy="ServiceMFPAIHeading" style="text-align: center; font-style: italic; font-weight: bold">
-    <span>Directions et Services rattaches du MFPAI</span>
+  <h2 id="page-heading" data-cy="ServiceMFPAIHeading">
+    <span jhiTranslate="jhipsterProjectBaseJwtApp.serviceMFPAI.home.title">ServiceMFPAIS</span>
 
-    <div *jhiHasAnyAuthority="'ROLE_ADMIN'" class="d-flex justify-content-end">
-      <!-- <button class="btn btn-info me-2" (click)="reset()" [disabled]="isLoading">
+    <div class="d-flex justify-content-end">
+      <button class="btn btn-info me-2" (click)="load()" [disabled]="isLoading">
         <fa-icon icon="sync" [spin]="isLoading"></fa-icon>
-        <span>Refresh List</span>
-      </button> -->
+        <span jhiTranslate="jhipsterProjectBaseJwtApp.serviceMFPAI.home.refreshListLabel">Actualiser la liste</span>
+      </button>
 
       <button
         id="jh-create-entity"
@@ -15,7 +15,7 @@
         [routerLink]="['/service-mfpai/new']"
       >
         <fa-icon icon="plus"></fa-icon>
-        <span> Ajouter un Service MFPAI </span>
+        <span jhiTranslate="jhipsterProjectBaseJwtApp.serviceMFPAI.home.createLabel"> Créer un nouveau Service MFPAI </span>
       </button>
     </div>
   </h2>
@@ -25,24 +25,54 @@
   <jhi-alert></jhi-alert>
 
   <div class="alert alert-warning" id="no-result" *ngIf="serviceMFPAIS?.length === 0">
-    <span>No serviceMFPAIS found</span>
+    <span jhiTranslate="jhipsterProjectBaseJwtApp.serviceMFPAI.home.notFound">Aucun Service MFPAI trouvé</span>
   </div>
 
-  <div class="table-responsive" id="entities" *ngIf="serviceMFPAIS && serviceMFPAIS.length > 0">
+  <div class="table-responsive table-entities" id="entities" *ngIf="serviceMFPAIS && serviceMFPAIS.length > 0">
     <table class="table table-striped" aria-describedby="page-heading">
       <thead>
-        <tr jhiSort [(predicate)]="predicate" [(ascending)]="ascending" (sortChange)="reset()">
-          <th *jhiHasAnyAuthority="'ROLE_ADMIN'" scope="col" jhiSortBy="id"><span>ID</span> <fa-icon icon="sort"></fa-icon></th>
-          <th scope="col" jhiSortBy="imageService"><span>Image Service</span> <fa-icon icon="sort"></fa-icon></th>
-          <th scope="col" jhiSortBy="nomService"><span>Nom Service</span> <fa-icon icon="sort"></fa-icon></th>
-          <th scope="col" jhiSortBy="chefService"><span>Chef Service</span> <fa-icon icon="sort"></fa-icon></th>
-          <th scope="col" jhiSortBy="description"><span>Description</span> <fa-icon icon="sort"></fa-icon></th>
+        <tr jhiSort [(predicate)]="predicate" [(ascending)]="ascending" (sortChange)="navigateToWithComponentValues()">
+          <th scope="col" jhiSortBy="id">
+            <div class="d-flex">
+              <span jhiTranslate="global.field.id">ID</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="imageService">
+            <div class="d-flex">
+              <span jhiTranslate="jhipsterProjectBaseJwtApp.serviceMFPAI.imageService">Image Service</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="nomService">
+            <div class="d-flex">
+              <span jhiTranslate="jhipsterProjectBaseJwtApp.serviceMFPAI.nomService">Nom Service</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="chefService">
+            <div class="d-flex">
+              <span jhiTranslate="jhipsterProjectBaseJwtApp.serviceMFPAI.chefService">Chef Service</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="description">
+            <div class="d-flex">
+              <span jhiTranslate="jhipsterProjectBaseJwtApp.serviceMFPAI.description">Description</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
           <th scope="col"></th>
         </tr>
       </thead>
-      <tbody infinite-scroll (scrolled)="loadPage(page + 1)" [infiniteScrollDisabled]="page >= links['last']" [infiniteScrollDistance]="0">
+      <tbody
+        infinite-scroll
+        (scrolled)="loadPage(page + 1)"
+        [infiniteScrollDisabled]="page - 1 >= links['last']"
+        [infiniteScrollDistance]="0"
+      >
         <tr *ngFor="let serviceMFPAI of serviceMFPAIS; trackBy: trackId" data-cy="entityTable">
-          <td *jhiHasAnyAuthority="'ROLE_ADMIN'">
+          <td>
             <a [routerLink]="['/service-mfpai', serviceMFPAI.id, 'view']">{{ serviceMFPAI.id }}</a>
           </td>
           <td>
@@ -69,29 +99,22 @@
                 data-cy="entityDetailsButton"
               >
                 <fa-icon icon="eye"></fa-icon>
-                <!-- <span class="d-none d-md-inline">View</span> -->
+                <span class="d-none d-md-inline" jhiTranslate="entity.action.view">Voir</span>
               </button>
 
               <button
-                *jhiHasAnyAuthority="'ROLE_ADMIN'"
                 type="submit"
                 [routerLink]="['/service-mfpai', serviceMFPAI.id, 'edit']"
                 class="btn btn-primary btn-sm"
                 data-cy="entityEditButton"
               >
                 <fa-icon icon="pencil-alt"></fa-icon>
-                <span class="d-none d-md-inline">Edit</span>
+                <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Editer</span>
               </button>
 
-              <button
-                *jhiHasAnyAuthority="'ROLE_ADMIN'"
-                type="submit"
-                (click)="delete(serviceMFPAI)"
-                class="btn btn-danger btn-sm"
-                data-cy="entityDeleteButton"
-              >
+              <button type="submit" (click)="delete(serviceMFPAI)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
                 <fa-icon icon="times"></fa-icon>
-                <span class="d-none d-md-inline">Delete</span>
+                <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Supprimer</span>
               </button>
             </div>
           </td>

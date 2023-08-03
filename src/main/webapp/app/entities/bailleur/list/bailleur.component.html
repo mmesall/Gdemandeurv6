@@ -1,12 +1,12 @@
 <div>
   <h2 id="page-heading" data-cy="BailleurHeading">
-    <span>Les organismes de financement</span>
+    <span jhiTranslate="jhipsterProjectBaseJwtApp.bailleur.home.title">Bailleurs</span>
 
-    <div *jhiHasAnyAuthority="'ROLE_ADMIN'" class="d-flex justify-content-end">
-      <!-- <button class="btn btn-info me-2" (click)="reset()" [disabled]="isLoading">
+    <div class="d-flex justify-content-end">
+      <button class="btn btn-info me-2" (click)="load()" [disabled]="isLoading">
         <fa-icon icon="sync" [spin]="isLoading"></fa-icon>
-        <span>Refresh List</span>
-      </button> -->
+        <span jhiTranslate="jhipsterProjectBaseJwtApp.bailleur.home.refreshListLabel">Actualiser la liste</span>
+      </button>
 
       <button
         id="jh-create-entity"
@@ -15,7 +15,7 @@
         [routerLink]="['/bailleur/new']"
       >
         <fa-icon icon="plus"></fa-icon>
-        <span> Creer un nouveau bailleur </span>
+        <span jhiTranslate="jhipsterProjectBaseJwtApp.bailleur.home.createLabel"> Créer un nouveau Bailleur </span>
       </button>
     </div>
   </h2>
@@ -25,25 +25,60 @@
   <jhi-alert></jhi-alert>
 
   <div class="alert alert-warning" id="no-result" *ngIf="bailleurs?.length === 0">
-    <span>Aucun bailleur trouvé</span>
+    <span jhiTranslate="jhipsterProjectBaseJwtApp.bailleur.home.notFound">Aucun Bailleur trouvé</span>
   </div>
 
-  <div class="table-responsive" id="entities" *ngIf="bailleurs && bailleurs.length > 0">
+  <div class="table-responsive table-entities" id="entities" *ngIf="bailleurs && bailleurs.length > 0">
     <table class="table table-striped" aria-describedby="page-heading">
       <thead>
-        <tr jhiSort [(predicate)]="predicate" [(ascending)]="ascending" (sortChange)="reset()">
-          <th *jhiHasAnyAuthority="'ROLE_ADMIN'" scope="col" jhiSortBy="id"><span>ID</span> <fa-icon icon="sort"></fa-icon></th>
-          <th scope="col" jhiSortBy="nomBailleur"><span>Nom Bailleur</span> <fa-icon icon="sort"></fa-icon></th>
-          <th scope="col" jhiSortBy="budgetPrevu"><span>Budget Prevu</span> <fa-icon icon="sort"></fa-icon></th>
-          <th scope="col" jhiSortBy="budgetDepense"><span>Budget Depense</span> <fa-icon icon="sort"></fa-icon></th>
-          <th scope="col" jhiSortBy="budgetRestant"><span>Budget Restant</span> <fa-icon icon="sort"></fa-icon></th>
-          <th scope="col" jhiSortBy="nbrePC"><span>Nbre PC</span> <fa-icon icon="sort"></fa-icon></th>
+        <tr jhiSort [(predicate)]="predicate" [(ascending)]="ascending" (sortChange)="navigateToWithComponentValues()">
+          <th scope="col" jhiSortBy="id">
+            <div class="d-flex">
+              <span jhiTranslate="global.field.id">ID</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="nomBailleur">
+            <div class="d-flex">
+              <span jhiTranslate="jhipsterProjectBaseJwtApp.bailleur.nomBailleur">Nom Bailleur</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="budgetPrevu">
+            <div class="d-flex">
+              <span jhiTranslate="jhipsterProjectBaseJwtApp.bailleur.budgetPrevu">Budget Prevu</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="budgetDepense">
+            <div class="d-flex">
+              <span jhiTranslate="jhipsterProjectBaseJwtApp.bailleur.budgetDepense">Budget Depense</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="budgetRestant">
+            <div class="d-flex">
+              <span jhiTranslate="jhipsterProjectBaseJwtApp.bailleur.budgetRestant">Budget Restant</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="nbrePC">
+            <div class="d-flex">
+              <span jhiTranslate="jhipsterProjectBaseJwtApp.bailleur.nbrePC">Nbre PC</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
           <th scope="col"></th>
         </tr>
       </thead>
-      <tbody infinite-scroll (scrolled)="loadPage(page + 1)" [infiniteScrollDisabled]="page >= links['last']" [infiniteScrollDistance]="0">
+      <tbody
+        infinite-scroll
+        (scrolled)="loadPage(page + 1)"
+        [infiniteScrollDisabled]="page - 1 >= links['last']"
+        [infiniteScrollDistance]="0"
+      >
         <tr *ngFor="let bailleur of bailleurs; trackBy: trackId" data-cy="entityTable">
-          <td *jhiHasAnyAuthority="'ROLE_ADMIN'">
+          <td>
             <a [routerLink]="['/bailleur', bailleur.id, 'view']">{{ bailleur.id }}</a>
           </td>
           <td>{{ bailleur.nomBailleur }}</td>
@@ -60,29 +95,22 @@
                 data-cy="entityDetailsButton"
               >
                 <fa-icon icon="eye"></fa-icon>
-                <!-- <span class="d-none d-md-inline">View</span> -->
+                <span class="d-none d-md-inline" jhiTranslate="entity.action.view">Voir</span>
               </button>
 
               <button
-                *jhiHasAnyAuthority="'ROLE_ADMIN'"
                 type="submit"
                 [routerLink]="['/bailleur', bailleur.id, 'edit']"
                 class="btn btn-primary btn-sm"
                 data-cy="entityEditButton"
               >
                 <fa-icon icon="pencil-alt"></fa-icon>
-                <!-- <span class="d-none d-md-inline">Edit</span> -->
+                <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Editer</span>
               </button>
 
-              <button
-                *jhiHasAnyAuthority="'ROLE_ADMIN'"
-                type="submit"
-                (click)="delete(bailleur)"
-                class="btn btn-danger btn-sm"
-                data-cy="entityDeleteButton"
-              >
+              <button type="submit" (click)="delete(bailleur)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
                 <fa-icon icon="times"></fa-icon>
-                <!-- <span class="d-none d-md-inline">Delete</span> -->
+                <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Supprimer</span>
               </button>
             </div>
           </td>

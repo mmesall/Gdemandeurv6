@@ -18,6 +18,14 @@ public interface ExperienceService {
     Experience save(Experience experience);
 
     /**
+     * Updates a experience.
+     *
+     * @param experience the entity to update.
+     * @return the persisted entity.
+     */
+    Experience update(Experience experience);
+
+    /**
      * Partially updates a experience.
      *
      * @param experience the entity to update partially.

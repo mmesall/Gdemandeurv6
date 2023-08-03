@@ -1,7 +1,9 @@
 <div class="d-flex justify-content-center">
   <div class="col-8">
     <div *ngIf="etablissement">
-      <h2 data-cy="etablissementDetailsHeading"><span>Etablissement</span></h2>
+      <h2 data-cy="etablissementDetailsHeading">
+        <span jhiTranslate="jhipsterProjectBaseJwtApp.etablissement.detail.title">Etablissement</span>
+      </h2>
 
       <hr />
 
@@ -10,15 +12,17 @@
       <jhi-alert></jhi-alert>
 
       <dl class="row-md jh-entity-details">
-        <dt><span>ID</span></dt>
+        <dt><span jhiTranslate="global.field.id">ID</span></dt>
         <dd>
           <span>{{ etablissement.id }}</span>
         </dd>
-        <dt><span>Nom Etablissement</span></dt>
+        <dt><span jhiTranslate="jhipsterProjectBaseJwtApp.etablissement.nomEtablissement">Nom Etablissement</span></dt>
         <dd>
-          <span>{{ etablissement.nomEtablissement }}</span>
+          <span jhiTranslate="{{ 'jhipsterProjectBaseJwtApp.NomEtablissement.' + etablissement.nomEtablissement }}">{{
+            etablissement.nomEtablissement
+          }}</span>
         </dd>
-        <dt><span>Photo</span></dt>
+        <dt><span jhiTranslate="jhipsterProjectBaseJwtApp.etablissement.photo">Photo</span></dt>
         <dd>
           <div *ngIf="etablissement.photo">
             <a (click)="openFile(etablissement.photo, etablissement.photoContentType)">
@@ -31,74 +35,78 @@
             {{ etablissement.photoContentType }}, {{ byteSize(etablissement.photo) }}
           </div>
         </dd>
-        <dt><span>Region</span></dt>
+        <dt><span jhiTranslate="jhipsterProjectBaseJwtApp.etablissement.region">Region</span></dt>
         <dd>
-          <span>{{ etablissement.region }}</span>
+          <span jhiTranslate="{{ 'jhipsterProjectBaseJwtApp.NomRegion.' + etablissement.region }}">{{ etablissement.region }}</span>
         </dd>
-        <dt><span>Departement</span></dt>
+        <dt><span jhiTranslate="jhipsterProjectBaseJwtApp.etablissement.departement">Departement</span></dt>
         <dd>
-          <span>{{ etablissement.departement }}</span>
+          <span jhiTranslate="{{ 'jhipsterProjectBaseJwtApp.NomDepartement.' + etablissement.departement }}">{{
+            etablissement.departement
+          }}</span>
         </dd>
-        <dt><span>Email</span></dt>
+        <dt><span jhiTranslate="jhipsterProjectBaseJwtApp.etablissement.email">Email</span></dt>
         <dd>
           <span>{{ etablissement.email }}</span>
         </dd>
-        <dt><span>Telephone</span></dt>
+        <dt><span jhiTranslate="jhipsterProjectBaseJwtApp.etablissement.telephone">Telephone</span></dt>
         <dd>
           <span>{{ etablissement.telephone }}</span>
         </dd>
-        <dt><span>Type Etablissement</span></dt>
+        <dt><span jhiTranslate="jhipsterProjectBaseJwtApp.etablissement.typeEtablissement">Type Etablissement</span></dt>
         <dd>
-          <span>{{ etablissement.typeEtablissement }}</span>
+          <span jhiTranslate="{{ 'jhipsterProjectBaseJwtApp.TypeEtablissement.' + etablissement.typeEtablissement }}">{{
+            etablissement.typeEtablissement
+          }}</span>
         </dd>
-        <dt><span>Statut</span></dt>
+        <dt><span jhiTranslate="jhipsterProjectBaseJwtApp.etablissement.statut">Statut</span></dt>
         <dd>
-          <span>{{ etablissement.statut }}</span>
+          <span jhiTranslate="{{ 'jhipsterProjectBaseJwtApp.StatutEtab.' + etablissement.statut }}">{{ etablissement.statut }}</span>
         </dd>
-        <dt><span>Autre Region</span></dt>
+        <dt><span jhiTranslate="jhipsterProjectBaseJwtApp.etablissement.autreRegion">Autre Region</span></dt>
         <dd>
           <span>{{ etablissement.autreRegion }}</span>
         </dd>
-        <dt><span>Autre Departement</span></dt>
+        <dt><span jhiTranslate="jhipsterProjectBaseJwtApp.etablissement.autreDepartement">Autre Departement</span></dt>
         <dd>
           <span>{{ etablissement.autreDepartement }}</span>
         </dd>
-        <dt><span>Cfp</span></dt>
+        <dt><span jhiTranslate="jhipsterProjectBaseJwtApp.etablissement.cfp">Cfp</span></dt>
         <dd>
-          <span>{{ etablissement.cfp }}</span>
+          <span jhiTranslate="{{ 'jhipsterProjectBaseJwtApp.CFP.' + etablissement.cfp }}">{{ etablissement.cfp }}</span>
         </dd>
-        <dt><span>Lycee</span></dt>
+        <dt><span jhiTranslate="jhipsterProjectBaseJwtApp.etablissement.lycee">Lycee</span></dt>
         <dd>
-          <span>{{ etablissement.lycee }}</span>
+          <span jhiTranslate="{{ 'jhipsterProjectBaseJwtApp.LYCEE.' + etablissement.lycee }}">{{ etablissement.lycee }}</span>
         </dd>
-        <dt><span>Filiere</span></dt>
+        <dt><span jhiTranslate="jhipsterProjectBaseJwtApp.etablissement.filiere">Filiere</span></dt>
         <dd>
-          <span>{{ etablissement.filiere }}</span>
+          <span jhiTranslate="{{ 'jhipsterProjectBaseJwtApp.NomFiliere.' + etablissement.filiere }}">{{ etablissement.filiere }}</span>
         </dd>
-        <dt><span>Serie</span></dt>
+        <dt><span jhiTranslate="jhipsterProjectBaseJwtApp.etablissement.serie">Serie</span></dt>
         <dd>
-          <span>{{ etablissement.serie }}</span>
+          <span jhiTranslate="{{ 'jhipsterProjectBaseJwtApp.NomSerie.' + etablissement.serie }}">{{ etablissement.serie }}</span>
         </dd>
-        <dt><span>Autre Filiere</span></dt>
+        <dt><span jhiTranslate="jhipsterProjectBaseJwtApp.etablissement.autreFiliere">Autre Filiere</span></dt>
         <dd>
           <span>{{ etablissement.autreFiliere }}</span>
         </dd>
-        <dt><span>Autre Serie</span></dt>
+        <dt><span jhiTranslate="jhipsterProjectBaseJwtApp.etablissement.autreSerie">Autre Serie</span></dt>
         <dd>
           <span>{{ etablissement.autreSerie }}</span>
         </dd>
-        <dt><span>Autre Nom Etablissement</span></dt>
+        <dt><span jhiTranslate="jhipsterProjectBaseJwtApp.etablissement.autreNomEtablissement">Autre Nom Etablissement</span></dt>
         <dd>
           <span>{{ etablissement.autreNomEtablissement }}</span>
         </dd>
       </dl>
 
       <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
-        <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span>Back</span>
+        <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Retour</span>
       </button>
 
       <button type="button" [routerLink]="['/etablissement', etablissement.id, 'edit']" class="btn btn-primary">
-        <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span>Edit</span>
+        <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Editer</span>
       </button>
     </div>
   </div>

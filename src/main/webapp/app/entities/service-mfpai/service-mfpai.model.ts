@@ -1,27 +1,10 @@
-import { IAgent } from 'app/entities/agent/agent.model';
-
 export interface IServiceMFPAI {
-  id?: number;
-  imageServiceContentType?: string | null;
+  id: number;
   imageService?: string | null;
+  imageServiceContentType?: string | null;
   nomService?: string | null;
-  chefService?: string;
+  chefService?: string | null;
   description?: string | null;
-  agent?: IAgent | null;
 }
 
-export class ServiceMFPAI implements IServiceMFPAI {
-  constructor(
-    public id?: number,
-    public imageServiceContentType?: string | null,
-    public imageService?: string | null,
-    public nomService?: string | null,
-    public chefService?: string,
-    public description?: string | null,
-    public agent?: IAgent | null
-  ) {}
-}
-
-export function getServiceMFPAIIdentifier(serviceMFPAI: IServiceMFPAI): number | undefined {
-  return serviceMFPAI.id;
-}
+export type NewServiceMFPAI = Omit<IServiceMFPAI, 'id'> & { id: null };

@@ -1,7 +1,9 @@
 <div class="d-flex justify-content-center">
   <div class="col-8">
     <div *ngIf="professionnel">
-      <h2 data-cy="professionnelDetailsHeading"><span>Professionnel</span></h2>
+      <h2 data-cy="professionnelDetailsHeading">
+        <span jhiTranslate="jhipsterProjectBaseJwtApp.professionnel.detail.title">Professionnel</span>
+      </h2>
 
       <hr />
 
@@ -10,70 +12,74 @@
       <jhi-alert></jhi-alert>
 
       <dl class="row-md jh-entity-details">
-        <dt><span>ID</span></dt>
+        <dt><span jhiTranslate="global.field.id">ID</span></dt>
         <dd>
           <span>{{ professionnel.id }}</span>
         </dd>
-        <dt><span>Profession</span></dt>
+        <dt><span jhiTranslate="jhipsterProjectBaseJwtApp.professionnel.profession">Profession</span></dt>
         <dd>
           <span>{{ professionnel.profession }}</span>
         </dd>
-        <dt><span>Nom</span></dt>
+        <dt><span jhiTranslate="jhipsterProjectBaseJwtApp.professionnel.nom">Nom</span></dt>
         <dd>
           <span>{{ professionnel.nom }}</span>
         </dd>
-        <dt><span>Prenom</span></dt>
+        <dt><span jhiTranslate="jhipsterProjectBaseJwtApp.professionnel.prenom">Prenom</span></dt>
         <dd>
           <span>{{ professionnel.prenom }}</span>
         </dd>
-        <dt><span>Date Naiss</span></dt>
+        <dt><span jhiTranslate="jhipsterProjectBaseJwtApp.professionnel.dateNaiss">Date Naiss</span></dt>
         <dd>
           <span>{{ professionnel.dateNaiss | formatMediumDate }}</span>
         </dd>
-        <dt><span>Lieu Naiss</span></dt>
+        <dt><span jhiTranslate="jhipsterProjectBaseJwtApp.professionnel.lieuNaiss">Lieu Naiss</span></dt>
         <dd>
           <span>{{ professionnel.lieuNaiss }}</span>
         </dd>
-        <dt><span>Sexe</span></dt>
+        <dt><span jhiTranslate="jhipsterProjectBaseJwtApp.professionnel.sexe">Sexe</span></dt>
         <dd>
-          <span>{{ professionnel.sexe }}</span>
+          <span jhiTranslate="{{ 'jhipsterProjectBaseJwtApp.Sexe.' + professionnel.sexe }}">{{ professionnel.sexe }}</span>
         </dd>
-        <dt><span>Telephone</span></dt>
+        <dt><span jhiTranslate="jhipsterProjectBaseJwtApp.professionnel.telephone">Telephone</span></dt>
         <dd>
           <span>{{ professionnel.telephone }}</span>
         </dd>
-        <dt><span>Adresse Physique</span></dt>
+        <dt><span jhiTranslate="jhipsterProjectBaseJwtApp.professionnel.adressePhysique">Adresse Physique</span></dt>
         <dd>
           <span>{{ professionnel.adressePhysique }}</span>
         </dd>
-        <dt><span>Region Residence</span></dt>
+        <dt><span jhiTranslate="jhipsterProjectBaseJwtApp.professionnel.regionResidence">Region Residence</span></dt>
         <dd>
-          <span>{{ professionnel.regionResidence }}</span>
+          <span jhiTranslate="{{ 'jhipsterProjectBaseJwtApp.NomRegion.' + professionnel.regionResidence }}">{{
+            professionnel.regionResidence
+          }}</span>
         </dd>
-        <dt><span>Depart Residence</span></dt>
+        <dt><span jhiTranslate="jhipsterProjectBaseJwtApp.professionnel.departResidence">Depart Residence</span></dt>
         <dd>
-          <span>{{ professionnel.departResidence }}</span>
+          <span jhiTranslate="{{ 'jhipsterProjectBaseJwtApp.NomDepartement.' + professionnel.departResidence }}">{{
+            professionnel.departResidence
+          }}</span>
         </dd>
-        <dt><span>Email</span></dt>
+        <dt><span jhiTranslate="jhipsterProjectBaseJwtApp.professionnel.email">Email</span></dt>
         <dd>
           <span>{{ professionnel.email }}</span>
         </dd>
-        <dt><span>Cni</span></dt>
+        <dt><span jhiTranslate="jhipsterProjectBaseJwtApp.professionnel.cni">Cni</span></dt>
         <dd>
           <span>{{ professionnel.cni }}</span>
         </dd>
-        <dt><span>User</span></dt>
+        <dt><span jhiTranslate="jhipsterProjectBaseJwtApp.professionnel.user">User</span></dt>
         <dd>
           <span>{{ professionnel.user?.login }}</span>
         </dd>
       </dl>
 
       <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
-        <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span>Back</span>
+        <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Retour</span>
       </button>
 
       <button type="button" [routerLink]="['/professionnel', professionnel.id, 'edit']" class="btn btn-primary">
-        <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span>Edit</span>
+        <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Editer</span>
       </button>
     </div>
   </div>

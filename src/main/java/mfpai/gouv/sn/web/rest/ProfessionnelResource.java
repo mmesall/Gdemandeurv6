@@ -1,13 +1,13 @@
 package mfpai.gouv.sn.web.rest;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.StreamSupport;
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 import mfpai.gouv.sn.domain.Professionnel;
 import mfpai.gouv.sn.repository.ProfessionnelRepository;
 import mfpai.gouv.sn.service.ProfessionnelService;
@@ -96,7 +96,7 @@ public class ProfessionnelResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        Professionnel result = professionnelService.save(professionnel);
+        Professionnel result = professionnelService.update(professionnel);
         return ResponseEntity
             .ok()
             .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, professionnel.getId().toString()))
@@ -149,9 +149,9 @@ public class ProfessionnelResource {
      */
     @GetMapping("/professionnels")
     public ResponseEntity<List<Professionnel>> getAllProfessionnels(
-        @org.springdoc.api.annotations.ParameterObject Pageable pageable,
+        @org.springdoc.core.annotations.ParameterObject Pageable pageable,
         @RequestParam(required = false) String filter,
-        @RequestParam(required = false, defaultValue = "true") boolean eagerload
+        @RequestParam(required = false, defaultValue = "false") boolean eagerload
     ) {
         if ("dossier-is-null".equals(filter)) {
             log.debug("REST request to get all Professionnels where dossier is null");

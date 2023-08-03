@@ -1,11 +1,11 @@
 package mfpai.gouv.sn.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
-import javax.persistence.*;
-import javax.validation.constraints.*;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -15,6 +15,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Entity
 @Table(name = "bailleur")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+@SuppressWarnings("common-java:DuplicatedBlocks")
 public class Bailleur implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -40,7 +41,7 @@ public class Bailleur implements Serializable {
     @Column(name = "nbre_pc")
     private Long nbrePC;
 
-    @OneToMany(mappedBy = "bailleur")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "bailleur")
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     @JsonIgnoreProperties(value = { "formation", "bailleur" }, allowSetters = true)
     private Set<PriseEnCharge> priseEnCharges = new HashSet<>();

@@ -10,7 +10,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 /**
- * Spring Data SQL repository for the Agent entity.
+ * Spring Data JPA repository for the Agent entity.
  */
 @Repository
 public interface AgentRepository extends JpaRepository<Agent, Long> {
@@ -27,12 +27,12 @@ public interface AgentRepository extends JpaRepository<Agent, Long> {
     }
 
     @Query(
-        value = "select distinct agent from Agent agent left join fetch agent.user left join fetch agent.serviceMFPAI",
-        countQuery = "select count(distinct agent) from Agent agent"
+        value = "select agent from Agent agent left join fetch agent.user left join fetch agent.serviceMFPAI",
+        countQuery = "select count(agent) from Agent agent"
     )
     Page<Agent> findAllWithToOneRelationships(Pageable pageable);
 
-    @Query("select distinct agent from Agent agent left join fetch agent.user left join fetch agent.serviceMFPAI")
+    @Query("select agent from Agent agent left join fetch agent.user left join fetch agent.serviceMFPAI")
     List<Agent> findAllWithToOneRelationships();
 
     @Query("select agent from Agent agent left join fetch agent.user left join fetch agent.serviceMFPAI where agent.id =:id")

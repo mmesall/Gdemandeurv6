@@ -6,31 +6,15 @@ import { NomFiliere } from 'app/entities/enumerations/nom-filiere.model';
 import { Resultat } from 'app/entities/enumerations/resultat.model';
 
 export interface ICandidatureP {
-  id?: number;
-  offreFormation?: NomFiliere | null;
+  id: number;
+  offreFormation?: keyof typeof NomFiliere | null;
   dateDebutOffre?: dayjs.Dayjs | null;
   dateFinOffre?: dayjs.Dayjs | null;
   dateDepot?: dayjs.Dayjs | null;
-  resultat?: Resultat | null;
-  professionnel?: IProfessionnel | null;
-  formationContinue?: IFormationContinue | null;
-  etablissement?: IEtablissement | null;
+  resultat?: keyof typeof Resultat | null;
+  professionnel?: Pick<IProfessionnel, 'id' | 'profession'> | null;
+  formationContinue?: Pick<IFormationContinue, 'id' | 'nomFormationC'> | null;
+  etablissement?: Pick<IEtablissement, 'id' | 'nomEtablissement'> | null;
 }
 
-export class CandidatureP implements ICandidatureP {
-  constructor(
-    public id?: number,
-    public offreFormation?: NomFiliere | null,
-    public dateDebutOffre?: dayjs.Dayjs | null,
-    public dateFinOffre?: dayjs.Dayjs | null,
-    public dateDepot?: dayjs.Dayjs | null,
-    public resultat?: Resultat | null,
-    public professionnel?: IProfessionnel | null,
-    public formationContinue?: IFormationContinue | null,
-    public etablissement?: IEtablissement | null
-  ) {}
-}
-
-export function getCandidaturePIdentifier(candidatureP: ICandidatureP): number | undefined {
-  return candidatureP.id;
-}
+export type NewCandidatureP = Omit<ICandidatureP, 'id'> & { id: null };

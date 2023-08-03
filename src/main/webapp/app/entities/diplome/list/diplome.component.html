@@ -1,11 +1,11 @@
 <div>
   <h2 id="page-heading" data-cy="DiplomeHeading">
-    <span>Diplomes</span>
+    <span jhiTranslate="jhipsterProjectBaseJwtApp.diplome.home.title">Diplomes</span>
 
     <div class="d-flex justify-content-end">
-      <button class="btn btn-info me-2" (click)="reset()" [disabled]="isLoading">
+      <button class="btn btn-info me-2" (click)="load()" [disabled]="isLoading">
         <fa-icon icon="sync" [spin]="isLoading"></fa-icon>
-        <span>Refresh List</span>
+        <span jhiTranslate="jhipsterProjectBaseJwtApp.diplome.home.refreshListLabel">Actualiser la liste</span>
       </button>
 
       <button
@@ -15,7 +15,7 @@
         [routerLink]="['/diplome/new']"
       >
         <fa-icon icon="plus"></fa-icon>
-        <span> Create a new Diplome </span>
+        <span jhiTranslate="jhipsterProjectBaseJwtApp.diplome.home.createLabel"> Créer un nouveau Diplome </span>
       </button>
     </div>
   </h2>
@@ -25,61 +25,128 @@
   <jhi-alert></jhi-alert>
 
   <div class="alert alert-warning" id="no-result" *ngIf="diplomes?.length === 0">
-    <span>No diplomes found</span>
+    <span jhiTranslate="jhipsterProjectBaseJwtApp.diplome.home.notFound">Aucun Diplome trouvé</span>
   </div>
 
-  <div class="table-responsive" id="entities" *ngIf="diplomes && diplomes.length > 0">
+  <div class="table-responsive table-entities" id="entities" *ngIf="diplomes && diplomes.length > 0">
     <table class="table table-striped" aria-describedby="page-heading">
       <thead>
-        <tr jhiSort [(predicate)]="predicate" [(ascending)]="ascending" (sortChange)="reset()">
-          <th scope="col" jhiSortBy="id"><span>ID</span> <fa-icon icon="sort"></fa-icon></th>
-          <th scope="col" jhiSortBy="intitule"><span>Intitule</span> <fa-icon icon="sort"></fa-icon></th>
-          <th scope="col" jhiSortBy="domaine"><span>Domaine</span> <fa-icon icon="sort"></fa-icon></th>
-          <th scope="col" jhiSortBy="niveau"><span>Niveau</span> <fa-icon icon="sort"></fa-icon></th>
-          <th scope="col" jhiSortBy="mention"><span>Mention</span> <fa-icon icon="sort"></fa-icon></th>
-          <th scope="col" jhiSortBy="anneeObtention"><span>Annee Obtention</span> <fa-icon icon="sort"></fa-icon></th>
-          <th scope="col" jhiSortBy="etablissement"><span>Etablissement</span> <fa-icon icon="sort"></fa-icon></th>
-          <th scope="col" jhiSortBy="document"><span>Document</span> <fa-icon icon="sort"></fa-icon></th>
-          <th scope="col" jhiSortBy="eleve.niveauEtude"><span>Eleve</span> <fa-icon icon="sort"></fa-icon></th>
-          <th scope="col" jhiSortBy="etudiant.carteEtudiant"><span>Etudiant</span> <fa-icon icon="sort"></fa-icon></th>
-          <th scope="col" jhiSortBy="professionnel.profession"><span>Professionnel</span> <fa-icon icon="sort"></fa-icon></th>
-          <th scope="col" jhiSortBy="demandeur.profil"><span>Demandeur</span> <fa-icon icon="sort"></fa-icon></th>
+        <tr jhiSort [(predicate)]="predicate" [(ascending)]="ascending" (sortChange)="navigateToWithComponentValues()">
+          <th scope="col" jhiSortBy="id">
+            <div class="d-flex">
+              <span jhiTranslate="global.field.id">ID</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="intitule">
+            <div class="d-flex">
+              <span jhiTranslate="jhipsterProjectBaseJwtApp.diplome.intitule">Intitule</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="domaine">
+            <div class="d-flex">
+              <span jhiTranslate="jhipsterProjectBaseJwtApp.diplome.domaine">Domaine</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="niveau">
+            <div class="d-flex">
+              <span jhiTranslate="jhipsterProjectBaseJwtApp.diplome.niveau">Niveau</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="mention">
+            <div class="d-flex">
+              <span jhiTranslate="jhipsterProjectBaseJwtApp.diplome.mention">Mention</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="anneeObtention">
+            <div class="d-flex">
+              <span jhiTranslate="jhipsterProjectBaseJwtApp.diplome.anneeObtention">Annee Obtention</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="etablissement">
+            <div class="d-flex">
+              <span jhiTranslate="jhipsterProjectBaseJwtApp.diplome.etablissement">Etablissement</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="document">
+            <div class="d-flex">
+              <span jhiTranslate="jhipsterProjectBaseJwtApp.diplome.document">Document</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="eleve.niveauEtude">
+            <div class="d-flex">
+              <span jhiTranslate="jhipsterProjectBaseJwtApp.diplome.eleve">Eleve</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="etudiant.carteEtudiant">
+            <div class="d-flex">
+              <span jhiTranslate="jhipsterProjectBaseJwtApp.diplome.etudiant">Etudiant</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="professionnel.profession">
+            <div class="d-flex">
+              <span jhiTranslate="jhipsterProjectBaseJwtApp.diplome.professionnel">Professionnel</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="demandeur.profil">
+            <div class="d-flex">
+              <span jhiTranslate="jhipsterProjectBaseJwtApp.diplome.demandeur">Demandeur</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
           <th scope="col"></th>
         </tr>
       </thead>
-      <tbody infinite-scroll (scrolled)="loadPage(page + 1)" [infiniteScrollDisabled]="page >= links['last']" [infiniteScrollDistance]="0">
+      <tbody
+        infinite-scroll
+        (scrolled)="loadPage(page + 1)"
+        [infiniteScrollDisabled]="page - 1 >= links['last']"
+        [infiniteScrollDistance]="0"
+      >
         <tr *ngFor="let diplome of diplomes; trackBy: trackId" data-cy="entityTable">
           <td>
             <a [routerLink]="['/diplome', diplome.id, 'view']">{{ diplome.id }}</a>
           </td>
           <td>{{ diplome.intitule }}</td>
-          <td>{{ diplome.domaine }}</td>
-          <td>{{ diplome.niveau }}</td>
-          <td>{{ diplome.mention }}</td>
+          <td jhiTranslate="{{ 'jhipsterProjectBaseJwtApp.NomFiliere.' + diplome.domaine }}">{{ diplome.domaine }}</td>
+          <td jhiTranslate="{{ 'jhipsterProjectBaseJwtApp.NiveauEtude.' + diplome.niveau }}">{{ diplome.niveau }}</td>
+          <td jhiTranslate="{{ 'jhipsterProjectBaseJwtApp.Mention.' + diplome.mention }}">{{ diplome.mention }}</td>
           <td>{{ diplome.anneeObtention }}</td>
           <td>{{ diplome.etablissement }}</td>
           <td>
-            <a *ngIf="diplome.document" (click)="openFile(diplome.document, diplome.documentContentType)">open</a>
+            <a *ngIf="diplome.document" (click)="openFile(diplome.document, diplome.documentContentType)" jhiTranslate="entity.action.open"
+              >Ouvrir</a
+            >
             <span *ngIf="diplome.document">{{ diplome.documentContentType }}, {{ byteSize(diplome.document) }}</span>
           </td>
           <td>
             <div *ngIf="diplome.eleve">
-              <a [routerLink]="['/eleve', diplome.eleve?.id, 'view']">{{ diplome.eleve?.niveauEtude }}</a>
+              <a [routerLink]="['/eleve', diplome.eleve.id, 'view']">{{ diplome.eleve.niveauEtude }}</a>
             </div>
           </td>
           <td>
             <div *ngIf="diplome.etudiant">
-              <a [routerLink]="['/etudiant', diplome.etudiant?.id, 'view']">{{ diplome.etudiant?.carteEtudiant }}</a>
+              <a [routerLink]="['/etudiant', diplome.etudiant.id, 'view']">{{ diplome.etudiant.carteEtudiant }}</a>
             </div>
           </td>
           <td>
             <div *ngIf="diplome.professionnel">
-              <a [routerLink]="['/professionnel', diplome.professionnel?.id, 'view']">{{ diplome.professionnel?.profession }}</a>
+              <a [routerLink]="['/professionnel', diplome.professionnel.id, 'view']">{{ diplome.professionnel.profession }}</a>
             </div>
           </td>
           <td>
             <div *ngIf="diplome.demandeur">
-              <a [routerLink]="['/demandeur', diplome.demandeur?.id, 'view']">{{ diplome.demandeur?.profil }}</a>
+              <a [routerLink]="['/demandeur', diplome.demandeur.id, 'view']">{{ diplome.demandeur.profil }}</a>
             </div>
           </td>
           <td class="text-end">
@@ -91,7 +158,7 @@
                 data-cy="entityDetailsButton"
               >
                 <fa-icon icon="eye"></fa-icon>
-                <span class="d-none d-md-inline">View</span>
+                <span class="d-none d-md-inline" jhiTranslate="entity.action.view">Voir</span>
               </button>
 
               <button
@@ -101,12 +168,12 @@
                 data-cy="entityEditButton"
               >
                 <fa-icon icon="pencil-alt"></fa-icon>
-                <span class="d-none d-md-inline">Edit</span>
+                <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Editer</span>
               </button>
 
               <button type="submit" (click)="delete(diplome)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
                 <fa-icon icon="times"></fa-icon>
-                <span class="d-none d-md-inline">Delete</span>
+                <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Supprimer</span>
               </button>
             </div>
           </td>

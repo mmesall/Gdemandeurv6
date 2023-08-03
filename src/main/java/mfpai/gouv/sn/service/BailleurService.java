@@ -18,6 +18,14 @@ public interface BailleurService {
     Bailleur save(Bailleur bailleur);
 
     /**
+     * Updates a bailleur.
+     *
+     * @param bailleur the entity to update.
+     * @return the persisted entity.
+     */
+    Bailleur update(Bailleur bailleur);
+
+    /**
      * Partially updates a bailleur.
      *
      * @param bailleur the entity to update partially.

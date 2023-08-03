@@ -19,6 +19,14 @@ public interface FormationService {
     Formation save(Formation formation);
 
     /**
+     * Updates a formation.
+     *
+     * @param formation the entity to update.
+     * @return the persisted entity.
+     */
+    Formation update(Formation formation);
+
+    /**
      * Partially updates a formation.
      *
      * @param formation the entity to update partially.
@@ -33,12 +41,31 @@ public interface FormationService {
      * @return the list of entities.
      */
     Page<Formation> findAll(Pageable pageable);
+
     /**
      * Get all the Formation where PriseEnCharge is {@code null}.
      *
      * @return the {@link List} of entities.
      */
     List<Formation> findAllWherePriseEnChargeIsNull();
+    /**
+     * Get all the Formation where FormationInitiale is {@code null}.
+     *
+     * @return the {@link List} of entities.
+     */
+    List<Formation> findAllWhereFormationInitialeIsNull();
+    /**
+     * Get all the Formation where FormationContinue is {@code null}.
+     *
+     * @return the {@link List} of entities.
+     */
+    List<Formation> findAllWhereFormationContinueIsNull();
+    /**
+     * Get all the Formation where Concours is {@code null}.
+     *
+     * @return the {@link List} of entities.
+     */
+    List<Formation> findAllWhereConcoursIsNull();
 
     /**
      * Get all the formations with eager load of many-to-many relationships.

@@ -1,9 +1,9 @@
 package mfpai.gouv.sn.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
 import java.io.Serializable;
-import javax.persistence.*;
-import javax.validation.constraints.*;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -13,6 +13,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Entity
 @Table(name = "service_mfpai")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+@SuppressWarnings("common-java:DuplicatedBlocks")
 public class ServiceMFPAI implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -41,7 +42,7 @@ public class ServiceMFPAI implements Serializable {
     private String description;
 
     @JsonIgnoreProperties(value = { "user", "serviceMFPAI" }, allowSetters = true)
-    @OneToOne(mappedBy = "serviceMFPAI")
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "serviceMFPAI")
     private Agent agent;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here

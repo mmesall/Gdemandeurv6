@@ -2,23 +2,32 @@ package mfpai.gouv.sn.web.rest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import jakarta.persistence.EntityManager;
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicLong;
-import javax.persistence.EntityManager;
 import mfpai.gouv.sn.IntegrationTest;
 import mfpai.gouv.sn.domain.Agent;
 import mfpai.gouv.sn.domain.enumeration.Sexe;
 import mfpai.gouv.sn.repository.AgentRepository;
+import mfpai.gouv.sn.service.AgentService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
@@ -28,6 +37,7 @@ import org.springframework.transaction.annotation.Transactional;
  * Integration tests for the {@link AgentResource} REST controller.
  */
 @IntegrationTest
+@ExtendWith(MockitoExtension.class)
 @AutoConfigureMockMvc
 @WithMockUser
 class AgentResourceIT {
@@ -64,6 +74,12 @@ class AgentResourceIT {
 
     @Autowired
     private AgentRepository agentRepository;
+
+    @Mock
+    private AgentRepository agentRepositoryMock;
+
+    @Mock
+    private AgentService agentServiceMock;
 
     @Autowired
     private EntityManager em;
@@ -196,6 +212,23 @@ class AgentResourceIT {
             .andExpect(jsonPath("$.[*].email").value(hasItem(DEFAULT_EMAIL)));
     }
 
+    @SuppressWarnings({ "unchecked" })
+    void getAllAgentsWithEagerRelationshipsIsEnabled() throws Exception {
+        when(agentServiceMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
+
+        restAgentMockMvc.perform(get(ENTITY_API_URL + "?eagerload=true")).andExpect(status().isOk());
+
+        verify(agentServiceMock, times(1)).findAllWithEagerRelationships(any());
+    }
+
+    @SuppressWarnings({ "unchecked" })
+    void getAllAgentsWithEagerRelationshipsIsNotEnabled() throws Exception {
+        when(agentServiceMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
+
+        restAgentMockMvc.perform(get(ENTITY_API_URL + "?eagerload=false")).andExpect(status().isOk());
+        verify(agentRepositoryMock, times(1)).findAll(any(Pageable.class));
+    }
+
     @Test
     @Transactional
     void getAgent() throws Exception {
@@ -227,14 +260,14 @@ class AgentResourceIT {
 
     @Test
     @Transactional
-    void putNewAgent() throws Exception {
+    void putExistingAgent() throws Exception {
         // Initialize the database
         agentRepository.saveAndFlush(agent);
 
         int databaseSizeBeforeUpdate = agentRepository.findAll().size();
 
         // Update the agent
-        Agent updatedAgent = agentRepository.findById(agent.getId()).get();
+        Agent updatedAgent = agentRepository.findById(agent.getId()).orElseThrow();
         // Disconnect from session so that the updates on updatedAgent are not directly saved in db
         em.detach(updatedAgent);
         updatedAgent
@@ -339,7 +372,8 @@ class AgentResourceIT {
 
         partialUpdatedAgent
             .matricule(UPDATED_MATRICULE)
-            .dateNaiss(UPDATED_DATE_NAISS)
+            .nomAgent(UPDATED_NOM_AGENT)
+            .lieuNaiss(UPDATED_LIEU_NAISS)
             .sexe(UPDATED_SEXE)
             .telephone(UPDATED_TELEPHONE)
             .email(UPDATED_EMAIL);
@@ -357,10 +391,10 @@ class AgentResourceIT {
         assertThat(agentList).hasSize(databaseSizeBeforeUpdate);
         Agent testAgent = agentList.get(agentList.size() - 1);
         assertThat(testAgent.getMatricule()).isEqualTo(UPDATED_MATRICULE);
-        assertThat(testAgent.getNomAgent()).isEqualTo(DEFAULT_NOM_AGENT);
+        assertThat(testAgent.getNomAgent()).isEqualTo(UPDATED_NOM_AGENT);
         assertThat(testAgent.getPrenom()).isEqualTo(DEFAULT_PRENOM);
-        assertThat(testAgent.getDateNaiss()).isEqualTo(UPDATED_DATE_NAISS);
-        assertThat(testAgent.getLieuNaiss()).isEqualTo(DEFAULT_LIEU_NAISS);
+        assertThat(testAgent.getDateNaiss()).isEqualTo(DEFAULT_DATE_NAISS);
+        assertThat(testAgent.getLieuNaiss()).isEqualTo(UPDATED_LIEU_NAISS);
         assertThat(testAgent.getSexe()).isEqualTo(UPDATED_SEXE);
         assertThat(testAgent.getTelephone()).isEqualTo(UPDATED_TELEPHONE);
         assertThat(testAgent.getEmail()).isEqualTo(UPDATED_EMAIL);

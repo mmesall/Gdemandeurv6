@@ -1,16 +1,15 @@
 package mfpai.gouv.sn.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
 import java.io.Serializable;
 import java.time.LocalDate;
-import javax.persistence.*;
-import javax.validation.constraints.*;
-import mfpai.gouv.sn.domain.enumeration.DiplomeRequis;
+import mfpai.gouv.sn.domain.enumeration.NIVEAUCOMP;
 import mfpai.gouv.sn.domain.enumeration.NiveauEtude;
 import mfpai.gouv.sn.domain.enumeration.NomDepartement;
 import mfpai.gouv.sn.domain.enumeration.NomFiliere;
 import mfpai.gouv.sn.domain.enumeration.NomRegion;
-import mfpai.gouv.sn.domain.enumeration.NomSerie;
 import mfpai.gouv.sn.domain.enumeration.Sexe;
 import mfpai.gouv.sn.domain.enumeration.TypePiece;
 import org.hibernate.annotations.Cache;
@@ -22,6 +21,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Entity
 @Table(name = "dossier")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+@SuppressWarnings("common-java:DuplicatedBlocks")
 public class Dossier implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -34,9 +34,6 @@ public class Dossier implements Serializable {
     @Column(name = "num_dossier", unique = true)
     private String numDossier;
 
-    @Column(name = "date_naiss")
-    private LocalDate dateNaiss;
-
     @NotNull
     @Column(name = "prenom", nullable = false)
     private String prenom;
@@ -45,8 +42,14 @@ public class Dossier implements Serializable {
     @Column(name = "nom", nullable = false)
     private String nom;
 
-    @Column(name = "nom_utilisateur")
+    @Column(name = "nom_utilisateur", unique = true)
     private String nomUtilisateur;
+
+    @Column(name = "date_naiss")
+    private LocalDate dateNaiss;
+
+    @Column(name = "lieu_naiss")
+    private String lieuNaiss;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "region_naiss")
@@ -55,9 +58,6 @@ public class Dossier implements Serializable {
     @Enumerated(EnumType.STRING)
     @Column(name = "departement_naiss")
     private NomDepartement departementNaiss;
-
-    @Column(name = "lieu_naiss")
-    private String lieuNaiss;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "type_piece")
@@ -95,16 +95,24 @@ public class Dossier implements Serializable {
     private NiveauEtude niveauFormation;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "specialite_1")
-    private NomFiliere specialite1;
+    @Column(name = "specialite")
+    private NomFiliere specialite;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "specialite_2")
-    private NomSerie specialite2;
+    @Column(name = "intitule_diplome")
+    private String intituleDiplome;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "diplome_requis")
-    private DiplomeRequis diplomeRequis;
+    @Lob
+    @Column(name = "diplome")
+    private byte[] diplome;
+
+    @Column(name = "diplome_content_type")
+    private String diplomeContentType;
+
+    @Column(name = "annee_obtention")
+    private LocalDate anneeObtention;
+
+    @Column(name = "lieu_obtention")
+    private String lieuObtention;
 
     @Lob
     @Column(name = "cv")
@@ -115,23 +123,59 @@ public class Dossier implements Serializable {
 
     @Lob
     @Column(name = "lettre_motivation")
-    private String lettreMotivation;
+    private byte[] lettreMotivation;
+
+    @Column(name = "lettre_motivation_content_type")
+    private String lettreMotivationContentType;
 
     @Column(name = "profession")
     private String profession;
 
+    @Column(name = "autre_specialite")
+    private String autreSpecialite;
+
+    @Column(name = "nom_competence")
+    private String nomCompetence;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "niveau_competence")
+    private NIVEAUCOMP niveauCompetence;
+
+    @Column(name = "intitule_experience")
+    private String intituleExperience;
+
+    @NotNull
+    @Column(name = "poste_occupe", nullable = false)
+    private String posteOccupe;
+
+    @NotNull
+    @Column(name = "date_debut", nullable = false)
+    private LocalDate dateDebut;
+
+    @NotNull
+    @Column(name = "date_fin", nullable = false)
+    private LocalDate dateFin;
+
+    @NotNull
+    @Column(name = "nom_entreprise", nullable = false)
+    private String nomEntreprise;
+
+    @Lob
+    @Column(name = "mission")
+    private String mission;
+
     @JsonIgnoreProperties(value = { "user", "diplomes", "experiences", "candidatureES", "dossier", "demandeur" }, allowSetters = true)
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(unique = true)
     private Eleve eleve;
 
     @JsonIgnoreProperties(value = { "user", "diplomes", "experiences", "candidatureES", "dossier", "demandeur" }, allowSetters = true)
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(unique = true)
     private Etudiant etudiant;
 
     @JsonIgnoreProperties(value = { "user", "diplomes", "experiences", "candidaturePS", "dossier", "demandeur" }, allowSetters = true)
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(unique = true)
     private Professionnel professionnel;
 
@@ -139,7 +183,7 @@ public class Dossier implements Serializable {
         value = { "user", "dossier", "eleve", "etudiant", "professionnel", "diplomes", "experiences" },
         allowSetters = true
     )
-    @OneToOne(mappedBy = "dossier")
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "dossier")
     private Demandeur demandeur;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
@@ -168,19 +212,6 @@ public class Dossier implements Serializable {
 
     public void setNumDossier(String numDossier) {
         this.numDossier = numDossier;
-    }
-
-    public LocalDate getDateNaiss() {
-        return this.dateNaiss;
-    }
-
-    public Dossier dateNaiss(LocalDate dateNaiss) {
-        this.setDateNaiss(dateNaiss);
-        return this;
-    }
-
-    public void setDateNaiss(LocalDate dateNaiss) {
-        this.dateNaiss = dateNaiss;
     }
 
     public String getPrenom() {
@@ -222,6 +253,32 @@ public class Dossier implements Serializable {
         this.nomUtilisateur = nomUtilisateur;
     }
 
+    public LocalDate getDateNaiss() {
+        return this.dateNaiss;
+    }
+
+    public Dossier dateNaiss(LocalDate dateNaiss) {
+        this.setDateNaiss(dateNaiss);
+        return this;
+    }
+
+    public void setDateNaiss(LocalDate dateNaiss) {
+        this.dateNaiss = dateNaiss;
+    }
+
+    public String getLieuNaiss() {
+        return this.lieuNaiss;
+    }
+
+    public Dossier lieuNaiss(String lieuNaiss) {
+        this.setLieuNaiss(lieuNaiss);
+        return this;
+    }
+
+    public void setLieuNaiss(String lieuNaiss) {
+        this.lieuNaiss = lieuNaiss;
+    }
+
     public NomRegion getRegionNaiss() {
         return this.regionNaiss;
     }
@@ -246,19 +303,6 @@ public class Dossier implements Serializable {
 
     public void setDepartementNaiss(NomDepartement departementNaiss) {
         this.departementNaiss = departementNaiss;
-    }
-
-    public String getLieuNaiss() {
-        return this.lieuNaiss;
-    }
-
-    public Dossier lieuNaiss(String lieuNaiss) {
-        this.setLieuNaiss(lieuNaiss);
-        return this;
-    }
-
-    public void setLieuNaiss(String lieuNaiss) {
-        this.lieuNaiss = lieuNaiss;
     }
 
     public TypePiece getTypePiece() {
@@ -391,43 +435,82 @@ public class Dossier implements Serializable {
         this.niveauFormation = niveauFormation;
     }
 
-    public NomFiliere getSpecialite1() {
-        return this.specialite1;
+    public NomFiliere getSpecialite() {
+        return this.specialite;
     }
 
-    public Dossier specialite1(NomFiliere specialite1) {
-        this.setSpecialite1(specialite1);
+    public Dossier specialite(NomFiliere specialite) {
+        this.setSpecialite(specialite);
         return this;
     }
 
-    public void setSpecialite1(NomFiliere specialite1) {
-        this.specialite1 = specialite1;
+    public void setSpecialite(NomFiliere specialite) {
+        this.specialite = specialite;
     }
 
-    public NomSerie getSpecialite2() {
-        return this.specialite2;
+    public String getIntituleDiplome() {
+        return this.intituleDiplome;
     }
 
-    public Dossier specialite2(NomSerie specialite2) {
-        this.setSpecialite2(specialite2);
+    public Dossier intituleDiplome(String intituleDiplome) {
+        this.setIntituleDiplome(intituleDiplome);
         return this;
     }
 
-    public void setSpecialite2(NomSerie specialite2) {
-        this.specialite2 = specialite2;
+    public void setIntituleDiplome(String intituleDiplome) {
+        this.intituleDiplome = intituleDiplome;
     }
 
-    public DiplomeRequis getDiplomeRequis() {
-        return this.diplomeRequis;
+    public byte[] getDiplome() {
+        return this.diplome;
     }
 
-    public Dossier diplomeRequis(DiplomeRequis diplomeRequis) {
-        this.setDiplomeRequis(diplomeRequis);
+    public Dossier diplome(byte[] diplome) {
+        this.setDiplome(diplome);
         return this;
     }
 
-    public void setDiplomeRequis(DiplomeRequis diplomeRequis) {
-        this.diplomeRequis = diplomeRequis;
+    public void setDiplome(byte[] diplome) {
+        this.diplome = diplome;
+    }
+
+    public String getDiplomeContentType() {
+        return this.diplomeContentType;
+    }
+
+    public Dossier diplomeContentType(String diplomeContentType) {
+        this.diplomeContentType = diplomeContentType;
+        return this;
+    }
+
+    public void setDiplomeContentType(String diplomeContentType) {
+        this.diplomeContentType = diplomeContentType;
+    }
+
+    public LocalDate getAnneeObtention() {
+        return this.anneeObtention;
+    }
+
+    public Dossier anneeObtention(LocalDate anneeObtention) {
+        this.setAnneeObtention(anneeObtention);
+        return this;
+    }
+
+    public void setAnneeObtention(LocalDate anneeObtention) {
+        this.anneeObtention = anneeObtention;
+    }
+
+    public String getLieuObtention() {
+        return this.lieuObtention;
+    }
+
+    public Dossier lieuObtention(String lieuObtention) {
+        this.setLieuObtention(lieuObtention);
+        return this;
+    }
+
+    public void setLieuObtention(String lieuObtention) {
+        this.lieuObtention = lieuObtention;
     }
 
     public byte[] getCv() {
@@ -456,17 +539,30 @@ public class Dossier implements Serializable {
         this.cvContentType = cvContentType;
     }
 
-    public String getLettreMotivation() {
+    public byte[] getLettreMotivation() {
         return this.lettreMotivation;
     }
 
-    public Dossier lettreMotivation(String lettreMotivation) {
+    public Dossier lettreMotivation(byte[] lettreMotivation) {
         this.setLettreMotivation(lettreMotivation);
         return this;
     }
 
-    public void setLettreMotivation(String lettreMotivation) {
+    public void setLettreMotivation(byte[] lettreMotivation) {
         this.lettreMotivation = lettreMotivation;
+    }
+
+    public String getLettreMotivationContentType() {
+        return this.lettreMotivationContentType;
+    }
+
+    public Dossier lettreMotivationContentType(String lettreMotivationContentType) {
+        this.lettreMotivationContentType = lettreMotivationContentType;
+        return this;
+    }
+
+    public void setLettreMotivationContentType(String lettreMotivationContentType) {
+        this.lettreMotivationContentType = lettreMotivationContentType;
     }
 
     public String getProfession() {
@@ -480,6 +576,123 @@ public class Dossier implements Serializable {
 
     public void setProfession(String profession) {
         this.profession = profession;
+    }
+
+    public String getAutreSpecialite() {
+        return this.autreSpecialite;
+    }
+
+    public Dossier autreSpecialite(String autreSpecialite) {
+        this.setAutreSpecialite(autreSpecialite);
+        return this;
+    }
+
+    public void setAutreSpecialite(String autreSpecialite) {
+        this.autreSpecialite = autreSpecialite;
+    }
+
+    public String getNomCompetence() {
+        return this.nomCompetence;
+    }
+
+    public Dossier nomCompetence(String nomCompetence) {
+        this.setNomCompetence(nomCompetence);
+        return this;
+    }
+
+    public void setNomCompetence(String nomCompetence) {
+        this.nomCompetence = nomCompetence;
+    }
+
+    public NIVEAUCOMP getNiveauCompetence() {
+        return this.niveauCompetence;
+    }
+
+    public Dossier niveauCompetence(NIVEAUCOMP niveauCompetence) {
+        this.setNiveauCompetence(niveauCompetence);
+        return this;
+    }
+
+    public void setNiveauCompetence(NIVEAUCOMP niveauCompetence) {
+        this.niveauCompetence = niveauCompetence;
+    }
+
+    public String getIntituleExperience() {
+        return this.intituleExperience;
+    }
+
+    public Dossier intituleExperience(String intituleExperience) {
+        this.setIntituleExperience(intituleExperience);
+        return this;
+    }
+
+    public void setIntituleExperience(String intituleExperience) {
+        this.intituleExperience = intituleExperience;
+    }
+
+    public String getPosteOccupe() {
+        return this.posteOccupe;
+    }
+
+    public Dossier posteOccupe(String posteOccupe) {
+        this.setPosteOccupe(posteOccupe);
+        return this;
+    }
+
+    public void setPosteOccupe(String posteOccupe) {
+        this.posteOccupe = posteOccupe;
+    }
+
+    public LocalDate getDateDebut() {
+        return this.dateDebut;
+    }
+
+    public Dossier dateDebut(LocalDate dateDebut) {
+        this.setDateDebut(dateDebut);
+        return this;
+    }
+
+    public void setDateDebut(LocalDate dateDebut) {
+        this.dateDebut = dateDebut;
+    }
+
+    public LocalDate getDateFin() {
+        return this.dateFin;
+    }
+
+    public Dossier dateFin(LocalDate dateFin) {
+        this.setDateFin(dateFin);
+        return this;
+    }
+
+    public void setDateFin(LocalDate dateFin) {
+        this.dateFin = dateFin;
+    }
+
+    public String getNomEntreprise() {
+        return this.nomEntreprise;
+    }
+
+    public Dossier nomEntreprise(String nomEntreprise) {
+        this.setNomEntreprise(nomEntreprise);
+        return this;
+    }
+
+    public void setNomEntreprise(String nomEntreprise) {
+        this.nomEntreprise = nomEntreprise;
+    }
+
+    public String getMission() {
+        return this.mission;
+    }
+
+    public Dossier mission(String mission) {
+        this.setMission(mission);
+        return this;
+    }
+
+    public void setMission(String mission) {
+        this.mission = mission;
     }
 
     public Eleve getEleve() {
@@ -565,13 +778,13 @@ public class Dossier implements Serializable {
         return "Dossier{" +
             "id=" + getId() +
             ", numDossier='" + getNumDossier() + "'" +
-            ", dateNaiss='" + getDateNaiss() + "'" +
             ", prenom='" + getPrenom() + "'" +
             ", nom='" + getNom() + "'" +
             ", nomUtilisateur='" + getNomUtilisateur() + "'" +
+            ", dateNaiss='" + getDateNaiss() + "'" +
+            ", lieuNaiss='" + getLieuNaiss() + "'" +
             ", regionNaiss='" + getRegionNaiss() + "'" +
             ", departementNaiss='" + getDepartementNaiss() + "'" +
-            ", lieuNaiss='" + getLieuNaiss() + "'" +
             ", typePiece='" + getTypePiece() + "'" +
             ", numeroPiece=" + getNumeroPiece() +
             ", sexe='" + getSexe() + "'" +
@@ -582,13 +795,26 @@ public class Dossier implements Serializable {
             ", telephone2='" + getTelephone2() + "'" +
             ", email='" + getEmail() + "'" +
             ", niveauFormation='" + getNiveauFormation() + "'" +
-            ", specialite1='" + getSpecialite1() + "'" +
-            ", specialite2='" + getSpecialite2() + "'" +
-            ", diplomeRequis='" + getDiplomeRequis() + "'" +
+            ", specialite='" + getSpecialite() + "'" +
+            ", intituleDiplome='" + getIntituleDiplome() + "'" +
+            ", diplome='" + getDiplome() + "'" +
+            ", diplomeContentType='" + getDiplomeContentType() + "'" +
+            ", anneeObtention='" + getAnneeObtention() + "'" +
+            ", lieuObtention='" + getLieuObtention() + "'" +
             ", cv='" + getCv() + "'" +
             ", cvContentType='" + getCvContentType() + "'" +
             ", lettreMotivation='" + getLettreMotivation() + "'" +
+            ", lettreMotivationContentType='" + getLettreMotivationContentType() + "'" +
             ", profession='" + getProfession() + "'" +
+            ", autreSpecialite='" + getAutreSpecialite() + "'" +
+            ", nomCompetence='" + getNomCompetence() + "'" +
+            ", niveauCompetence='" + getNiveauCompetence() + "'" +
+            ", intituleExperience='" + getIntituleExperience() + "'" +
+            ", posteOccupe='" + getPosteOccupe() + "'" +
+            ", dateDebut='" + getDateDebut() + "'" +
+            ", dateFin='" + getDateFin() + "'" +
+            ", nomEntreprise='" + getNomEntreprise() + "'" +
+            ", mission='" + getMission() + "'" +
             "}";
     }
 }

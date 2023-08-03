@@ -33,6 +33,12 @@ public class EtablissementServiceImpl implements EtablissementService {
     }
 
     @Override
+    public Etablissement update(Etablissement etablissement) {
+        log.debug("Request to update Etablissement : {}", etablissement);
+        return etablissementRepository.save(etablissement);
+    }
+
+    @Override
     public Optional<Etablissement> partialUpdate(Etablissement etablissement) {
         log.debug("Request to partially update Etablissement : {}", etablissement);
 

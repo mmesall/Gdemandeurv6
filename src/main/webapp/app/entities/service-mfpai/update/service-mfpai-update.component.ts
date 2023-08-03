@@ -1,44 +1,46 @@
 import { Component, OnInit, ElementRef } from '@angular/core';
 import { HttpResponse } from '@angular/common/http';
-import { FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
 import { finalize } from 'rxjs/operators';
 
-import { IServiceMFPAI, ServiceMFPAI } from '../service-mfpai.model';
+import SharedModule from 'app/shared/shared.module';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+
+import { ServiceMFPAIFormService, ServiceMFPAIFormGroup } from './service-mfpai-form.service';
+import { IServiceMFPAI } from '../service-mfpai.model';
 import { ServiceMFPAIService } from '../service/service-mfpai.service';
 import { AlertError } from 'app/shared/alert/alert-error.model';
 import { EventManager, EventWithContent } from 'app/core/util/event-manager.service';
 import { DataUtils, FileLoadError } from 'app/core/util/data-util.service';
 
 @Component({
+  standalone: true,
   selector: 'jhi-service-mfpai-update',
   templateUrl: './service-mfpai-update.component.html',
+  imports: [SharedModule, FormsModule, ReactiveFormsModule],
 })
 export class ServiceMFPAIUpdateComponent implements OnInit {
   isSaving = false;
+  serviceMFPAI: IServiceMFPAI | null = null;
 
-  editForm = this.fb.group({
-    id: [],
-    imageService: [],
-    imageServiceContentType: [],
-    nomService: [null, []],
-    chefService: [null, [Validators.required]],
-    description: [],
-  });
+  editForm: ServiceMFPAIFormGroup = this.serviceMFPAIFormService.createServiceMFPAIFormGroup();
 
   constructor(
     protected dataUtils: DataUtils,
     protected eventManager: EventManager,
     protected serviceMFPAIService: ServiceMFPAIService,
+    protected serviceMFPAIFormService: ServiceMFPAIFormService,
     protected elementRef: ElementRef,
-    protected activatedRoute: ActivatedRoute,
-    protected fb: FormBuilder
+    protected activatedRoute: ActivatedRoute
   ) {}
 
   ngOnInit(): void {
     this.activatedRoute.data.subscribe(({ serviceMFPAI }) => {
-      this.updateForm(serviceMFPAI);
+      this.serviceMFPAI = serviceMFPAI;
+      if (serviceMFPAI) {
+        this.updateForm(serviceMFPAI);
+      }
     });
   }
 
@@ -73,8 +75,8 @@ export class ServiceMFPAIUpdateComponent implements OnInit {
 
   save(): void {
     this.isSaving = true;
-    const serviceMFPAI = this.createFromForm();
-    if (serviceMFPAI.id !== undefined) {
+    const serviceMFPAI = this.serviceMFPAIFormService.getServiceMFPAI(this.editForm);
+    if (serviceMFPAI.id !== null) {
       this.subscribeToSaveResponse(this.serviceMFPAIService.update(serviceMFPAI));
     } else {
       this.subscribeToSaveResponse(this.serviceMFPAIService.create(serviceMFPAI));
@@ -101,25 +103,7 @@ export class ServiceMFPAIUpdateComponent implements OnInit {
   }
 
   protected updateForm(serviceMFPAI: IServiceMFPAI): void {
-    this.editForm.patchValue({
-      id: serviceMFPAI.id,
-      imageService: serviceMFPAI.imageService,
-      imageServiceContentType: serviceMFPAI.imageServiceContentType,
-      nomService: serviceMFPAI.nomService,
-      chefService: serviceMFPAI.chefService,
-      description: serviceMFPAI.description,
-    });
-  }
-
-  protected createFromForm(): IServiceMFPAI {
-    return {
-      ...new ServiceMFPAI(),
-      id: this.editForm.get(['id'])!.value,
-      imageServiceContentType: this.editForm.get(['imageServiceContentType'])!.value,
-      imageService: this.editForm.get(['imageService'])!.value,
-      nomService: this.editForm.get(['nomService'])!.value,
-      chefService: this.editForm.get(['chefService'])!.value,
-      description: this.editForm.get(['description'])!.value,
-    };
+    this.serviceMFPAI = serviceMFPAI;
+    this.serviceMFPAIFormService.resetForm(this.editForm, serviceMFPAI);
   }
 }

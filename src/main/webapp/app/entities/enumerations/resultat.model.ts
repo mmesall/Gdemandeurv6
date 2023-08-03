@@ -1,7 +1,9 @@
 export enum Resultat {
   SOUMIS = 'SOUMIS',
 
-  ACCORD = 'ACCORD',
+  VALIDE = 'VALIDE',
 
-  REJET = 'REJET',
+  APPROUVE = 'APPROUVE',
+
+  REJETE = 'REJETE',
 }

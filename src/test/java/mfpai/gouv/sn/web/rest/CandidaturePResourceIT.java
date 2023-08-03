@@ -2,24 +2,33 @@ package mfpai.gouv.sn.web.rest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import jakarta.persistence.EntityManager;
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicLong;
-import javax.persistence.EntityManager;
 import mfpai.gouv.sn.IntegrationTest;
 import mfpai.gouv.sn.domain.CandidatureP;
 import mfpai.gouv.sn.domain.enumeration.NomFiliere;
 import mfpai.gouv.sn.domain.enumeration.Resultat;
 import mfpai.gouv.sn.repository.CandidaturePRepository;
+import mfpai.gouv.sn.service.CandidaturePService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
@@ -29,6 +38,7 @@ import org.springframework.transaction.annotation.Transactional;
  * Integration tests for the {@link CandidaturePResource} REST controller.
  */
 @IntegrationTest
+@ExtendWith(MockitoExtension.class)
 @AutoConfigureMockMvc
 @WithMockUser
 class CandidaturePResourceIT {
@@ -46,7 +56,7 @@ class CandidaturePResourceIT {
     private static final LocalDate UPDATED_DATE_DEPOT = LocalDate.now(ZoneId.systemDefault());
 
     private static final Resultat DEFAULT_RESULTAT = Resultat.SOUMIS;
-    private static final Resultat UPDATED_RESULTAT = Resultat.ACCORD;
+    private static final Resultat UPDATED_RESULTAT = Resultat.VALIDE;
 
     private static final String ENTITY_API_URL = "/api/candidature-ps";
     private static final String ENTITY_API_URL_ID = ENTITY_API_URL + "/{id}";
@@ -56,6 +66,12 @@ class CandidaturePResourceIT {
 
     @Autowired
     private CandidaturePRepository candidaturePRepository;
+
+    @Mock
+    private CandidaturePRepository candidaturePRepositoryMock;
+
+    @Mock
+    private CandidaturePService candidaturePServiceMock;
 
     @Autowired
     private EntityManager em;
@@ -159,6 +175,23 @@ class CandidaturePResourceIT {
             .andExpect(jsonPath("$.[*].resultat").value(hasItem(DEFAULT_RESULTAT.toString())));
     }
 
+    @SuppressWarnings({ "unchecked" })
+    void getAllCandidaturePSWithEagerRelationshipsIsEnabled() throws Exception {
+        when(candidaturePServiceMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
+
+        restCandidaturePMockMvc.perform(get(ENTITY_API_URL + "?eagerload=true")).andExpect(status().isOk());
+
+        verify(candidaturePServiceMock, times(1)).findAllWithEagerRelationships(any());
+    }
+
+    @SuppressWarnings({ "unchecked" })
+    void getAllCandidaturePSWithEagerRelationshipsIsNotEnabled() throws Exception {
+        when(candidaturePServiceMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
+
+        restCandidaturePMockMvc.perform(get(ENTITY_API_URL + "?eagerload=false")).andExpect(status().isOk());
+        verify(candidaturePRepositoryMock, times(1)).findAll(any(Pageable.class));
+    }
+
     @Test
     @Transactional
     void getCandidatureP() throws Exception {
@@ -187,14 +220,14 @@ class CandidaturePResourceIT {
 
     @Test
     @Transactional
-    void putNewCandidatureP() throws Exception {
+    void putExistingCandidatureP() throws Exception {
         // Initialize the database
         candidaturePRepository.saveAndFlush(candidatureP);
 
         int databaseSizeBeforeUpdate = candidaturePRepository.findAll().size();
 
         // Update the candidatureP
-        CandidatureP updatedCandidatureP = candidaturePRepository.findById(candidatureP.getId()).get();
+        CandidatureP updatedCandidatureP = candidaturePRepository.findById(candidatureP.getId()).orElseThrow();
         // Disconnect from session so that the updates on updatedCandidatureP are not directly saved in db
         em.detach(updatedCandidatureP);
         updatedCandidatureP
@@ -291,7 +324,7 @@ class CandidaturePResourceIT {
         CandidatureP partialUpdatedCandidatureP = new CandidatureP();
         partialUpdatedCandidatureP.setId(candidatureP.getId());
 
-        partialUpdatedCandidatureP.offreFormation(UPDATED_OFFRE_FORMATION).dateDepot(UPDATED_DATE_DEPOT).resultat(UPDATED_RESULTAT);
+        partialUpdatedCandidatureP.dateDebutOffre(UPDATED_DATE_DEBUT_OFFRE);
 
         restCandidaturePMockMvc
             .perform(
@@ -305,11 +338,11 @@ class CandidaturePResourceIT {
         List<CandidatureP> candidaturePList = candidaturePRepository.findAll();
         assertThat(candidaturePList).hasSize(databaseSizeBeforeUpdate);
         CandidatureP testCandidatureP = candidaturePList.get(candidaturePList.size() - 1);
-        assertThat(testCandidatureP.getOffreFormation()).isEqualTo(UPDATED_OFFRE_FORMATION);
-        assertThat(testCandidatureP.getDateDebutOffre()).isEqualTo(DEFAULT_DATE_DEBUT_OFFRE);
+        assertThat(testCandidatureP.getOffreFormation()).isEqualTo(DEFAULT_OFFRE_FORMATION);
+        assertThat(testCandidatureP.getDateDebutOffre()).isEqualTo(UPDATED_DATE_DEBUT_OFFRE);
         assertThat(testCandidatureP.getDateFinOffre()).isEqualTo(DEFAULT_DATE_FIN_OFFRE);
-        assertThat(testCandidatureP.getDateDepot()).isEqualTo(UPDATED_DATE_DEPOT);
-        assertThat(testCandidatureP.getResultat()).isEqualTo(UPDATED_RESULTAT);
+        assertThat(testCandidatureP.getDateDepot()).isEqualTo(DEFAULT_DATE_DEPOT);
+        assertThat(testCandidatureP.getResultat()).isEqualTo(DEFAULT_RESULTAT);
     }
 
     @Test

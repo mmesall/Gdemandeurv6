@@ -1,8 +1,6 @@
 {
   "applications": "*",
   "changelogDate": "20230328104845",
-  "dto": "no",
-  "embedded": false,
   "entityTableName": "etablissement",
   "fields": [
     {
@@ -88,32 +86,32 @@
       "fieldType": "String"
     }
   ],
-  "fluentMethods": true,
-  "jpaMetamodelFiltering": false,
   "name": "Etablissement",
   "pagination": "infinite-scroll",
-  "readOnly": false,
   "relationships": [
     {
       "otherEntityName": "candidatureE",
       "otherEntityRelationshipName": "etablissement",
       "relationshipName": "candidatureE",
+      "relationshipSide": "left",
       "relationshipType": "one-to-many"
     },
     {
       "otherEntityName": "candidatureP",
       "otherEntityRelationshipName": "etablissement",
       "relationshipName": "candidatureP",
+      "relationshipSide": "left",
       "relationshipType": "one-to-many"
     },
     {
       "otherEntityName": "formation",
       "otherEntityRelationshipName": "etablissement",
-      "ownerSide": false,
       "relationshipName": "formation",
+      "relationshipSide": "right",
       "relationshipType": "many-to-many",
       "relationshipValidateRules": "required"
     }
   ],
+  "searchEngine": "no",
   "service": "serviceImpl"
 }

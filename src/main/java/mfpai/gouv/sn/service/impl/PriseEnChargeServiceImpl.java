@@ -33,6 +33,12 @@ public class PriseEnChargeServiceImpl implements PriseEnChargeService {
     }
 
     @Override
+    public PriseEnCharge update(PriseEnCharge priseEnCharge) {
+        log.debug("Request to update PriseEnCharge : {}", priseEnCharge);
+        return priseEnChargeRepository.save(priseEnCharge);
+    }
+
+    @Override
     public Optional<PriseEnCharge> partialUpdate(PriseEnCharge priseEnCharge) {
         log.debug("Request to partially update PriseEnCharge : {}", priseEnCharge);
 

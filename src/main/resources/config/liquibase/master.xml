@@ -25,18 +25,15 @@
     <include file="config/liquibase/changelog/20230328104852_added_entity_Dossier.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20230328104853_added_entity_Diplome.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20230328104854_added_entity_Experience.xml" relativeToChangelogFile="false"/>
-    <include file="config/liquibase/changelog/20230328104855_added_entity_Candidature.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20230328104856_added_entity_Demandeur.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20230328104857_added_entity_Eleve.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20230328104858_added_entity_Etudiant.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20230328104859_added_entity_Professionnel.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20230328104900_added_entity_Agent.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20230328104901_added_entity_ServiceMFPAI.xml" relativeToChangelogFile="false"/>
-    <include file="config/liquibase/changelog/20230413132437_added_entity_CandidatureElev.xml" relativeToChangelogFile="false"/>
-    <include file="config/liquibase/changelog/20230413132438_added_entity_CandidatureEtudiant.xml" relativeToChangelogFile="false"/>
-    <include file="config/liquibase/changelog/20230413132439_added_entity_CandidatureProf.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20230510150029_added_entity_CandidatureE.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20230510150030_added_entity_CandidatureP.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20230802153919_added_entity_User.xml" relativeToChangelogFile="false"/>
     <!-- jhipster-needle-liquibase-add-changelog - JHipster will add liquibase changelogs here -->
     <include file="config/liquibase/changelog/20230328104846_added_entity_constraints_Formation.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20230328104847_added_entity_constraints_FormationInitiale.xml" relativeToChangelogFile="false"/>
@@ -46,15 +43,11 @@
     <include file="config/liquibase/changelog/20230328104852_added_entity_constraints_Dossier.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20230328104853_added_entity_constraints_Diplome.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20230328104854_added_entity_constraints_Experience.xml" relativeToChangelogFile="false"/>
-    <include file="config/liquibase/changelog/20230328104855_added_entity_constraints_Candidature.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20230328104856_added_entity_constraints_Demandeur.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20230328104857_added_entity_constraints_Eleve.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20230328104858_added_entity_constraints_Etudiant.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20230328104859_added_entity_constraints_Professionnel.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20230328104900_added_entity_constraints_Agent.xml" relativeToChangelogFile="false"/>
-    <include file="config/liquibase/changelog/20230413132437_added_entity_constraints_CandidatureElev.xml" relativeToChangelogFile="false"/>
-    <include file="config/liquibase/changelog/20230413132438_added_entity_constraints_CandidatureEtudiant.xml" relativeToChangelogFile="false"/>
-    <include file="config/liquibase/changelog/20230413132439_added_entity_constraints_CandidatureProf.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20230510150029_added_entity_constraints_CandidatureE.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20230510150030_added_entity_constraints_CandidatureP.xml" relativeToChangelogFile="false"/>
     <!-- jhipster-needle-liquibase-add-constraints-changelog - JHipster will add liquibase constraints changelogs here -->

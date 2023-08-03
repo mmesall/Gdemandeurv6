@@ -4,21 +4,23 @@
       <h2
         id="jhi-candidature-e-heading"
         data-cy="CandidatureECreateUpdateHeading"
-        style="text-align: center; font-style: italic; font-weight: bold"
+        jhiTranslate="jhipsterProjectBaseJwtApp.candidatureE.home.createOrEditLabel"
       >
-        Creer une nouvelle Candidature
+        Créer ou éditer un Candidature E
       </h2>
 
       <div>
         <jhi-alert-error></jhi-alert-error>
 
-        <div class="row mb-3" [hidden]="editForm.get('id')!.value == null">
-          <label class="form-label" for="field_id">ID</label>
+        <div class="mb-3" *ngIf="editForm.controls.id.value !== null">
+          <label class="form-label" jhiTranslate="global.field.id" for="field_id">ID</label>
           <input type="number" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
         </div>
 
-        <div class="row mb-3">
-          <label class="form-label" for="field_offreFormation">Offre Formation en : </label>
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="jhipsterProjectBaseJwtApp.candidatureE.offreFormation" for="field_offreFormation"
+            >Offre Formation</label
+          >
           <select
             class="form-control"
             name="offreFormation"
@@ -31,8 +33,10 @@
           </select>
         </div>
 
-        <div class="row mb-3">
-          <label class="form-label" for="field_dateDebutOffre">Date Debut Offre</label>
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="jhipsterProjectBaseJwtApp.candidatureE.dateDebutOffre" for="field_dateDebutOffre"
+            >Date Debut Offre</label
+          >
           <div class="input-group">
             <input
               id="field_dateDebutOffre"
@@ -50,8 +54,10 @@
           </div>
         </div>
 
-        <div class="row mb-3">
-          <label class="form-label" for="field_dateFinOffre">Date Fin Offre</label>
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="jhipsterProjectBaseJwtApp.candidatureE.dateFinOffre" for="field_dateFinOffre"
+            >Date Fin Offre</label
+          >
           <div class="input-group">
             <input
               id="field_dateFinOffre"
@@ -69,8 +75,8 @@
           </div>
         </div>
 
-        <div class="row mb-3">
-          <label class="form-label" for="field_dateDepot">Date de Dépot</label>
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="jhipsterProjectBaseJwtApp.candidatureE.dateDepot" for="field_dateDepot">Date Depot</label>
           <div class="input-group">
             <input
               id="field_dateDepot"
@@ -86,84 +92,72 @@
           </div>
         </div>
 
-        <div class="row mb-3">
-          <label class="form-label" for="field_resultat">Resultat</label>
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="jhipsterProjectBaseJwtApp.candidatureE.resultat" for="field_resultat">Resultat</label>
           <select class="form-control" name="resultat" formControlName="resultat" id="field_resultat" data-cy="resultat">
             <option [ngValue]="null"></option>
-            <option value="SOUMIS">Soumis</option>
-            <option *jhiHasAnyAuthority="'ROLE_ADMIN'" value="ACCORD">Accord</option>
-            <option *jhiHasAnyAuthority="'ROLE_ADMIN'" value="REJET">Rejet</option>
-            <!-- <option *ngFor="let resultat of resultatValues" [value]="resultat">{{resultat}}</option> -->
+            <option *ngFor="let resultat of resultatValues" [value]="resultat">{{ resultat }}</option>
           </select>
         </div>
 
-        <div *jhiHasAnyAuthority="'ROLE_ADMIN'" class="row mb-3">
-          <label class="form-label" for="field_eleve">Eleve</label>
-          <select class="form-control" id="field_eleve" data-cy="eleve" name="eleve" formControlName="eleve">
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="jhipsterProjectBaseJwtApp.candidatureE.eleve" for="field_eleve">Eleve</label>
+          <select class="form-control" id="field_eleve" data-cy="eleve" name="eleve" formControlName="eleve" [compareWith]="compareEleve">
             <option [ngValue]="null"></option>
-            <option
-              [ngValue]="eleveOption.id === editForm.get('eleve')!.value?.id ? editForm.get('eleve')!.value : eleveOption"
-              *ngFor="let eleveOption of elevesSharedCollection; trackBy: trackEleveById"
-            >
-              {{ eleveOption.niveauEtude }}
-            </option>
+            <option [ngValue]="eleveOption" *ngFor="let eleveOption of elevesSharedCollection">{{ eleveOption.niveauEtude }}</option>
           </select>
         </div>
 
-        <div *jhiHasAnyAuthority="'ROLE_ADMIN'" class="row mb-3">
-          <label class="form-label" for="field_etudiant">Etudiant</label>
-          <select class="form-control" id="field_etudiant" data-cy="etudiant" name="etudiant" formControlName="etudiant">
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="jhipsterProjectBaseJwtApp.candidatureE.etudiant" for="field_etudiant">Etudiant</label>
+          <select
+            class="form-control"
+            id="field_etudiant"
+            data-cy="etudiant"
+            name="etudiant"
+            formControlName="etudiant"
+            [compareWith]="compareEtudiant"
+          >
             <option [ngValue]="null"></option>
-            <option
-              [ngValue]="etudiantOption.id === editForm.get('etudiant')!.value?.id ? editForm.get('etudiant')!.value : etudiantOption"
-              *ngFor="let etudiantOption of etudiantsSharedCollection; trackBy: trackEtudiantById"
-            >
+            <option [ngValue]="etudiantOption" *ngFor="let etudiantOption of etudiantsSharedCollection">
               {{ etudiantOption.carteEtudiant }}
             </option>
           </select>
         </div>
 
-        <div class="row mb-3">
-          <label class="form-label" for="field_formationInitiale">Formation Initiale choisie</label>
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="jhipsterProjectBaseJwtApp.candidatureE.formationInitiale" for="field_formationInitiale"
+            >Formation Initiale</label
+          >
           <select
             class="form-control"
             id="field_formationInitiale"
             data-cy="formationInitiale"
             name="formationInitiale"
             formControlName="formationInitiale"
+            [compareWith]="compareFormationInitiale"
           >
             <option [ngValue]="null"></option>
-            <option
-              [ngValue]="
-                formationInitialeOption.id === editForm.get('formationInitiale')!.value?.id
-                  ? editForm.get('formationInitiale')!.value
-                  : formationInitialeOption
-              "
-              *ngFor="let formationInitialeOption of formationInitialesSharedCollection; trackBy: trackFormationInitialeById"
-            >
+            <option [ngValue]="formationInitialeOption" *ngFor="let formationInitialeOption of formationInitialesSharedCollection">
               {{ formationInitialeOption.nomFormationI }}
             </option>
           </select>
         </div>
 
-        <div class="row mb-3">
-          <label class="form-label" for="field_etablissement">Etablissement souhaité</label>
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="jhipsterProjectBaseJwtApp.candidatureE.etablissement" for="field_etablissement"
+            >Etablissement</label
+          >
           <select
             class="form-control"
             id="field_etablissement"
             data-cy="etablissement"
             name="etablissement"
             formControlName="etablissement"
+            [compareWith]="compareEtablissement"
           >
             <option [ngValue]="null"></option>
-            <option
-              [ngValue]="
-                etablissementOption.id === editForm.get('etablissement')!.value?.id
-                  ? editForm.get('etablissement')!.value
-                  : etablissementOption
-              "
-              *ngFor="let etablissementOption of etablissementsSharedCollection; trackBy: trackEtablissementById"
-            >
+            <option [ngValue]="etablissementOption" *ngFor="let etablissementOption of etablissementsSharedCollection">
               {{ etablissementOption.nomEtablissement }}
             </option>
           </select>
@@ -172,7 +166,7 @@
 
       <div>
         <button type="button" id="cancel-save" data-cy="entityCreateCancelButton" class="btn btn-secondary" (click)="previousState()">
-          <fa-icon icon="ban"></fa-icon>&nbsp;<span>Annuler</span>
+          <fa-icon icon="ban"></fa-icon>&nbsp;<span jhiTranslate="entity.action.cancel">Annuler</span>
         </button>
 
         <button
@@ -182,7 +176,7 @@
           [disabled]="editForm.invalid || isSaving"
           class="btn btn-primary"
         >
-          <fa-icon icon="save"></fa-icon>&nbsp;<span>Sauvegarder</span>
+          <fa-icon icon="save"></fa-icon>&nbsp;<span jhiTranslate="entity.action.save">Sauvegarder</span>
         </button>
       </div>
     </form>

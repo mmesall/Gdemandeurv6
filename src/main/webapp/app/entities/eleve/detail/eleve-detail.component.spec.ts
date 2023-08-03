@@ -1,36 +1,38 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ActivatedRoute } from '@angular/router';
+import { TestBed } from '@angular/core/testing';
+import { provideRouter, withComponentInputBinding } from '@angular/router';
+import { RouterTestingHarness, RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
 
 import { EleveDetailComponent } from './eleve-detail.component';
 
 describe('Eleve Management Detail Component', () => {
-  let comp: EleveDetailComponent;
-  let fixture: ComponentFixture<EleveDetailComponent>;
-
-  beforeEach(() => {
-    TestBed.configureTestingModule({
-      declarations: [EleveDetailComponent],
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [EleveDetailComponent, RouterTestingModule.withRoutes([], { bindToComponentInputs: true })],
       providers: [
-        {
-          provide: ActivatedRoute,
-          useValue: { data: of({ eleve: { id: 123 } }) },
-        },
+        provideRouter(
+          [
+            {
+              path: '**',
+              component: EleveDetailComponent,
+              resolve: { eleve: () => of({ id: 123 }) },
+            },
+          ],
+          withComponentInputBinding()
+        ),
       ],
     })
       .overrideTemplate(EleveDetailComponent, '')
       .compileComponents();
-    fixture = TestBed.createComponent(EleveDetailComponent);
-    comp = fixture.componentInstance;
   });
 
   describe('OnInit', () => {
-    it('Should load eleve on init', () => {
-      // WHEN
-      comp.ngOnInit();
+    it('Should load eleve on init', async () => {
+      const harness = await RouterTestingHarness.create();
+      const instance = await harness.navigateByUrl('/', EleveDetailComponent);
 
       // THEN
-      expect(comp.eleve).toEqual(expect.objectContaining({ id: 123 }));
+      expect(instance.eleve).toEqual(expect.objectContaining({ id: 123 }));
     });
   });
 });

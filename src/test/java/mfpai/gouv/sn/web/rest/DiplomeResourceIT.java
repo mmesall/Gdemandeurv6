@@ -2,23 +2,32 @@ package mfpai.gouv.sn.web.rest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import jakarta.persistence.EntityManager;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicLong;
-import javax.persistence.EntityManager;
 import mfpai.gouv.sn.IntegrationTest;
 import mfpai.gouv.sn.domain.Diplome;
 import mfpai.gouv.sn.domain.enumeration.Mention;
 import mfpai.gouv.sn.domain.enumeration.NiveauEtude;
 import mfpai.gouv.sn.domain.enumeration.NomFiliere;
 import mfpai.gouv.sn.repository.DiplomeRepository;
+import mfpai.gouv.sn.service.DiplomeService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
@@ -29,6 +38,7 @@ import org.springframework.util.Base64Utils;
  * Integration tests for the {@link DiplomeResource} REST controller.
  */
 @IntegrationTest
+@ExtendWith(MockitoExtension.class)
 @AutoConfigureMockMvc
 @WithMockUser
 class DiplomeResourceIT {
@@ -64,6 +74,12 @@ class DiplomeResourceIT {
 
     @Autowired
     private DiplomeRepository diplomeRepository;
+
+    @Mock
+    private DiplomeRepository diplomeRepositoryMock;
+
+    @Mock
+    private DiplomeService diplomeServiceMock;
 
     @Autowired
     private EntityManager em;
@@ -196,6 +212,23 @@ class DiplomeResourceIT {
             .andExpect(jsonPath("$.[*].document").value(hasItem(Base64Utils.encodeToString(DEFAULT_DOCUMENT))));
     }
 
+    @SuppressWarnings({ "unchecked" })
+    void getAllDiplomesWithEagerRelationshipsIsEnabled() throws Exception {
+        when(diplomeServiceMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
+
+        restDiplomeMockMvc.perform(get(ENTITY_API_URL + "?eagerload=true")).andExpect(status().isOk());
+
+        verify(diplomeServiceMock, times(1)).findAllWithEagerRelationships(any());
+    }
+
+    @SuppressWarnings({ "unchecked" })
+    void getAllDiplomesWithEagerRelationshipsIsNotEnabled() throws Exception {
+        when(diplomeServiceMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
+
+        restDiplomeMockMvc.perform(get(ENTITY_API_URL + "?eagerload=false")).andExpect(status().isOk());
+        verify(diplomeRepositoryMock, times(1)).findAll(any(Pageable.class));
+    }
+
     @Test
     @Transactional
     void getDiplome() throws Exception {
@@ -227,14 +260,14 @@ class DiplomeResourceIT {
 
     @Test
     @Transactional
-    void putNewDiplome() throws Exception {
+    void putExistingDiplome() throws Exception {
         // Initialize the database
         diplomeRepository.saveAndFlush(diplome);
 
         int databaseSizeBeforeUpdate = diplomeRepository.findAll().size();
 
         // Update the diplome
-        Diplome updatedDiplome = diplomeRepository.findById(diplome.getId()).get();
+        Diplome updatedDiplome = diplomeRepository.findById(diplome.getId()).orElseThrow();
         // Disconnect from session so that the updates on updatedDiplome are not directly saved in db
         em.detach(updatedDiplome);
         updatedDiplome
@@ -338,11 +371,10 @@ class DiplomeResourceIT {
         partialUpdatedDiplome.setId(diplome.getId());
 
         partialUpdatedDiplome
-            .niveau(UPDATED_NIVEAU)
-            .anneeObtention(UPDATED_ANNEE_OBTENTION)
-            .etablissement(UPDATED_ETABLISSEMENT)
-            .document(UPDATED_DOCUMENT)
-            .documentContentType(UPDATED_DOCUMENT_CONTENT_TYPE);
+            .intitule(UPDATED_INTITULE)
+            .domaine(UPDATED_DOMAINE)
+            .mention(UPDATED_MENTION)
+            .etablissement(UPDATED_ETABLISSEMENT);
 
         restDiplomeMockMvc
             .perform(
@@ -356,14 +388,14 @@ class DiplomeResourceIT {
         List<Diplome> diplomeList = diplomeRepository.findAll();
         assertThat(diplomeList).hasSize(databaseSizeBeforeUpdate);
         Diplome testDiplome = diplomeList.get(diplomeList.size() - 1);
-        assertThat(testDiplome.getIntitule()).isEqualTo(DEFAULT_INTITULE);
-        assertThat(testDiplome.getDomaine()).isEqualTo(DEFAULT_DOMAINE);
-        assertThat(testDiplome.getNiveau()).isEqualTo(UPDATED_NIVEAU);
-        assertThat(testDiplome.getMention()).isEqualTo(DEFAULT_MENTION);
-        assertThat(testDiplome.getAnneeObtention()).isEqualTo(UPDATED_ANNEE_OBTENTION);
+        assertThat(testDiplome.getIntitule()).isEqualTo(UPDATED_INTITULE);
+        assertThat(testDiplome.getDomaine()).isEqualTo(UPDATED_DOMAINE);
+        assertThat(testDiplome.getNiveau()).isEqualTo(DEFAULT_NIVEAU);
+        assertThat(testDiplome.getMention()).isEqualTo(UPDATED_MENTION);
+        assertThat(testDiplome.getAnneeObtention()).isEqualTo(DEFAULT_ANNEE_OBTENTION);
         assertThat(testDiplome.getEtablissement()).isEqualTo(UPDATED_ETABLISSEMENT);
-        assertThat(testDiplome.getDocument()).isEqualTo(UPDATED_DOCUMENT);
-        assertThat(testDiplome.getDocumentContentType()).isEqualTo(UPDATED_DOCUMENT_CONTENT_TYPE);
+        assertThat(testDiplome.getDocument()).isEqualTo(DEFAULT_DOCUMENT);
+        assertThat(testDiplome.getDocumentContentType()).isEqualTo(DEFAULT_DOCUMENT_CONTENT_TYPE);
     }
 
     @Test

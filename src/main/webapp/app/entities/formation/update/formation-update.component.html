@@ -1,18 +1,26 @@
 <div class="d-flex justify-content-center">
   <div class="col-8">
     <form name="editForm" role="form" novalidate (ngSubmit)="save()" [formGroup]="editForm">
-      <h2 id="jhi-formation-heading" data-cy="FormationCreateUpdateHeading">Ajouter une nouvelle formation</h2>
+      <h2
+        id="jhi-formation-heading"
+        data-cy="FormationCreateUpdateHeading"
+        jhiTranslate="jhipsterProjectBaseJwtApp.formation.home.createOrEditLabel"
+      >
+        Créer ou éditer un Formation
+      </h2>
 
       <div>
         <jhi-alert-error></jhi-alert-error>
 
-        <!-- <div class="row mb-3" [hidden]="editForm.get('id')!.value == null">
-          <label class="form-label" for="field_id">ID</label>
+        <div class="mb-3" *ngIf="editForm.controls.id.value !== null">
+          <label class="form-label" jhiTranslate="global.field.id" for="field_id">ID</label>
           <input type="number" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
-        </div> -->
+        </div>
 
-        <div class="row mb-3">
-          <label class="form-label" for="field_nomFormation">Nom Formation</label>
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="jhipsterProjectBaseJwtApp.formation.nomFormation" for="field_nomFormation"
+            >Nom Formation</label
+          >
           <input
             type="text"
             class="form-control"
@@ -23,8 +31,10 @@
           />
         </div>
 
-        <div class="row mb-3">
-          <label class="form-label" for="field_imageFormation">Image Formation</label>
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="jhipsterProjectBaseJwtApp.formation.imageFormation" for="field_imageFormation"
+            >Image Formation</label
+          >
           <div>
             <img
               [src]="'data:' + editForm.get('imageFormationContentType')!.value + ';base64,' + editForm.get('imageFormation')!.value"
@@ -34,7 +44,7 @@
             />
             <div *ngIf="editForm.get('imageFormation')!.value" class="form-text text-danger clearfix">
               <span class="pull-start"
-                >{{ editForm.get('imageFormationContentType')!.value }}, {{ byteSize(editForm.get('imageFormation')!.value) }}</span
+                >{{ editForm.get('imageFormationContentType')!.value }}, {{ byteSize(editForm.get('imageFormation')!.value!) }}</span
               >
               <button
                 type="button"
@@ -69,8 +79,10 @@
           />
         </div>
 
-        <div class="row mb-3">
-          <label class="form-label" for="field_typeFormation">Type Formation</label>
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="jhipsterProjectBaseJwtApp.formation.typeFormation" for="field_typeFormation"
+            >Type Formation</label
+          >
           <select
             class="form-control"
             name="typeFormation"
@@ -83,21 +95,23 @@
           </select>
         </div>
 
-        <div class="row mb-3">
-          <label class="form-label" for="field_duree">Duree</label>
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="jhipsterProjectBaseJwtApp.formation.duree" for="field_duree">Duree</label>
           <input type="text" class="form-control" name="duree" id="field_duree" data-cy="duree" formControlName="duree" />
         </div>
 
-        <div class="row mb-3">
-          <label class="form-label" for="field_admission">Admission</label>
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="jhipsterProjectBaseJwtApp.formation.admission" for="field_admission">Admission</label>
           <select class="form-control" name="admission" formControlName="admission" id="field_admission" data-cy="admission">
             <option [ngValue]="null"></option>
             <option *ngFor="let admission of admissionValues" [value]="admission">{{ admission }}</option>
           </select>
         </div>
 
-        <div class="row mb-3">
-          <label class="form-label" for="field_diplomeRequis">Diplome Requis</label>
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="jhipsterProjectBaseJwtApp.formation.diplomeRequis" for="field_diplomeRequis"
+            >Diplome Requis</label
+          >
           <select
             class="form-control"
             name="diplomeRequis"
@@ -110,21 +124,24 @@
           </select>
         </div>
 
-        <div class="row mb-3">
-          <label class="form-label" for="field_ficheFormation">Fiche Formation</label>
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="jhipsterProjectBaseJwtApp.formation.ficheFormation" for="field_ficheFormation"
+            >Fiche Formation</label
+          >
           <div>
             <div *ngIf="editForm.get('ficheFormation')!.value" class="form-text text-danger clearfix">
               <a
                 class="pull-start"
-                (click)="openFile(editForm.get('ficheFormation')!.value, editForm.get('ficheFormationContentType')!.value)"
-                >open</a
+                (click)="openFile(editForm.get('ficheFormation')!.value!, editForm.get('ficheFormationContentType')!.value!)"
+                jhiTranslate="entity.action.open"
+                >Ouvrir</a
               ><br />
               <span class="pull-start"
-                >{{ editForm.get('ficheFormationContentType')!.value }}, {{ byteSize(editForm.get('ficheFormation')!.value) }}</span
+                >{{ editForm.get('ficheFormationContentType')!.value }}, {{ byteSize(editForm.get('ficheFormation')!.value!) }}</span
               >
               <button
                 type="button"
-                (click)="editForm.patchValue({ ficheFormation: null }); editForm.patchValue({ ficheFormationContentType: null })"
+                (click)="editForm.patchValue({ ficheFormation: undefined, ficheFormationContentType: undefined })"
                 class="btn btn-secondary btn-xs pull-end"
               >
                 <fa-icon icon="times"></fa-icon>
@@ -149,8 +166,8 @@
           />
         </div>
 
-        <div class="row mb-3">
-          <label for="field_etablissements">Etablissement</label>
+        <div class="mb-3">
+          <label jhiTranslate="jhipsterProjectBaseJwtApp.formation.etablissement" for="field_etablissements">Etablissement</label>
           <select
             class="form-control"
             id="field_etablissements"
@@ -158,11 +175,9 @@
             multiple
             name="etablissements"
             formControlName="etablissements"
+            [compareWith]="compareEtablissement"
           >
-            <option
-              [ngValue]="getSelectedEtablissement(etablissementOption, editForm.get('etablissements')!.value)"
-              *ngFor="let etablissementOption of etablissementsSharedCollection; trackBy: trackEtablissementById"
-            >
+            <option [ngValue]="etablissementOption" *ngFor="let etablissementOption of etablissementsSharedCollection">
               {{ etablissementOption.nomEtablissement }}
             </option>
           </select>
@@ -173,13 +188,19 @@
             (editForm.get(['etablissements'])!.dirty || editForm.get(['etablissements'])!.touched)
           "
         >
-          <small class="form-text text-danger" *ngIf="editForm.get(['etablissements'])?.errors?.required"> This field is required. </small>
+          <small
+            class="form-text text-danger"
+            *ngIf="editForm.get(['etablissements'])?.errors?.required"
+            jhiTranslate="entity.validation.required"
+          >
+            Ce champ est obligatoire.
+          </small>
         </div>
       </div>
 
       <div>
         <button type="button" id="cancel-save" data-cy="entityCreateCancelButton" class="btn btn-secondary" (click)="previousState()">
-          <fa-icon icon="ban"></fa-icon>&nbsp;<span>Annuler</span>
+          <fa-icon icon="ban"></fa-icon>&nbsp;<span jhiTranslate="entity.action.cancel">Annuler</span>
         </button>
 
         <button
@@ -189,7 +210,7 @@
           [disabled]="editForm.invalid || isSaving"
           class="btn btn-primary"
         >
-          <fa-icon icon="save"></fa-icon>&nbsp;<span>Sauvegarder</span>
+          <fa-icon icon="save"></fa-icon>&nbsp;<span jhiTranslate="entity.action.save">Sauvegarder</span>
         </button>
       </div>
     </form>

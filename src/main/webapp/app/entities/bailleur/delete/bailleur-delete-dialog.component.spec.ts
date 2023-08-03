@@ -18,8 +18,7 @@ describe('Bailleur Management Delete Component', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
-      declarations: [BailleurDeleteDialogComponent],
+      imports: [HttpClientTestingModule, BailleurDeleteDialogComponent],
       providers: [NgbActiveModal],
     })
       .overrideTemplate(BailleurDeleteDialogComponent, '')

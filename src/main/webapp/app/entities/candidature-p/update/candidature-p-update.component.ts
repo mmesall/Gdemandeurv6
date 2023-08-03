@@ -1,11 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpResponse } from '@angular/common/http';
-import { FormBuilder } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
 import { finalize, map } from 'rxjs/operators';
 
-import { ICandidatureP, CandidatureP } from '../candidature-p.model';
+import SharedModule from 'app/shared/shared.module';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+
+import { CandidaturePFormService, CandidaturePFormGroup } from './candidature-p-form.service';
+import { ICandidatureP } from '../candidature-p.model';
 import { CandidaturePService } from '../service/candidature-p.service';
 import { IProfessionnel } from 'app/entities/professionnel/professionnel.model';
 import { ProfessionnelService } from 'app/entities/professionnel/service/professionnel.service';
@@ -17,11 +20,14 @@ import { NomFiliere } from 'app/entities/enumerations/nom-filiere.model';
 import { Resultat } from 'app/entities/enumerations/resultat.model';
 
 @Component({
+  standalone: true,
   selector: 'jhi-candidature-p-update',
   templateUrl: './candidature-p-update.component.html',
+  imports: [SharedModule, FormsModule, ReactiveFormsModule],
 })
 export class CandidaturePUpdateComponent implements OnInit {
   isSaving = false;
+  candidatureP: ICandidatureP | null = null;
   nomFiliereValues = Object.keys(NomFiliere);
   resultatValues = Object.keys(Resultat);
 
@@ -29,30 +35,32 @@ export class CandidaturePUpdateComponent implements OnInit {
   formationContinuesSharedCollection: IFormationContinue[] = [];
   etablissementsSharedCollection: IEtablissement[] = [];
 
-  editForm = this.fb.group({
-    id: [],
-    offreFormation: [],
-    dateDebutOffre: [],
-    dateFinOffre: [],
-    dateDepot: [],
-    resultat: [],
-    professionnel: [],
-    formationContinue: [],
-    etablissement: [],
-  });
+  editForm: CandidaturePFormGroup = this.candidaturePFormService.createCandidaturePFormGroup();
 
   constructor(
     protected candidaturePService: CandidaturePService,
+    protected candidaturePFormService: CandidaturePFormService,
     protected professionnelService: ProfessionnelService,
     protected formationContinueService: FormationContinueService,
     protected etablissementService: EtablissementService,
-    protected activatedRoute: ActivatedRoute,
-    protected fb: FormBuilder
+    protected activatedRoute: ActivatedRoute
   ) {}
+
+  compareProfessionnel = (o1: IProfessionnel | null, o2: IProfessionnel | null): boolean =>
+    this.professionnelService.compareProfessionnel(o1, o2);
+
+  compareFormationContinue = (o1: IFormationContinue | null, o2: IFormationContinue | null): boolean =>
+    this.formationContinueService.compareFormationContinue(o1, o2);
+
+  compareEtablissement = (o1: IEtablissement | null, o2: IEtablissement | null): boolean =>
+    this.etablissementService.compareEtablissement(o1, o2);
 
   ngOnInit(): void {
     this.activatedRoute.data.subscribe(({ candidatureP }) => {
-      this.updateForm(candidatureP);
+      this.candidatureP = candidatureP;
+      if (candidatureP) {
+        this.updateForm(candidatureP);
+      }
 
       this.loadRelationshipsOptions();
     });
@@ -64,24 +72,12 @@ export class CandidaturePUpdateComponent implements OnInit {
 
   save(): void {
     this.isSaving = true;
-    const candidatureP = this.createFromForm();
-    if (candidatureP.id !== undefined) {
+    const candidatureP = this.candidaturePFormService.getCandidatureP(this.editForm);
+    if (candidatureP.id !== null) {
       this.subscribeToSaveResponse(this.candidaturePService.update(candidatureP));
     } else {
       this.subscribeToSaveResponse(this.candidaturePService.create(candidatureP));
     }
-  }
-
-  trackProfessionnelById(index: number, item: IProfessionnel): number {
-    return item.id!;
-  }
-
-  trackFormationContinueById(index: number, item: IFormationContinue): number {
-    return item.id!;
-  }
-
-  trackEtablissementById(index: number, item: IEtablissement): number {
-    return item.id!;
   }
 
   protected subscribeToSaveResponse(result: Observable<HttpResponse<ICandidatureP>>): void {
@@ -104,27 +100,18 @@ export class CandidaturePUpdateComponent implements OnInit {
   }
 
   protected updateForm(candidatureP: ICandidatureP): void {
-    this.editForm.patchValue({
-      id: candidatureP.id,
-      offreFormation: candidatureP.offreFormation,
-      dateDebutOffre: candidatureP.dateDebutOffre,
-      dateFinOffre: candidatureP.dateFinOffre,
-      dateDepot: candidatureP.dateDepot,
-      resultat: candidatureP.resultat,
-      professionnel: candidatureP.professionnel,
-      formationContinue: candidatureP.formationContinue,
-      etablissement: candidatureP.etablissement,
-    });
+    this.candidatureP = candidatureP;
+    this.candidaturePFormService.resetForm(this.editForm, candidatureP);
 
-    this.professionnelsSharedCollection = this.professionnelService.addProfessionnelToCollectionIfMissing(
+    this.professionnelsSharedCollection = this.professionnelService.addProfessionnelToCollectionIfMissing<IProfessionnel>(
       this.professionnelsSharedCollection,
       candidatureP.professionnel
     );
-    this.formationContinuesSharedCollection = this.formationContinueService.addFormationContinueToCollectionIfMissing(
+    this.formationContinuesSharedCollection = this.formationContinueService.addFormationContinueToCollectionIfMissing<IFormationContinue>(
       this.formationContinuesSharedCollection,
       candidatureP.formationContinue
     );
-    this.etablissementsSharedCollection = this.etablissementService.addEtablissementToCollectionIfMissing(
+    this.etablissementsSharedCollection = this.etablissementService.addEtablissementToCollectionIfMissing<IEtablissement>(
       this.etablissementsSharedCollection,
       candidatureP.etablissement
     );
@@ -136,7 +123,7 @@ export class CandidaturePUpdateComponent implements OnInit {
       .pipe(map((res: HttpResponse<IProfessionnel[]>) => res.body ?? []))
       .pipe(
         map((professionnels: IProfessionnel[]) =>
-          this.professionnelService.addProfessionnelToCollectionIfMissing(professionnels, this.editForm.get('professionnel')!.value)
+          this.professionnelService.addProfessionnelToCollectionIfMissing<IProfessionnel>(professionnels, this.candidatureP?.professionnel)
         )
       )
       .subscribe((professionnels: IProfessionnel[]) => (this.professionnelsSharedCollection = professionnels));
@@ -146,9 +133,9 @@ export class CandidaturePUpdateComponent implements OnInit {
       .pipe(map((res: HttpResponse<IFormationContinue[]>) => res.body ?? []))
       .pipe(
         map((formationContinues: IFormationContinue[]) =>
-          this.formationContinueService.addFormationContinueToCollectionIfMissing(
+          this.formationContinueService.addFormationContinueToCollectionIfMissing<IFormationContinue>(
             formationContinues,
-            this.editForm.get('formationContinue')!.value
+            this.candidatureP?.formationContinue
           )
         )
       )
@@ -159,24 +146,9 @@ export class CandidaturePUpdateComponent implements OnInit {
       .pipe(map((res: HttpResponse<IEtablissement[]>) => res.body ?? []))
       .pipe(
         map((etablissements: IEtablissement[]) =>
-          this.etablissementService.addEtablissementToCollectionIfMissing(etablissements, this.editForm.get('etablissement')!.value)
+          this.etablissementService.addEtablissementToCollectionIfMissing<IEtablissement>(etablissements, this.candidatureP?.etablissement)
         )
       )
       .subscribe((etablissements: IEtablissement[]) => (this.etablissementsSharedCollection = etablissements));
-  }
-
-  protected createFromForm(): ICandidatureP {
-    return {
-      ...new CandidatureP(),
-      id: this.editForm.get(['id'])!.value,
-      offreFormation: this.editForm.get(['offreFormation'])!.value,
-      dateDebutOffre: this.editForm.get(['dateDebutOffre'])!.value,
-      dateFinOffre: this.editForm.get(['dateFinOffre'])!.value,
-      dateDepot: this.editForm.get(['dateDepot'])!.value,
-      resultat: this.editForm.get(['resultat'])!.value,
-      professionnel: this.editForm.get(['professionnel'])!.value,
-      formationContinue: this.editForm.get(['formationContinue'])!.value,
-      etablissement: this.editForm.get(['etablissement'])!.value,
-    };
   }
 }

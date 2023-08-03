@@ -1,36 +1,44 @@
 <div class="d-flex justify-content-center">
   <div class="col-8">
     <form name="editForm" role="form" novalidate (ngSubmit)="save()" [formGroup]="editForm">
-      <h2 id="jhi-agent-heading" data-cy="AgentCreateUpdateHeading">Create or edit a Agent</h2>
+      <h2 id="jhi-agent-heading" data-cy="AgentCreateUpdateHeading" jhiTranslate="jhipsterProjectBaseJwtApp.agent.home.createOrEditLabel">
+        Créer ou éditer un Agent
+      </h2>
 
       <div>
         <jhi-alert-error></jhi-alert-error>
 
-        <div class="row mb-3" [hidden]="editForm.get('id')!.value == null">
-          <label class="form-label" for="field_id">ID</label>
+        <div class="mb-3" *ngIf="editForm.controls.id.value !== null">
+          <label class="form-label" jhiTranslate="global.field.id" for="field_id">ID</label>
           <input type="number" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
         </div>
 
-        <div class="row mb-3">
-          <label class="form-label" for="field_matricule">Matricule</label>
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="jhipsterProjectBaseJwtApp.agent.matricule" for="field_matricule">Matricule</label>
           <input type="text" class="form-control" name="matricule" id="field_matricule" data-cy="matricule" formControlName="matricule" />
           <div *ngIf="editForm.get('matricule')!.invalid && (editForm.get('matricule')!.dirty || editForm.get('matricule')!.touched)">
-            <small class="form-text text-danger" *ngIf="editForm.get('matricule')?.errors?.required"> This field is required. </small>
+            <small
+              class="form-text text-danger"
+              *ngIf="editForm.get('matricule')?.errors?.required"
+              jhiTranslate="entity.validation.required"
+            >
+              Ce champ est obligatoire.
+            </small>
           </div>
         </div>
 
-        <div class="row mb-3">
-          <label class="form-label" for="field_nomAgent">Nom Agent</label>
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="jhipsterProjectBaseJwtApp.agent.nomAgent" for="field_nomAgent">Nom Agent</label>
           <input type="text" class="form-control" name="nomAgent" id="field_nomAgent" data-cy="nomAgent" formControlName="nomAgent" />
         </div>
 
-        <div class="row mb-3">
-          <label class="form-label" for="field_prenom">Prenom</label>
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="jhipsterProjectBaseJwtApp.agent.prenom" for="field_prenom">Prenom</label>
           <input type="text" class="form-control" name="prenom" id="field_prenom" data-cy="prenom" formControlName="prenom" />
         </div>
 
-        <div class="row mb-3">
-          <label class="form-label" for="field_dateNaiss">Date Naiss</label>
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="jhipsterProjectBaseJwtApp.agent.dateNaiss" for="field_dateNaiss">Date Naiss</label>
           <div class="input-group">
             <input
               id="field_dateNaiss"
@@ -46,53 +54,52 @@
           </div>
         </div>
 
-        <div class="row mb-3">
-          <label class="form-label" for="field_lieuNaiss">Lieu Naiss</label>
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="jhipsterProjectBaseJwtApp.agent.lieuNaiss" for="field_lieuNaiss">Lieu Naiss</label>
           <input type="text" class="form-control" name="lieuNaiss" id="field_lieuNaiss" data-cy="lieuNaiss" formControlName="lieuNaiss" />
         </div>
 
-        <div class="row mb-3">
-          <label class="form-label" for="field_sexe">Sexe</label>
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="jhipsterProjectBaseJwtApp.agent.sexe" for="field_sexe">Sexe</label>
           <select class="form-control" name="sexe" formControlName="sexe" id="field_sexe" data-cy="sexe">
             <option [ngValue]="null"></option>
-            <option *ngFor="let sexe of sexeValues" [value]="sexe">sexe</option>
+            <option *ngFor="let sexe of sexeValues" [value]="sexe">{{ sexe }}</option>
           </select>
         </div>
 
-        <div class="row mb-3">
-          <label class="form-label" for="field_telephone">Telephone</label>
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="jhipsterProjectBaseJwtApp.agent.telephone" for="field_telephone">Telephone</label>
           <input type="number" class="form-control" name="telephone" id="field_telephone" data-cy="telephone" formControlName="telephone" />
         </div>
 
-        <div class="row mb-3">
-          <label class="form-label" for="field_email">Email</label>
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="jhipsterProjectBaseJwtApp.agent.email" for="field_email">Email</label>
           <input type="text" class="form-control" name="email" id="field_email" data-cy="email" formControlName="email" />
           <div *ngIf="editForm.get('email')!.invalid && (editForm.get('email')!.dirty || editForm.get('email')!.touched)"></div>
         </div>
 
-        <div class="row mb-3">
-          <label class="form-label" for="field_user">User</label>
-          <select class="form-control" id="field_user" data-cy="user" name="user" formControlName="user">
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="jhipsterProjectBaseJwtApp.agent.user" for="field_user">User</label>
+          <select class="form-control" id="field_user" data-cy="user" name="user" formControlName="user" [compareWith]="compareUser">
             <option [ngValue]="null"></option>
-            <option
-              [ngValue]="userOption.id === editForm.get('user')!.value?.id ? editForm.get('user')!.value : userOption"
-              *ngFor="let userOption of usersSharedCollection; trackBy: trackUserById"
-            >
-              {{ userOption.login }}
-            </option>
+            <option [ngValue]="userOption" *ngFor="let userOption of usersSharedCollection">{{ userOption.login }}</option>
           </select>
         </div>
 
-        <div class="row mb-3">
-          <label class="form-label" for="field_serviceMFPAI">Service MFPAI</label>
-          <select class="form-control" id="field_serviceMFPAI" data-cy="serviceMFPAI" name="serviceMFPAI" formControlName="serviceMFPAI">
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="jhipsterProjectBaseJwtApp.agent.serviceMFPAI" for="field_serviceMFPAI"
+            >Service MFPAI</label
+          >
+          <select
+            class="form-control"
+            id="field_serviceMFPAI"
+            data-cy="serviceMFPAI"
+            name="serviceMFPAI"
+            formControlName="serviceMFPAI"
+            [compareWith]="compareServiceMFPAI"
+          >
             <option [ngValue]="null"></option>
-            <option
-              [ngValue]="
-                serviceMFPAIOption.id === editForm.get('serviceMFPAI')!.value?.id ? editForm.get('serviceMFPAI')!.value : serviceMFPAIOption
-              "
-              *ngFor="let serviceMFPAIOption of serviceMFPAISCollection; trackBy: trackServiceMFPAIById"
-            >
+            <option [ngValue]="serviceMFPAIOption" *ngFor="let serviceMFPAIOption of serviceMFPAISCollection">
               {{ serviceMFPAIOption.nomService }}
             </option>
           </select>
@@ -101,7 +108,7 @@
 
       <div>
         <button type="button" id="cancel-save" data-cy="entityCreateCancelButton" class="btn btn-secondary" (click)="previousState()">
-          <fa-icon icon="ban"></fa-icon>&nbsp;<span>Cancel</span>
+          <fa-icon icon="ban"></fa-icon>&nbsp;<span jhiTranslate="entity.action.cancel">Annuler</span>
         </button>
 
         <button
@@ -111,7 +118,7 @@
           [disabled]="editForm.invalid || isSaving"
           class="btn btn-primary"
         >
-          <fa-icon icon="save"></fa-icon>&nbsp;<span>Save</span>
+          <fa-icon icon="save"></fa-icon>&nbsp;<span jhiTranslate="entity.action.save">Sauvegarder</span>
         </button>
       </div>
     </form>

@@ -1,7 +1,9 @@
 <div class="d-flex justify-content-center">
   <div class="col-8">
     <div *ngIf="serviceMFPAI">
-      <h2 data-cy="serviceMFPAIDetailsHeading"><span>Service MFPAI</span></h2>
+      <h2 data-cy="serviceMFPAIDetailsHeading">
+        <span jhiTranslate="jhipsterProjectBaseJwtApp.serviceMFPAI.detail.title">Service MFPAI</span>
+      </h2>
 
       <hr />
 
@@ -10,11 +12,11 @@
       <jhi-alert></jhi-alert>
 
       <dl class="row-md jh-entity-details">
-        <dt><span>ID</span></dt>
+        <dt><span jhiTranslate="global.field.id">ID</span></dt>
         <dd>
           <span>{{ serviceMFPAI.id }}</span>
         </dd>
-        <dt><span>Image Service</span></dt>
+        <dt><span jhiTranslate="jhipsterProjectBaseJwtApp.serviceMFPAI.imageService">Image Service</span></dt>
         <dd>
           <div *ngIf="serviceMFPAI.imageService">
             <a (click)="openFile(serviceMFPAI.imageService, serviceMFPAI.imageServiceContentType)">
@@ -27,26 +29,26 @@
             {{ serviceMFPAI.imageServiceContentType }}, {{ byteSize(serviceMFPAI.imageService) }}
           </div>
         </dd>
-        <dt><span>Nom Service</span></dt>
+        <dt><span jhiTranslate="jhipsterProjectBaseJwtApp.serviceMFPAI.nomService">Nom Service</span></dt>
         <dd>
           <span>{{ serviceMFPAI.nomService }}</span>
         </dd>
-        <dt><span>Chef Service</span></dt>
+        <dt><span jhiTranslate="jhipsterProjectBaseJwtApp.serviceMFPAI.chefService">Chef Service</span></dt>
         <dd>
           <span>{{ serviceMFPAI.chefService }}</span>
         </dd>
-        <dt><span>Description</span></dt>
+        <dt><span jhiTranslate="jhipsterProjectBaseJwtApp.serviceMFPAI.description">Description</span></dt>
         <dd>
           <span>{{ serviceMFPAI.description }}</span>
         </dd>
       </dl>
 
       <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
-        <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span>Back</span>
+        <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Retour</span>
       </button>
 
       <button type="button" [routerLink]="['/service-mfpai', serviceMFPAI.id, 'edit']" class="btn btn-primary">
-        <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span>Edit</span>
+        <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Editer</span>
       </button>
     </div>
   </div>

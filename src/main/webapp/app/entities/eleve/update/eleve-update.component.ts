@@ -1,11 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpResponse } from '@angular/common/http';
-import { FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
 import { finalize, map } from 'rxjs/operators';
 
-import { IEleve, Eleve } from '../eleve.model';
+import SharedModule from 'app/shared/shared.module';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+
+import { EleveFormService, EleveFormGroup } from './eleve-form.service';
+import { IEleve } from '../eleve.model';
 import { EleveService } from '../service/eleve.service';
 import { IUser } from 'app/entities/user/user.model';
 import { UserService } from 'app/entities/user/user.service';
@@ -15,11 +18,14 @@ import { NomDepartement } from 'app/entities/enumerations/nom-departement.model'
 import { NiveauEtude } from 'app/entities/enumerations/niveau-etude.model';
 
 @Component({
+  standalone: true,
   selector: 'jhi-eleve-update',
   templateUrl: './eleve-update.component.html',
+  imports: [SharedModule, FormsModule, ReactiveFormsModule],
 })
 export class EleveUpdateComponent implements OnInit {
   isSaving = false;
+  eleve: IEleve | null = null;
   sexeValues = Object.keys(Sexe);
   nomRegionValues = Object.keys(NomRegion);
   nomDepartementValues = Object.keys(NomDepartement);
@@ -27,32 +33,23 @@ export class EleveUpdateComponent implements OnInit {
 
   usersSharedCollection: IUser[] = [];
 
-  editForm = this.fb.group({
-    id: [],
-    nom: [null, [Validators.required]],
-    prenom: [null, [Validators.required]],
-    dateNaiss: [],
-    lieuNaiss: [],
-    sexe: [],
-    telephone: [],
-    adressePhysique: [],
-    regionResidence: [],
-    departResidence: [],
-    niveauEtude: [null, [Validators.required]],
-    cni: [null, []],
-    user: [],
-  });
+  editForm: EleveFormGroup = this.eleveFormService.createEleveFormGroup();
 
   constructor(
     protected eleveService: EleveService,
+    protected eleveFormService: EleveFormService,
     protected userService: UserService,
-    protected activatedRoute: ActivatedRoute,
-    protected fb: FormBuilder
+    protected activatedRoute: ActivatedRoute
   ) {}
+
+  compareUser = (o1: IUser | null, o2: IUser | null): boolean => this.userService.compareUser(o1, o2);
 
   ngOnInit(): void {
     this.activatedRoute.data.subscribe(({ eleve }) => {
-      this.updateForm(eleve);
+      this.eleve = eleve;
+      if (eleve) {
+        this.updateForm(eleve);
+      }
 
       this.loadRelationshipsOptions();
     });
@@ -64,16 +61,12 @@ export class EleveUpdateComponent implements OnInit {
 
   save(): void {
     this.isSaving = true;
-    const eleve = this.createFromForm();
-    if (eleve.id !== undefined) {
+    const eleve = this.eleveFormService.getEleve(this.editForm);
+    if (eleve.id !== null) {
       this.subscribeToSaveResponse(this.eleveService.update(eleve));
     } else {
       this.subscribeToSaveResponse(this.eleveService.create(eleve));
     }
-  }
-
-  trackUserById(index: number, item: IUser): number {
-    return item.id!;
   }
 
   protected subscribeToSaveResponse(result: Observable<HttpResponse<IEleve>>): void {
@@ -96,49 +89,17 @@ export class EleveUpdateComponent implements OnInit {
   }
 
   protected updateForm(eleve: IEleve): void {
-    this.editForm.patchValue({
-      id: eleve.id,
-      nom: eleve.nom,
-      prenom: eleve.prenom,
-      dateNaiss: eleve.dateNaiss,
-      lieuNaiss: eleve.lieuNaiss,
-      sexe: eleve.sexe,
-      telephone: eleve.telephone,
-      adressePhysique: eleve.adressePhysique,
-      regionResidence: eleve.regionResidence,
-      departResidence: eleve.departResidence,
-      niveauEtude: eleve.niveauEtude,
-      cni: eleve.cni,
-      user: eleve.user,
-    });
+    this.eleve = eleve;
+    this.eleveFormService.resetForm(this.editForm, eleve);
 
-    this.usersSharedCollection = this.userService.addUserToCollectionIfMissing(this.usersSharedCollection, eleve.user);
+    this.usersSharedCollection = this.userService.addUserToCollectionIfMissing<IUser>(this.usersSharedCollection, eleve.user);
   }
 
   protected loadRelationshipsOptions(): void {
     this.userService
       .query()
       .pipe(map((res: HttpResponse<IUser[]>) => res.body ?? []))
-      .pipe(map((users: IUser[]) => this.userService.addUserToCollectionIfMissing(users, this.editForm.get('user')!.value)))
+      .pipe(map((users: IUser[]) => this.userService.addUserToCollectionIfMissing<IUser>(users, this.eleve?.user)))
       .subscribe((users: IUser[]) => (this.usersSharedCollection = users));
-  }
-
-  protected createFromForm(): IEleve {
-    return {
-      ...new Eleve(),
-      id: this.editForm.get(['id'])!.value,
-      nom: this.editForm.get(['nom'])!.value,
-      prenom: this.editForm.get(['prenom'])!.value,
-      dateNaiss: this.editForm.get(['dateNaiss'])!.value,
-      lieuNaiss: this.editForm.get(['lieuNaiss'])!.value,
-      sexe: this.editForm.get(['sexe'])!.value,
-      telephone: this.editForm.get(['telephone'])!.value,
-      adressePhysique: this.editForm.get(['adressePhysique'])!.value,
-      regionResidence: this.editForm.get(['regionResidence'])!.value,
-      departResidence: this.editForm.get(['departResidence'])!.value,
-      niveauEtude: this.editForm.get(['niveauEtude'])!.value,
-      cni: this.editForm.get(['cni'])!.value,
-      user: this.editForm.get(['user'])!.value,
-    };
   }
 }

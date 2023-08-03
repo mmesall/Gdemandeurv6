@@ -18,6 +18,14 @@ public interface AgentService {
     Agent save(Agent agent);
 
     /**
+     * Updates a agent.
+     *
+     * @param agent the entity to update.
+     * @return the persisted entity.
+     */
+    Agent update(Agent agent);
+
+    /**
      * Partially updates a agent.
      *
      * @param agent the entity to update partially.

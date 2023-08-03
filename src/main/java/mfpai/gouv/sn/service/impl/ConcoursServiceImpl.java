@@ -33,6 +33,12 @@ public class ConcoursServiceImpl implements ConcoursService {
     }
 
     @Override
+    public Concours update(Concours concours) {
+        log.debug("Request to update Concours : {}", concours);
+        return concoursRepository.save(concours);
+    }
+
+    @Override
     public Optional<Concours> partialUpdate(Concours concours) {
         log.debug("Request to partially update Concours : {}", concours);
 

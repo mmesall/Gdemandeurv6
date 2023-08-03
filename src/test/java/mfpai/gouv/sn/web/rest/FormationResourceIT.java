@@ -6,11 +6,11 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import jakarta.persistence.EntityManager;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicLong;
-import javax.persistence.EntityManager;
 import mfpai.gouv.sn.IntegrationTest;
 import mfpai.gouv.sn.domain.Etablissement;
 import mfpai.gouv.sn.domain.Formation;
@@ -28,6 +28,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
@@ -234,9 +235,8 @@ class FormationResourceIT {
     void getAllFormationsWithEagerRelationshipsIsNotEnabled() throws Exception {
         when(formationServiceMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
 
-        restFormationMockMvc.perform(get(ENTITY_API_URL + "?eagerload=true")).andExpect(status().isOk());
-
-        verify(formationServiceMock, times(1)).findAllWithEagerRelationships(any());
+        restFormationMockMvc.perform(get(ENTITY_API_URL + "?eagerload=false")).andExpect(status().isOk());
+        verify(formationRepositoryMock, times(1)).findAll(any(Pageable.class));
     }
 
     @Test
@@ -271,14 +271,14 @@ class FormationResourceIT {
 
     @Test
     @Transactional
-    void putNewFormation() throws Exception {
+    void putExistingFormation() throws Exception {
         // Initialize the database
         formationRepository.saveAndFlush(formation);
 
         int databaseSizeBeforeUpdate = formationRepository.findAll().size();
 
         // Update the formation
-        Formation updatedFormation = formationRepository.findById(formation.getId()).get();
+        Formation updatedFormation = formationRepository.findById(formation.getId()).orElseThrow();
         // Disconnect from session so that the updates on updatedFormation are not directly saved in db
         em.detach(updatedFormation);
         updatedFormation
@@ -383,7 +383,12 @@ class FormationResourceIT {
         Formation partialUpdatedFormation = new Formation();
         partialUpdatedFormation.setId(formation.getId());
 
-        partialUpdatedFormation.admission(UPDATED_ADMISSION);
+        partialUpdatedFormation
+            .typeFormation(UPDATED_TYPE_FORMATION)
+            .admission(UPDATED_ADMISSION)
+            .diplomeRequis(UPDATED_DIPLOME_REQUIS)
+            .ficheFormation(UPDATED_FICHE_FORMATION)
+            .ficheFormationContentType(UPDATED_FICHE_FORMATION_CONTENT_TYPE);
 
         restFormationMockMvc
             .perform(
@@ -400,12 +405,12 @@ class FormationResourceIT {
         assertThat(testFormation.getNomFormation()).isEqualTo(DEFAULT_NOM_FORMATION);
         assertThat(testFormation.getImageFormation()).isEqualTo(DEFAULT_IMAGE_FORMATION);
         assertThat(testFormation.getImageFormationContentType()).isEqualTo(DEFAULT_IMAGE_FORMATION_CONTENT_TYPE);
-        assertThat(testFormation.getTypeFormation()).isEqualTo(DEFAULT_TYPE_FORMATION);
+        assertThat(testFormation.getTypeFormation()).isEqualTo(UPDATED_TYPE_FORMATION);
         assertThat(testFormation.getDuree()).isEqualTo(DEFAULT_DUREE);
         assertThat(testFormation.getAdmission()).isEqualTo(UPDATED_ADMISSION);
-        assertThat(testFormation.getDiplomeRequis()).isEqualTo(DEFAULT_DIPLOME_REQUIS);
-        assertThat(testFormation.getFicheFormation()).isEqualTo(DEFAULT_FICHE_FORMATION);
-        assertThat(testFormation.getFicheFormationContentType()).isEqualTo(DEFAULT_FICHE_FORMATION_CONTENT_TYPE);
+        assertThat(testFormation.getDiplomeRequis()).isEqualTo(UPDATED_DIPLOME_REQUIS);
+        assertThat(testFormation.getFicheFormation()).isEqualTo(UPDATED_FICHE_FORMATION);
+        assertThat(testFormation.getFicheFormationContentType()).isEqualTo(UPDATED_FICHE_FORMATION_CONTENT_TYPE);
     }
 
     @Test

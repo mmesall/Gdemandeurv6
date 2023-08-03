@@ -2,22 +2,31 @@ package mfpai.gouv.sn.web.rest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import jakarta.persistence.EntityManager;
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicLong;
-import javax.persistence.EntityManager;
 import mfpai.gouv.sn.IntegrationTest;
 import mfpai.gouv.sn.domain.Experience;
 import mfpai.gouv.sn.repository.ExperienceRepository;
+import mfpai.gouv.sn.service.ExperienceService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
@@ -28,6 +37,7 @@ import org.springframework.util.Base64Utils;
  * Integration tests for the {@link ExperienceResource} REST controller.
  */
 @IntegrationTest
+@ExtendWith(MockitoExtension.class)
 @AutoConfigureMockMvc
 @WithMockUser
 class ExperienceResourceIT {
@@ -55,6 +65,12 @@ class ExperienceResourceIT {
 
     @Autowired
     private ExperienceRepository experienceRepository;
+
+    @Mock
+    private ExperienceRepository experienceRepositoryMock;
+
+    @Mock
+    private ExperienceService experienceServiceMock;
 
     @Autowired
     private EntityManager em;
@@ -226,6 +242,23 @@ class ExperienceResourceIT {
             .andExpect(jsonPath("$.[*].mission").value(hasItem(DEFAULT_MISSION.toString())));
     }
 
+    @SuppressWarnings({ "unchecked" })
+    void getAllExperiencesWithEagerRelationshipsIsEnabled() throws Exception {
+        when(experienceServiceMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
+
+        restExperienceMockMvc.perform(get(ENTITY_API_URL + "?eagerload=true")).andExpect(status().isOk());
+
+        verify(experienceServiceMock, times(1)).findAllWithEagerRelationships(any());
+    }
+
+    @SuppressWarnings({ "unchecked" })
+    void getAllExperiencesWithEagerRelationshipsIsNotEnabled() throws Exception {
+        when(experienceServiceMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
+
+        restExperienceMockMvc.perform(get(ENTITY_API_URL + "?eagerload=false")).andExpect(status().isOk());
+        verify(experienceRepositoryMock, times(1)).findAll(any(Pageable.class));
+    }
+
     @Test
     @Transactional
     void getExperience() throws Exception {
@@ -254,14 +287,14 @@ class ExperienceResourceIT {
 
     @Test
     @Transactional
-    void putNewExperience() throws Exception {
+    void putExistingExperience() throws Exception {
         // Initialize the database
         experienceRepository.saveAndFlush(experience);
 
         int databaseSizeBeforeUpdate = experienceRepository.findAll().size();
 
         // Update the experience
-        Experience updatedExperience = experienceRepository.findById(experience.getId()).get();
+        Experience updatedExperience = experienceRepository.findById(experience.getId()).orElseThrow();
         // Disconnect from session so that the updates on updatedExperience are not directly saved in db
         em.detach(updatedExperience);
         updatedExperience
@@ -358,7 +391,11 @@ class ExperienceResourceIT {
         Experience partialUpdatedExperience = new Experience();
         partialUpdatedExperience.setId(experience.getId());
 
-        partialUpdatedExperience.dateFin(UPDATED_DATE_FIN).mission(UPDATED_MISSION);
+        partialUpdatedExperience
+            .dateDebut(UPDATED_DATE_DEBUT)
+            .dateFin(UPDATED_DATE_FIN)
+            .nomEntreprise(UPDATED_NOM_ENTREPRISE)
+            .posteOccupe(UPDATED_POSTE_OCCUPE);
 
         restExperienceMockMvc
             .perform(
@@ -372,11 +409,11 @@ class ExperienceResourceIT {
         List<Experience> experienceList = experienceRepository.findAll();
         assertThat(experienceList).hasSize(databaseSizeBeforeUpdate);
         Experience testExperience = experienceList.get(experienceList.size() - 1);
-        assertThat(testExperience.getDateDebut()).isEqualTo(DEFAULT_DATE_DEBUT);
+        assertThat(testExperience.getDateDebut()).isEqualTo(UPDATED_DATE_DEBUT);
         assertThat(testExperience.getDateFin()).isEqualTo(UPDATED_DATE_FIN);
-        assertThat(testExperience.getNomEntreprise()).isEqualTo(DEFAULT_NOM_ENTREPRISE);
-        assertThat(testExperience.getPosteOccupe()).isEqualTo(DEFAULT_POSTE_OCCUPE);
-        assertThat(testExperience.getMission()).isEqualTo(UPDATED_MISSION);
+        assertThat(testExperience.getNomEntreprise()).isEqualTo(UPDATED_NOM_ENTREPRISE);
+        assertThat(testExperience.getPosteOccupe()).isEqualTo(UPDATED_POSTE_OCCUPE);
+        assertThat(testExperience.getMission()).isEqualTo(DEFAULT_MISSION);
     }
 
     @Test

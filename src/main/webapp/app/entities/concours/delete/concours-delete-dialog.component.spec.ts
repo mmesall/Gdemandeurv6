@@ -18,8 +18,7 @@ describe('Concours Management Delete Component', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
-      declarations: [ConcoursDeleteDialogComponent],
+      imports: [HttpClientTestingModule, ConcoursDeleteDialogComponent],
       providers: [NgbActiveModal],
     })
       .overrideTemplate(ConcoursDeleteDialogComponent, '')

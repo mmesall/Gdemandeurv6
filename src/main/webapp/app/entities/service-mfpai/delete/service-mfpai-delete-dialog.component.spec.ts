@@ -18,8 +18,7 @@ describe('ServiceMFPAI Management Delete Component', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
-      declarations: [ServiceMFPAIDeleteDialogComponent],
+      imports: [HttpClientTestingModule, ServiceMFPAIDeleteDialogComponent],
       providers: [NgbActiveModal],
     })
       .overrideTemplate(ServiceMFPAIDeleteDialogComponent, '')

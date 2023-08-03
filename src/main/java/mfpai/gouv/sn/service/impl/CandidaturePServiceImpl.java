@@ -33,6 +33,12 @@ public class CandidaturePServiceImpl implements CandidaturePService {
     }
 
     @Override
+    public CandidatureP update(CandidatureP candidatureP) {
+        log.debug("Request to update CandidatureP : {}", candidatureP);
+        return candidaturePRepository.save(candidatureP);
+    }
+
+    @Override
     public Optional<CandidatureP> partialUpdate(CandidatureP candidatureP) {
         log.debug("Request to partially update CandidatureP : {}", candidatureP);
 

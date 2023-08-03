@@ -1,11 +1,16 @@
 import { Component } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 
+import SharedModule from 'app/shared/shared.module';
 import { IExperience } from '../experience.model';
 import { ExperienceService } from '../service/experience.service';
+import { ITEM_DELETED_EVENT } from 'app/config/navigation.constants';
 
 @Component({
+  standalone: true,
   templateUrl: './experience-delete-dialog.component.html',
+  imports: [SharedModule, FormsModule],
 })
 export class ExperienceDeleteDialogComponent {
   experience?: IExperience;
@@ -18,7 +23,7 @@ export class ExperienceDeleteDialogComponent {
 
   confirmDelete(id: number): void {
     this.experienceService.delete(id).subscribe(() => {
-      this.activeModal.close('deleted');
+      this.activeModal.close(ITEM_DELETED_EVENT);
     });
   }
 }

@@ -6,8 +6,9 @@ import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of, Subject, from } from 'rxjs';
 
+import { FormationContinueFormService } from './formation-continue-form.service';
 import { FormationContinueService } from '../service/formation-continue.service';
-import { IFormationContinue, FormationContinue } from '../formation-continue.model';
+import { IFormationContinue } from '../formation-continue.model';
 import { IFormation } from 'app/entities/formation/formation.model';
 import { FormationService } from 'app/entities/formation/service/formation.service';
 
@@ -17,13 +18,13 @@ describe('FormationContinue Management Update Component', () => {
   let comp: FormationContinueUpdateComponent;
   let fixture: ComponentFixture<FormationContinueUpdateComponent>;
   let activatedRoute: ActivatedRoute;
+  let formationContinueFormService: FormationContinueFormService;
   let formationContinueService: FormationContinueService;
   let formationService: FormationService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule, RouterTestingModule.withRoutes([])],
-      declarations: [FormationContinueUpdateComponent],
+      imports: [HttpClientTestingModule, RouterTestingModule.withRoutes([]), FormationContinueUpdateComponent],
       providers: [
         FormBuilder,
         {
@@ -39,6 +40,7 @@ describe('FormationContinue Management Update Component', () => {
 
     fixture = TestBed.createComponent(FormationContinueUpdateComponent);
     activatedRoute = TestBed.inject(ActivatedRoute);
+    formationContinueFormService = TestBed.inject(FormationContinueFormService);
     formationContinueService = TestBed.inject(FormationContinueService);
     formationService = TestBed.inject(FormationService);
 
@@ -48,10 +50,10 @@ describe('FormationContinue Management Update Component', () => {
   describe('ngOnInit', () => {
     it('Should call formation query and add missing value', () => {
       const formationContinue: IFormationContinue = { id: 456 };
-      const formation: IFormation = { id: 30467 };
+      const formation: IFormation = { id: 18438 };
       formationContinue.formation = formation;
 
-      const formationCollection: IFormation[] = [{ id: 59193 }];
+      const formationCollection: IFormation[] = [{ id: 31980 }];
       jest.spyOn(formationService, 'query').mockReturnValue(of(new HttpResponse({ body: formationCollection })));
       const expectedCollection: IFormation[] = [formation, ...formationCollection];
       jest.spyOn(formationService, 'addFormationToCollectionIfMissing').mockReturnValue(expectedCollection);
@@ -66,22 +68,23 @@ describe('FormationContinue Management Update Component', () => {
 
     it('Should update editForm', () => {
       const formationContinue: IFormationContinue = { id: 456 };
-      const formation: IFormation = { id: 68488 };
+      const formation: IFormation = { id: 5016 };
       formationContinue.formation = formation;
 
       activatedRoute.data = of({ formationContinue });
       comp.ngOnInit();
 
-      expect(comp.editForm.value).toEqual(expect.objectContaining(formationContinue));
       expect(comp.formationsCollection).toContain(formation);
+      expect(comp.formationContinue).toEqual(formationContinue);
     });
   });
 
   describe('save', () => {
     it('Should call update service on save for existing entity', () => {
       // GIVEN
-      const saveSubject = new Subject<HttpResponse<FormationContinue>>();
+      const saveSubject = new Subject<HttpResponse<IFormationContinue>>();
       const formationContinue = { id: 123 };
+      jest.spyOn(formationContinueFormService, 'getFormationContinue').mockReturnValue(formationContinue);
       jest.spyOn(formationContinueService, 'update').mockReturnValue(saveSubject);
       jest.spyOn(comp, 'previousState');
       activatedRoute.data = of({ formationContinue });
@@ -94,18 +97,20 @@ describe('FormationContinue Management Update Component', () => {
       saveSubject.complete();
 
       // THEN
+      expect(formationContinueFormService.getFormationContinue).toHaveBeenCalled();
       expect(comp.previousState).toHaveBeenCalled();
-      expect(formationContinueService.update).toHaveBeenCalledWith(formationContinue);
+      expect(formationContinueService.update).toHaveBeenCalledWith(expect.objectContaining(formationContinue));
       expect(comp.isSaving).toEqual(false);
     });
 
     it('Should call create service on save for new entity', () => {
       // GIVEN
-      const saveSubject = new Subject<HttpResponse<FormationContinue>>();
-      const formationContinue = new FormationContinue();
+      const saveSubject = new Subject<HttpResponse<IFormationContinue>>();
+      const formationContinue = { id: 123 };
+      jest.spyOn(formationContinueFormService, 'getFormationContinue').mockReturnValue({ id: null });
       jest.spyOn(formationContinueService, 'create').mockReturnValue(saveSubject);
       jest.spyOn(comp, 'previousState');
-      activatedRoute.data = of({ formationContinue });
+      activatedRoute.data = of({ formationContinue: null });
       comp.ngOnInit();
 
       // WHEN
@@ -115,14 +120,15 @@ describe('FormationContinue Management Update Component', () => {
       saveSubject.complete();
 
       // THEN
-      expect(formationContinueService.create).toHaveBeenCalledWith(formationContinue);
+      expect(formationContinueFormService.getFormationContinue).toHaveBeenCalled();
+      expect(formationContinueService.create).toHaveBeenCalled();
       expect(comp.isSaving).toEqual(false);
       expect(comp.previousState).toHaveBeenCalled();
     });
 
     it('Should set isSaving to false on error', () => {
       // GIVEN
-      const saveSubject = new Subject<HttpResponse<FormationContinue>>();
+      const saveSubject = new Subject<HttpResponse<IFormationContinue>>();
       const formationContinue = { id: 123 };
       jest.spyOn(formationContinueService, 'update').mockReturnValue(saveSubject);
       jest.spyOn(comp, 'previousState');
@@ -135,18 +141,20 @@ describe('FormationContinue Management Update Component', () => {
       saveSubject.error('This is an error!');
 
       // THEN
-      expect(formationContinueService.update).toHaveBeenCalledWith(formationContinue);
+      expect(formationContinueService.update).toHaveBeenCalled();
       expect(comp.isSaving).toEqual(false);
       expect(comp.previousState).not.toHaveBeenCalled();
     });
   });
 
-  describe('Tracking relationships identifiers', () => {
-    describe('trackFormationById', () => {
-      it('Should return tracked Formation primary key', () => {
+  describe('Compare relationships', () => {
+    describe('compareFormation', () => {
+      it('Should forward to formationService', () => {
         const entity = { id: 123 };
-        const trackResult = comp.trackFormationById(0, entity);
-        expect(trackResult).toEqual(entity.id);
+        const entity2 = { id: 456 };
+        jest.spyOn(formationService, 'compareFormation');
+        comp.compareFormation(entity, entity2);
+        expect(formationService.compareFormation).toHaveBeenCalledWith(entity, entity2);
       });
     });
   });

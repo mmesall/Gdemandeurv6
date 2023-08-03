@@ -6,8 +6,9 @@ import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of, Subject, from } from 'rxjs';
 
+import { ConcoursFormService } from './concours-form.service';
 import { ConcoursService } from '../service/concours.service';
-import { IConcours, Concours } from '../concours.model';
+import { IConcours } from '../concours.model';
 import { IFormation } from 'app/entities/formation/formation.model';
 import { FormationService } from 'app/entities/formation/service/formation.service';
 
@@ -17,13 +18,13 @@ describe('Concours Management Update Component', () => {
   let comp: ConcoursUpdateComponent;
   let fixture: ComponentFixture<ConcoursUpdateComponent>;
   let activatedRoute: ActivatedRoute;
+  let concoursFormService: ConcoursFormService;
   let concoursService: ConcoursService;
   let formationService: FormationService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule, RouterTestingModule.withRoutes([])],
-      declarations: [ConcoursUpdateComponent],
+      imports: [HttpClientTestingModule, RouterTestingModule.withRoutes([]), ConcoursUpdateComponent],
       providers: [
         FormBuilder,
         {
@@ -39,6 +40,7 @@ describe('Concours Management Update Component', () => {
 
     fixture = TestBed.createComponent(ConcoursUpdateComponent);
     activatedRoute = TestBed.inject(ActivatedRoute);
+    concoursFormService = TestBed.inject(ConcoursFormService);
     concoursService = TestBed.inject(ConcoursService);
     formationService = TestBed.inject(FormationService);
 
@@ -48,10 +50,10 @@ describe('Concours Management Update Component', () => {
   describe('ngOnInit', () => {
     it('Should call formation query and add missing value', () => {
       const concours: IConcours = { id: 456 };
-      const formation: IFormation = { id: 56278 };
+      const formation: IFormation = { id: 25945 };
       concours.formation = formation;
 
-      const formationCollection: IFormation[] = [{ id: 78265 }];
+      const formationCollection: IFormation[] = [{ id: 12040 }];
       jest.spyOn(formationService, 'query').mockReturnValue(of(new HttpResponse({ body: formationCollection })));
       const expectedCollection: IFormation[] = [formation, ...formationCollection];
       jest.spyOn(formationService, 'addFormationToCollectionIfMissing').mockReturnValue(expectedCollection);
@@ -66,22 +68,23 @@ describe('Concours Management Update Component', () => {
 
     it('Should update editForm', () => {
       const concours: IConcours = { id: 456 };
-      const formation: IFormation = { id: 89522 };
+      const formation: IFormation = { id: 26035 };
       concours.formation = formation;
 
       activatedRoute.data = of({ concours });
       comp.ngOnInit();
 
-      expect(comp.editForm.value).toEqual(expect.objectContaining(concours));
       expect(comp.formationsCollection).toContain(formation);
+      expect(comp.concours).toEqual(concours);
     });
   });
 
   describe('save', () => {
     it('Should call update service on save for existing entity', () => {
       // GIVEN
-      const saveSubject = new Subject<HttpResponse<Concours>>();
+      const saveSubject = new Subject<HttpResponse<IConcours>>();
       const concours = { id: 123 };
+      jest.spyOn(concoursFormService, 'getConcours').mockReturnValue(concours);
       jest.spyOn(concoursService, 'update').mockReturnValue(saveSubject);
       jest.spyOn(comp, 'previousState');
       activatedRoute.data = of({ concours });
@@ -94,18 +97,20 @@ describe('Concours Management Update Component', () => {
       saveSubject.complete();
 
       // THEN
+      expect(concoursFormService.getConcours).toHaveBeenCalled();
       expect(comp.previousState).toHaveBeenCalled();
-      expect(concoursService.update).toHaveBeenCalledWith(concours);
+      expect(concoursService.update).toHaveBeenCalledWith(expect.objectContaining(concours));
       expect(comp.isSaving).toEqual(false);
     });
 
     it('Should call create service on save for new entity', () => {
       // GIVEN
-      const saveSubject = new Subject<HttpResponse<Concours>>();
-      const concours = new Concours();
+      const saveSubject = new Subject<HttpResponse<IConcours>>();
+      const concours = { id: 123 };
+      jest.spyOn(concoursFormService, 'getConcours').mockReturnValue({ id: null });
       jest.spyOn(concoursService, 'create').mockReturnValue(saveSubject);
       jest.spyOn(comp, 'previousState');
-      activatedRoute.data = of({ concours });
+      activatedRoute.data = of({ concours: null });
       comp.ngOnInit();
 
       // WHEN
@@ -115,14 +120,15 @@ describe('Concours Management Update Component', () => {
       saveSubject.complete();
 
       // THEN
-      expect(concoursService.create).toHaveBeenCalledWith(concours);
+      expect(concoursFormService.getConcours).toHaveBeenCalled();
+      expect(concoursService.create).toHaveBeenCalled();
       expect(comp.isSaving).toEqual(false);
       expect(comp.previousState).toHaveBeenCalled();
     });
 
     it('Should set isSaving to false on error', () => {
       // GIVEN
-      const saveSubject = new Subject<HttpResponse<Concours>>();
+      const saveSubject = new Subject<HttpResponse<IConcours>>();
       const concours = { id: 123 };
       jest.spyOn(concoursService, 'update').mockReturnValue(saveSubject);
       jest.spyOn(comp, 'previousState');
@@ -135,18 +141,20 @@ describe('Concours Management Update Component', () => {
       saveSubject.error('This is an error!');
 
       // THEN
-      expect(concoursService.update).toHaveBeenCalledWith(concours);
+      expect(concoursService.update).toHaveBeenCalled();
       expect(comp.isSaving).toEqual(false);
       expect(comp.previousState).not.toHaveBeenCalled();
     });
   });
 
-  describe('Tracking relationships identifiers', () => {
-    describe('trackFormationById', () => {
-      it('Should return tracked Formation primary key', () => {
+  describe('Compare relationships', () => {
+    describe('compareFormation', () => {
+      it('Should forward to formationService', () => {
         const entity = { id: 123 };
-        const trackResult = comp.trackFormationById(0, entity);
-        expect(trackResult).toEqual(entity.id);
+        const entity2 = { id: 456 };
+        jest.spyOn(formationService, 'compareFormation');
+        comp.compareFormation(entity, entity2);
+        expect(formationService.compareFormation).toHaveBeenCalledWith(entity, entity2);
       });
     });
   });

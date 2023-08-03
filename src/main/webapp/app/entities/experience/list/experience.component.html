@@ -1,15 +1,11 @@
 <div>
-  <h2 id="page-heading" data-cy="ExperienceHeading" style="text-align: center; font-style: italic; font-weight: bold">
-    <span>Mes experiences</span>
+  <h2 id="page-heading" data-cy="ExperienceHeading">
+    <span jhiTranslate="jhipsterProjectBaseJwtApp.experience.home.title">Experiences</span>
 
     <div class="d-flex justify-content-end">
-      <!-- <button *jhiHasAnyAuthority="'ROLE_ADMIN'" class="btn btn-info me-2" (click)="reset()" [disabled]="isLoading">
+      <button class="btn btn-info me-2" (click)="load()" [disabled]="isLoading">
         <fa-icon icon="sync" [spin]="isLoading"></fa-icon>
-        <span>Refresh List</span>
-      </button> -->
-
-      <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
-        <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span>Retour</span>
+        <span jhiTranslate="jhipsterProjectBaseJwtApp.experience.home.refreshListLabel">Actualiser la liste</span>
       </button>
 
       <button
@@ -19,7 +15,7 @@
         [routerLink]="['/experience/new']"
       >
         <fa-icon icon="plus"></fa-icon>
-        <span> Ajouter une nouvelle experience </span>
+        <span jhiTranslate="jhipsterProjectBaseJwtApp.experience.home.createLabel"> Créer un nouveau Experience </span>
       </button>
     </div>
   </h2>
@@ -29,29 +25,84 @@
   <jhi-alert></jhi-alert>
 
   <div class="alert alert-warning" id="no-result" *ngIf="experiences?.length === 0">
-    <span>Aucune experience trouvé</span>
+    <span jhiTranslate="jhipsterProjectBaseJwtApp.experience.home.notFound">Aucun Experience trouvé</span>
   </div>
 
-  <div class="table-responsive" id="entities" *ngIf="experiences && experiences.length > 0">
+  <div class="table-responsive table-entities" id="entities" *ngIf="experiences && experiences.length > 0">
     <table class="table table-striped" aria-describedby="page-heading">
       <thead>
-        <tr jhiSort [(predicate)]="predicate" [(ascending)]="ascending" (sortChange)="reset()">
-          <th *jhiHasAnyAuthority="'ROLE_ADMIN'" scope="col" jhiSortBy="id"><span>ID</span> <fa-icon icon="sort"></fa-icon></th>
-          <th scope="col" jhiSortBy="dateDebut"><span>Date Debut</span> <fa-icon icon="sort"></fa-icon></th>
-          <th scope="col" jhiSortBy="dateFin"><span>Date Fin</span> <fa-icon icon="sort"></fa-icon></th>
-          <th scope="col" jhiSortBy="nomEntreprise"><span>Nom Entreprise</span> <fa-icon icon="sort"></fa-icon></th>
-          <th scope="col" jhiSortBy="posteOccupe"><span>Poste Occupe</span> <fa-icon icon="sort"></fa-icon></th>
-          <th scope="col" jhiSortBy="mission"><span>Mission</span> <fa-icon icon="sort"></fa-icon></th>
-          <th scope="col" jhiSortBy="eleve.niveauEtude"><span>Eleve</span> <fa-icon icon="sort"></fa-icon></th>
-          <th scope="col" jhiSortBy="etudiant.carteEtudiant"><span>Etudiant</span> <fa-icon icon="sort"></fa-icon></th>
-          <th scope="col" jhiSortBy="professionnel.profession"><span>Professionnel</span> <fa-icon icon="sort"></fa-icon></th>
-          <th scope="col" jhiSortBy="demandeur.profil"><span>Demandeur</span> <fa-icon icon="sort"></fa-icon></th>
+        <tr jhiSort [(predicate)]="predicate" [(ascending)]="ascending" (sortChange)="navigateToWithComponentValues()">
+          <th scope="col" jhiSortBy="id">
+            <div class="d-flex">
+              <span jhiTranslate="global.field.id">ID</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="dateDebut">
+            <div class="d-flex">
+              <span jhiTranslate="jhipsterProjectBaseJwtApp.experience.dateDebut">Date Debut</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="dateFin">
+            <div class="d-flex">
+              <span jhiTranslate="jhipsterProjectBaseJwtApp.experience.dateFin">Date Fin</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="nomEntreprise">
+            <div class="d-flex">
+              <span jhiTranslate="jhipsterProjectBaseJwtApp.experience.nomEntreprise">Nom Entreprise</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="posteOccupe">
+            <div class="d-flex">
+              <span jhiTranslate="jhipsterProjectBaseJwtApp.experience.posteOccupe">Poste Occupe</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="mission">
+            <div class="d-flex">
+              <span jhiTranslate="jhipsterProjectBaseJwtApp.experience.mission">Mission</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="eleve.niveauEtude">
+            <div class="d-flex">
+              <span jhiTranslate="jhipsterProjectBaseJwtApp.experience.eleve">Eleve</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="etudiant.carteEtudiant">
+            <div class="d-flex">
+              <span jhiTranslate="jhipsterProjectBaseJwtApp.experience.etudiant">Etudiant</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="professionnel.profession">
+            <div class="d-flex">
+              <span jhiTranslate="jhipsterProjectBaseJwtApp.experience.professionnel">Professionnel</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="demandeur.profil">
+            <div class="d-flex">
+              <span jhiTranslate="jhipsterProjectBaseJwtApp.experience.demandeur">Demandeur</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
           <th scope="col"></th>
         </tr>
       </thead>
-      <tbody infinite-scroll (scrolled)="loadPage(page + 1)" [infiniteScrollDisabled]="page >= links['last']" [infiniteScrollDistance]="0">
+      <tbody
+        infinite-scroll
+        (scrolled)="loadPage(page + 1)"
+        [infiniteScrollDisabled]="page - 1 >= links['last']"
+        [infiniteScrollDistance]="0"
+      >
         <tr *ngFor="let experience of experiences; trackBy: trackId" data-cy="entityTable">
-          <td *jhiHasAnyAuthority="'ROLE_ADMIN'">
+          <td>
             <a [routerLink]="['/experience', experience.id, 'view']">{{ experience.id }}</a>
           </td>
           <td>{{ experience.dateDebut | formatMediumDate }}</td>
@@ -59,24 +110,24 @@
           <td>{{ experience.nomEntreprise }}</td>
           <td>{{ experience.posteOccupe }}</td>
           <td>{{ experience.mission }}</td>
-          <td *jhiHasAnyAuthority="'ROLE_ADMIN'">
+          <td>
             <div *ngIf="experience.eleve">
-              <a [routerLink]="['/eleve', experience.eleve?.id, 'view']">{{ experience.eleve?.niveauEtude }}</a>
+              <a [routerLink]="['/eleve', experience.eleve.id, 'view']">{{ experience.eleve.niveauEtude }}</a>
             </div>
           </td>
-          <td *jhiHasAnyAuthority="'ROLE_ADMIN'">
+          <td>
             <div *ngIf="experience.etudiant">
-              <a [routerLink]="['/etudiant', experience.etudiant?.id, 'view']">{{ experience.etudiant?.carteEtudiant }}</a>
+              <a [routerLink]="['/etudiant', experience.etudiant.id, 'view']">{{ experience.etudiant.carteEtudiant }}</a>
             </div>
           </td>
-          <td *jhiHasAnyAuthority="'ROLE_ADMIN'">
+          <td>
             <div *ngIf="experience.professionnel">
-              <a [routerLink]="['/professionnel', experience.professionnel?.id, 'view']">{{ experience.professionnel?.profession }}</a>
+              <a [routerLink]="['/professionnel', experience.professionnel.id, 'view']">{{ experience.professionnel.profession }}</a>
             </div>
           </td>
-          <td *jhiHasAnyAuthority="'ROLE_ADMIN'">
+          <td>
             <div *ngIf="experience.demandeur">
-              <a [routerLink]="['/demandeur', experience.demandeur?.id, 'view']">{{ experience.demandeur?.profil }}</a>
+              <a [routerLink]="['/demandeur', experience.demandeur.id, 'view']">{{ experience.demandeur.profil }}</a>
             </div>
           </td>
           <td class="text-end">
@@ -88,7 +139,7 @@
                 data-cy="entityDetailsButton"
               >
                 <fa-icon icon="eye"></fa-icon>
-                <!-- <span class="d-none d-md-inline">Voir</span> -->
+                <span class="d-none d-md-inline" jhiTranslate="entity.action.view">Voir</span>
               </button>
 
               <button
@@ -98,12 +149,12 @@
                 data-cy="entityEditButton"
               >
                 <fa-icon icon="pencil-alt"></fa-icon>
-                <!-- <span class="d-none d-md-inline">Modifier</span> -->
+                <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Editer</span>
               </button>
 
               <button type="submit" (click)="delete(experience)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
                 <fa-icon icon="times"></fa-icon>
-                <!-- <span class="d-none d-md-inline">Delete</span> -->
+                <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Supprimer</span>
               </button>
             </div>
           </td>

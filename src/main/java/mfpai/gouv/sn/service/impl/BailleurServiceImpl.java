@@ -33,6 +33,12 @@ public class BailleurServiceImpl implements BailleurService {
     }
 
     @Override
+    public Bailleur update(Bailleur bailleur) {
+        log.debug("Request to update Bailleur : {}", bailleur);
+        return bailleurRepository.save(bailleur);
+    }
+
+    @Override
     public Optional<Bailleur> partialUpdate(Bailleur bailleur) {
         log.debug("Request to partially update Bailleur : {}", bailleur);
 

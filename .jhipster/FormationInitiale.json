@@ -1,8 +1,6 @@
 {
   "applications": "*",
   "changelogDate": "20230328104847",
-  "dto": "no",
-  "embedded": false,
   "entityTableName": "formation_initiale",
   "fields": [
     {
@@ -79,25 +77,23 @@
       "fieldType": "String"
     }
   ],
-  "fluentMethods": true,
-  "jpaMetamodelFiltering": false,
   "name": "FormationInitiale",
   "pagination": "infinite-scroll",
-  "readOnly": false,
   "relationships": [
     {
       "otherEntityName": "formation",
-      "otherEntityRelationshipName": "formationInitiale",
-      "ownerSide": true,
       "relationshipName": "formation",
+      "relationshipSide": "left",
       "relationshipType": "one-to-one"
     },
     {
       "otherEntityName": "candidatureE",
       "otherEntityRelationshipName": "formationInitiale",
       "relationshipName": "candidatureE",
+      "relationshipSide": "left",
       "relationshipType": "one-to-many"
     }
   ],
+  "searchEngine": "no",
   "service": "serviceImpl"
 }

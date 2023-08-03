@@ -2,24 +2,33 @@ package mfpai.gouv.sn.web.rest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import jakarta.persistence.EntityManager;
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicLong;
-import javax.persistence.EntityManager;
 import mfpai.gouv.sn.IntegrationTest;
 import mfpai.gouv.sn.domain.CandidatureE;
 import mfpai.gouv.sn.domain.enumeration.NomFiliere;
 import mfpai.gouv.sn.domain.enumeration.Resultat;
 import mfpai.gouv.sn.repository.CandidatureERepository;
+import mfpai.gouv.sn.service.CandidatureEService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
@@ -29,6 +38,7 @@ import org.springframework.transaction.annotation.Transactional;
  * Integration tests for the {@link CandidatureEResource} REST controller.
  */
 @IntegrationTest
+@ExtendWith(MockitoExtension.class)
 @AutoConfigureMockMvc
 @WithMockUser
 class CandidatureEResourceIT {
@@ -46,7 +56,7 @@ class CandidatureEResourceIT {
     private static final LocalDate UPDATED_DATE_DEPOT = LocalDate.now(ZoneId.systemDefault());
 
     private static final Resultat DEFAULT_RESULTAT = Resultat.SOUMIS;
-    private static final Resultat UPDATED_RESULTAT = Resultat.ACCORD;
+    private static final Resultat UPDATED_RESULTAT = Resultat.VALIDE;
 
     private static final String ENTITY_API_URL = "/api/candidature-es";
     private static final String ENTITY_API_URL_ID = ENTITY_API_URL + "/{id}";
@@ -56,6 +66,12 @@ class CandidatureEResourceIT {
 
     @Autowired
     private CandidatureERepository candidatureERepository;
+
+    @Mock
+    private CandidatureERepository candidatureERepositoryMock;
+
+    @Mock
+    private CandidatureEService candidatureEServiceMock;
 
     @Autowired
     private EntityManager em;
@@ -159,6 +175,23 @@ class CandidatureEResourceIT {
             .andExpect(jsonPath("$.[*].resultat").value(hasItem(DEFAULT_RESULTAT.toString())));
     }
 
+    @SuppressWarnings({ "unchecked" })
+    void getAllCandidatureESWithEagerRelationshipsIsEnabled() throws Exception {
+        when(candidatureEServiceMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
+
+        restCandidatureEMockMvc.perform(get(ENTITY_API_URL + "?eagerload=true")).andExpect(status().isOk());
+
+        verify(candidatureEServiceMock, times(1)).findAllWithEagerRelationships(any());
+    }
+
+    @SuppressWarnings({ "unchecked" })
+    void getAllCandidatureESWithEagerRelationshipsIsNotEnabled() throws Exception {
+        when(candidatureEServiceMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
+
+        restCandidatureEMockMvc.perform(get(ENTITY_API_URL + "?eagerload=false")).andExpect(status().isOk());
+        verify(candidatureERepositoryMock, times(1)).findAll(any(Pageable.class));
+    }
+
     @Test
     @Transactional
     void getCandidatureE() throws Exception {
@@ -187,14 +220,14 @@ class CandidatureEResourceIT {
 
     @Test
     @Transactional
-    void putNewCandidatureE() throws Exception {
+    void putExistingCandidatureE() throws Exception {
         // Initialize the database
         candidatureERepository.saveAndFlush(candidatureE);
 
         int databaseSizeBeforeUpdate = candidatureERepository.findAll().size();
 
         // Update the candidatureE
-        CandidatureE updatedCandidatureE = candidatureERepository.findById(candidatureE.getId()).get();
+        CandidatureE updatedCandidatureE = candidatureERepository.findById(candidatureE.getId()).orElseThrow();
         // Disconnect from session so that the updates on updatedCandidatureE are not directly saved in db
         em.detach(updatedCandidatureE);
         updatedCandidatureE
@@ -291,7 +324,7 @@ class CandidatureEResourceIT {
         CandidatureE partialUpdatedCandidatureE = new CandidatureE();
         partialUpdatedCandidatureE.setId(candidatureE.getId());
 
-        partialUpdatedCandidatureE.offreFormation(UPDATED_OFFRE_FORMATION).dateDebutOffre(UPDATED_DATE_DEBUT_OFFRE);
+        partialUpdatedCandidatureE.dateDebutOffre(UPDATED_DATE_DEBUT_OFFRE).resultat(UPDATED_RESULTAT);
 
         restCandidatureEMockMvc
             .perform(
@@ -305,11 +338,11 @@ class CandidatureEResourceIT {
         List<CandidatureE> candidatureEList = candidatureERepository.findAll();
         assertThat(candidatureEList).hasSize(databaseSizeBeforeUpdate);
         CandidatureE testCandidatureE = candidatureEList.get(candidatureEList.size() - 1);
-        assertThat(testCandidatureE.getOffreFormation()).isEqualTo(UPDATED_OFFRE_FORMATION);
+        assertThat(testCandidatureE.getOffreFormation()).isEqualTo(DEFAULT_OFFRE_FORMATION);
         assertThat(testCandidatureE.getDateDebutOffre()).isEqualTo(UPDATED_DATE_DEBUT_OFFRE);
         assertThat(testCandidatureE.getDateFinOffre()).isEqualTo(DEFAULT_DATE_FIN_OFFRE);
         assertThat(testCandidatureE.getDateDepot()).isEqualTo(DEFAULT_DATE_DEPOT);
-        assertThat(testCandidatureE.getResultat()).isEqualTo(DEFAULT_RESULTAT);
+        assertThat(testCandidatureE.getResultat()).isEqualTo(UPDATED_RESULTAT);
     }
 
     @Test

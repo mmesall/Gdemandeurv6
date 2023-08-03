@@ -1,11 +1,10 @@
 package mfpai.gouv.sn.service.dto;
 
-import java.sql.Date;
+import jakarta.validation.constraints.*;
+import java.io.Serializable;
 import java.time.Instant;
 import java.util.Set;
 import java.util.stream.Collectors;
-import javax.persistence.Column;
-import javax.validation.constraints.*;
 import mfpai.gouv.sn.config.Constants;
 import mfpai.gouv.sn.domain.Authority;
 import mfpai.gouv.sn.domain.User;
@@ -13,7 +12,9 @@ import mfpai.gouv.sn.domain.User;
 /**
  * A DTO representing a user, with his authorities.
  */
-public class AdminUserDTO {
+public class AdminUserDTO implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private Long id;
 
@@ -34,16 +35,6 @@ public class AdminUserDTO {
 
     @Size(max = 256)
     private String imageUrl;
-
-    @Past(message = "La date de naissance doit etre au passé")
-    private Instant dateNaiss;
-
-    @Size(min = 5, max = 254)
-    private String lieuNaiss;
-
-    @Size(min = 5, max = 254)
-    @Column(name = "regionNaiss", length = 50)
-    private String regionNaiss;
 
     private boolean activated = false;
 
@@ -70,9 +61,6 @@ public class AdminUserDTO {
         this.firstName = user.getFirstName();
         this.lastName = user.getLastName();
         this.email = user.getEmail();
-        this.dateNaiss = user.getDateNaiss();
-        this.lieuNaiss = user.getLieuNaiss();
-        this.regionNaiss = user.getRegionNaiss();
         this.activated = user.isActivated();
         this.imageUrl = user.getImageUrl();
         this.langKey = user.getLangKey();
@@ -121,30 +109,6 @@ public class AdminUserDTO {
 
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    public Instant getDateNaiss() {
-        return this.dateNaiss;
-    }
-
-    public void setDateNaiss(Instant dateNaiss) {
-        this.dateNaiss = dateNaiss;
-    }
-
-    public String getLieuNaiss() {
-        return this.lieuNaiss;
-    }
-
-    public void setLieuNaiss(String lieuNaiss) {
-        this.lieuNaiss = lieuNaiss;
-    }
-
-    public String getRegionNaiss() {
-        return this.regionNaiss;
-    }
-
-    public void setRegionNaiss(String regionNaiss) {
-        this.regionNaiss = regionNaiss;
     }
 
     public String getImageUrl() {
@@ -219,9 +183,6 @@ public class AdminUserDTO {
             ", firstName='" + firstName + '\'' +
             ", lastName='" + lastName + '\'' +
             ", email='" + email + '\'' +
-            ", dateNaiss='" + dateNaiss + "'" +
-            ", lieuNaiss='" + lieuNaiss + "'" +
-            ", regionNaiss='" + regionNaiss + "'" +
             ", imageUrl='" + imageUrl + '\'' +
             ", activated=" + activated +
             ", langKey='" + langKey + '\'' +

@@ -18,6 +18,14 @@ public interface DemandeurService {
     Demandeur save(Demandeur demandeur);
 
     /**
+     * Updates a demandeur.
+     *
+     * @param demandeur the entity to update.
+     * @return the persisted entity.
+     */
+    Demandeur update(Demandeur demandeur);
+
+    /**
      * Partially updates a demandeur.
      *
      * @param demandeur the entity to update partially.

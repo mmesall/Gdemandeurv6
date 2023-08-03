@@ -2,23 +2,11 @@ import { IFormation } from 'app/entities/formation/formation.model';
 import { IBailleur } from 'app/entities/bailleur/bailleur.model';
 
 export interface IPriseEnCharge {
-  id?: number;
+  id: number;
   libelle?: string | null;
   montantPC?: number | null;
-  formation?: IFormation | null;
-  bailleur?: IBailleur | null;
+  formation?: Pick<IFormation, 'id'> | null;
+  bailleur?: Pick<IBailleur, 'id' | 'nomBailleur'> | null;
 }
 
-export class PriseEnCharge implements IPriseEnCharge {
-  constructor(
-    public id?: number,
-    public libelle?: string | null,
-    public montantPC?: number | null,
-    public formation?: IFormation | null,
-    public bailleur?: IBailleur | null
-  ) {}
-}
-
-export function getPriseEnChargeIdentifier(priseEnCharge: IPriseEnCharge): number | undefined {
-  return priseEnCharge.id;
-}
+export type NewPriseEnCharge = Omit<IPriseEnCharge, 'id'> & { id: null };

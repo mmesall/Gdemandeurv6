@@ -1,7 +1,7 @@
 <div class="d-flex justify-content-center">
   <div class="col-8">
     <div *ngIf="eleve">
-      <h2 data-cy="eleveDetailsHeading"><span>Eleve</span></h2>
+      <h2 data-cy="eleveDetailsHeading"><span jhiTranslate="jhipsterProjectBaseJwtApp.eleve.detail.title">Eleve</span></h2>
 
       <hr />
 
@@ -10,66 +10,66 @@
       <jhi-alert></jhi-alert>
 
       <dl class="row-md jh-entity-details">
-        <dt><span>ID</span></dt>
+        <dt><span jhiTranslate="global.field.id">ID</span></dt>
         <dd>
           <span>{{ eleve.id }}</span>
         </dd>
-        <dt><span>Nom</span></dt>
+        <dt><span jhiTranslate="jhipsterProjectBaseJwtApp.eleve.nom">Nom</span></dt>
         <dd>
           <span>{{ eleve.nom }}</span>
         </dd>
-        <dt><span>Prenom</span></dt>
+        <dt><span jhiTranslate="jhipsterProjectBaseJwtApp.eleve.prenom">Prenom</span></dt>
         <dd>
           <span>{{ eleve.prenom }}</span>
         </dd>
-        <dt><span>Date Naiss</span></dt>
+        <dt><span jhiTranslate="jhipsterProjectBaseJwtApp.eleve.dateNaiss">Date Naiss</span></dt>
         <dd>
           <span>{{ eleve.dateNaiss | formatMediumDate }}</span>
         </dd>
-        <dt><span>Lieu Naiss</span></dt>
+        <dt><span jhiTranslate="jhipsterProjectBaseJwtApp.eleve.lieuNaiss">Lieu Naiss</span></dt>
         <dd>
           <span>{{ eleve.lieuNaiss }}</span>
         </dd>
-        <dt><span>Sexe</span></dt>
+        <dt><span jhiTranslate="jhipsterProjectBaseJwtApp.eleve.sexe">Sexe</span></dt>
         <dd>
-          <span>{{ eleve.sexe }}</span>
+          <span jhiTranslate="{{ 'jhipsterProjectBaseJwtApp.Sexe.' + eleve.sexe }}">{{ eleve.sexe }}</span>
         </dd>
-        <dt><span>Telephone</span></dt>
+        <dt><span jhiTranslate="jhipsterProjectBaseJwtApp.eleve.telephone">Telephone</span></dt>
         <dd>
           <span>{{ eleve.telephone }}</span>
         </dd>
-        <dt><span>Adresse Physique</span></dt>
+        <dt><span jhiTranslate="jhipsterProjectBaseJwtApp.eleve.adressePhysique">Adresse Physique</span></dt>
         <dd>
           <span>{{ eleve.adressePhysique }}</span>
         </dd>
-        <dt><span>Region Residence</span></dt>
+        <dt><span jhiTranslate="jhipsterProjectBaseJwtApp.eleve.regionResidence">Region Residence</span></dt>
         <dd>
-          <span>{{ eleve.regionResidence }}</span>
+          <span jhiTranslate="{{ 'jhipsterProjectBaseJwtApp.NomRegion.' + eleve.regionResidence }}">{{ eleve.regionResidence }}</span>
         </dd>
-        <dt><span>Depart Residence</span></dt>
+        <dt><span jhiTranslate="jhipsterProjectBaseJwtApp.eleve.departResidence">Depart Residence</span></dt>
         <dd>
-          <span>{{ eleve.departResidence }}</span>
+          <span jhiTranslate="{{ 'jhipsterProjectBaseJwtApp.NomDepartement.' + eleve.departResidence }}">{{ eleve.departResidence }}</span>
         </dd>
-        <dt><span>Niveau Etude</span></dt>
+        <dt><span jhiTranslate="jhipsterProjectBaseJwtApp.eleve.niveauEtude">Niveau Etude</span></dt>
         <dd>
-          <span>{{ eleve.niveauEtude }}</span>
+          <span jhiTranslate="{{ 'jhipsterProjectBaseJwtApp.NiveauEtude.' + eleve.niveauEtude }}">{{ eleve.niveauEtude }}</span>
         </dd>
-        <dt><span>Cni</span></dt>
+        <dt><span jhiTranslate="jhipsterProjectBaseJwtApp.eleve.cni">Cni</span></dt>
         <dd>
           <span>{{ eleve.cni }}</span>
         </dd>
-        <dt><span>User</span></dt>
+        <dt><span jhiTranslate="jhipsterProjectBaseJwtApp.eleve.user">User</span></dt>
         <dd>
           <span>{{ eleve.user?.login }}</span>
         </dd>
       </dl>
 
       <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
-        <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span>Back</span>
+        <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Retour</span>
       </button>
 
       <button type="button" [routerLink]="['/eleve', eleve.id, 'edit']" class="btn btn-primary">
-        <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span>Edit</span>
+        <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Editer</span>
       </button>
     </div>
   </div>

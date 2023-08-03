@@ -1,21 +1,20 @@
 import { TestBed } from '@angular/core/testing';
 import { HttpResponse } from '@angular/common/http';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { ActivatedRouteSnapshot, ActivatedRoute, Router, convertToParamMap } from '@angular/router';
+import { ActivatedRouteSnapshot, ActivatedRoute, Router, convertToParamMap, RouterStateSnapshot } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
 
-import { IExperience, Experience } from '../experience.model';
+import { IExperience } from '../experience.model';
 import { ExperienceService } from '../service/experience.service';
 
-import { ExperienceRoutingResolveService } from './experience-routing-resolve.service';
+import experienceResolve from './experience-routing-resolve.service';
 
 describe('Experience routing resolve service', () => {
   let mockRouter: Router;
   let mockActivatedRouteSnapshot: ActivatedRouteSnapshot;
-  let routingResolveService: ExperienceRoutingResolveService;
   let service: ExperienceService;
-  let resultExperience: IExperience | undefined;
+  let resultExperience: IExperience | null | undefined;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -34,7 +33,6 @@ describe('Experience routing resolve service', () => {
     mockRouter = TestBed.inject(Router);
     jest.spyOn(mockRouter, 'navigate').mockImplementation(() => Promise.resolve(true));
     mockActivatedRouteSnapshot = TestBed.inject(ActivatedRoute).snapshot;
-    routingResolveService = TestBed.inject(ExperienceRoutingResolveService);
     service = TestBed.inject(ExperienceService);
     resultExperience = undefined;
   });
@@ -46,8 +44,12 @@ describe('Experience routing resolve service', () => {
       mockActivatedRouteSnapshot.params = { id: 123 };
 
       // WHEN
-      routingResolveService.resolve(mockActivatedRouteSnapshot).subscribe(result => {
-        resultExperience = result;
+      TestBed.runInInjectionContext(() => {
+        experienceResolve(mockActivatedRouteSnapshot).subscribe({
+          next(result) {
+            resultExperience = result;
+          },
+        });
       });
 
       // THEN
@@ -55,29 +57,37 @@ describe('Experience routing resolve service', () => {
       expect(resultExperience).toEqual({ id: 123 });
     });
 
-    it('should return new IExperience if id is not provided', () => {
+    it('should return null if id is not provided', () => {
       // GIVEN
       service.find = jest.fn();
       mockActivatedRouteSnapshot.params = {};
 
       // WHEN
-      routingResolveService.resolve(mockActivatedRouteSnapshot).subscribe(result => {
-        resultExperience = result;
+      TestBed.runInInjectionContext(() => {
+        experienceResolve(mockActivatedRouteSnapshot).subscribe({
+          next(result) {
+            resultExperience = result;
+          },
+        });
       });
 
       // THEN
       expect(service.find).not.toBeCalled();
-      expect(resultExperience).toEqual(new Experience());
+      expect(resultExperience).toEqual(null);
     });
 
     it('should route to 404 page if data not found in server', () => {
       // GIVEN
-      jest.spyOn(service, 'find').mockReturnValue(of(new HttpResponse({ body: null as unknown as Experience })));
+      jest.spyOn(service, 'find').mockReturnValue(of(new HttpResponse<IExperience>({ body: null })));
       mockActivatedRouteSnapshot.params = { id: 123 };
 
       // WHEN
-      routingResolveService.resolve(mockActivatedRouteSnapshot).subscribe(result => {
-        resultExperience = result;
+      TestBed.runInInjectionContext(() => {
+        experienceResolve(mockActivatedRouteSnapshot).subscribe({
+          next(result) {
+            resultExperience = result;
+          },
+        });
       });
 
       // THEN

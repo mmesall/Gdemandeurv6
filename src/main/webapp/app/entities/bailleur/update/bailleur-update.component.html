@@ -1,18 +1,26 @@
 <div class="d-flex justify-content-center">
   <div class="col-8">
     <form name="editForm" role="form" novalidate (ngSubmit)="save()" [formGroup]="editForm">
-      <h2 id="jhi-bailleur-heading" data-cy="BailleurCreateUpdateHeading">Create or edit a Bailleur</h2>
+      <h2
+        id="jhi-bailleur-heading"
+        data-cy="BailleurCreateUpdateHeading"
+        jhiTranslate="jhipsterProjectBaseJwtApp.bailleur.home.createOrEditLabel"
+      >
+        Créer ou éditer un Bailleur
+      </h2>
 
       <div>
         <jhi-alert-error></jhi-alert-error>
 
-        <div class="row mb-3" [hidden]="editForm.get('id')!.value == null">
-          <label class="form-label" for="field_id">ID</label>
+        <div class="mb-3" *ngIf="editForm.controls.id.value !== null">
+          <label class="form-label" jhiTranslate="global.field.id" for="field_id">ID</label>
           <input type="number" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
         </div>
 
-        <div class="row mb-3">
-          <label class="form-label" for="field_nomBailleur">Nom Bailleur</label>
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="jhipsterProjectBaseJwtApp.bailleur.nomBailleur" for="field_nomBailleur"
+            >Nom Bailleur</label
+          >
           <input
             type="text"
             class="form-control"
@@ -22,12 +30,20 @@
             formControlName="nomBailleur"
           />
           <div *ngIf="editForm.get('nomBailleur')!.invalid && (editForm.get('nomBailleur')!.dirty || editForm.get('nomBailleur')!.touched)">
-            <small class="form-text text-danger" *ngIf="editForm.get('nomBailleur')?.errors?.required"> This field is required. </small>
+            <small
+              class="form-text text-danger"
+              *ngIf="editForm.get('nomBailleur')?.errors?.required"
+              jhiTranslate="entity.validation.required"
+            >
+              Ce champ est obligatoire.
+            </small>
           </div>
         </div>
 
-        <div class="row mb-3">
-          <label class="form-label" for="field_budgetPrevu">Budget Prevu</label>
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="jhipsterProjectBaseJwtApp.bailleur.budgetPrevu" for="field_budgetPrevu"
+            >Budget Prevu</label
+          >
           <input
             type="number"
             class="form-control"
@@ -38,8 +54,10 @@
           />
         </div>
 
-        <div class="row mb-3">
-          <label class="form-label" for="field_budgetDepense">Budget Depense</label>
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="jhipsterProjectBaseJwtApp.bailleur.budgetDepense" for="field_budgetDepense"
+            >Budget Depense</label
+          >
           <input
             type="number"
             class="form-control"
@@ -50,8 +68,10 @@
           />
         </div>
 
-        <div class="row mb-3">
-          <label class="form-label" for="field_budgetRestant">Budget Restant</label>
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="jhipsterProjectBaseJwtApp.bailleur.budgetRestant" for="field_budgetRestant"
+            >Budget Restant</label
+          >
           <input
             type="number"
             class="form-control"
@@ -62,15 +82,15 @@
           />
         </div>
 
-        <div class="row mb-3">
-          <label class="form-label" for="field_nbrePC">Nbre PC</label>
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="jhipsterProjectBaseJwtApp.bailleur.nbrePC" for="field_nbrePC">Nbre PC</label>
           <input type="number" class="form-control" name="nbrePC" id="field_nbrePC" data-cy="nbrePC" formControlName="nbrePC" />
         </div>
       </div>
 
       <div>
         <button type="button" id="cancel-save" data-cy="entityCreateCancelButton" class="btn btn-secondary" (click)="previousState()">
-          <fa-icon icon="ban"></fa-icon>&nbsp;<span>Cancel</span>
+          <fa-icon icon="ban"></fa-icon>&nbsp;<span jhiTranslate="entity.action.cancel">Annuler</span>
         </button>
 
         <button
@@ -80,7 +100,7 @@
           [disabled]="editForm.invalid || isSaving"
           class="btn btn-primary"
         >
-          <fa-icon icon="save"></fa-icon>&nbsp;<span>Save</span>
+          <fa-icon icon="save"></fa-icon>&nbsp;<span jhiTranslate="entity.action.save">Sauvegarder</span>
         </button>
       </div>
     </form>

@@ -18,8 +18,7 @@ describe('Diplome Management Delete Component', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
-      declarations: [DiplomeDeleteDialogComponent],
+      imports: [HttpClientTestingModule, DiplomeDeleteDialogComponent],
       providers: [NgbActiveModal],
     })
       .overrideTemplate(DiplomeDeleteDialogComponent, '')

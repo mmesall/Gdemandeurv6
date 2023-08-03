@@ -2,15 +2,17 @@ package mfpai.gouv.sn.web.rest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import jakarta.persistence.EntityManager;
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicLong;
-import javax.persistence.EntityManager;
 import mfpai.gouv.sn.IntegrationTest;
 import mfpai.gouv.sn.domain.Eleve;
 import mfpai.gouv.sn.domain.enumeration.NiveauEtude;
@@ -18,10 +20,17 @@ import mfpai.gouv.sn.domain.enumeration.NomDepartement;
 import mfpai.gouv.sn.domain.enumeration.NomRegion;
 import mfpai.gouv.sn.domain.enumeration.Sexe;
 import mfpai.gouv.sn.repository.EleveRepository;
+import mfpai.gouv.sn.service.EleveService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
@@ -31,6 +40,7 @@ import org.springframework.transaction.annotation.Transactional;
  * Integration tests for the {@link EleveResource} REST controller.
  */
 @IntegrationTest
+@ExtendWith(MockitoExtension.class)
 @AutoConfigureMockMvc
 @WithMockUser
 class EleveResourceIT {
@@ -76,6 +86,12 @@ class EleveResourceIT {
 
     @Autowired
     private EleveRepository eleveRepository;
+
+    @Mock
+    private EleveRepository eleveRepositoryMock;
+
+    @Mock
+    private EleveService eleveServiceMock;
 
     @Autowired
     private EntityManager em;
@@ -254,6 +270,23 @@ class EleveResourceIT {
             .andExpect(jsonPath("$.[*].cni").value(hasItem(DEFAULT_CNI.intValue())));
     }
 
+    @SuppressWarnings({ "unchecked" })
+    void getAllElevesWithEagerRelationshipsIsEnabled() throws Exception {
+        when(eleveServiceMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
+
+        restEleveMockMvc.perform(get(ENTITY_API_URL + "?eagerload=true")).andExpect(status().isOk());
+
+        verify(eleveServiceMock, times(1)).findAllWithEagerRelationships(any());
+    }
+
+    @SuppressWarnings({ "unchecked" })
+    void getAllElevesWithEagerRelationshipsIsNotEnabled() throws Exception {
+        when(eleveServiceMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
+
+        restEleveMockMvc.perform(get(ENTITY_API_URL + "?eagerload=false")).andExpect(status().isOk());
+        verify(eleveRepositoryMock, times(1)).findAll(any(Pageable.class));
+    }
+
     @Test
     @Transactional
     void getEleve() throws Exception {
@@ -288,14 +321,14 @@ class EleveResourceIT {
 
     @Test
     @Transactional
-    void putNewEleve() throws Exception {
+    void putExistingEleve() throws Exception {
         // Initialize the database
         eleveRepository.saveAndFlush(eleve);
 
         int databaseSizeBeforeUpdate = eleveRepository.findAll().size();
 
         // Update the eleve
-        Eleve updatedEleve = eleveRepository.findById(eleve.getId()).get();
+        Eleve updatedEleve = eleveRepository.findById(eleve.getId()).orElseThrow();
         // Disconnect from session so that the updates on updatedEleve are not directly saved in db
         em.detach(updatedEleve);
         updatedEleve
@@ -406,9 +439,10 @@ class EleveResourceIT {
 
         partialUpdatedEleve
             .nom(UPDATED_NOM)
+            .dateNaiss(UPDATED_DATE_NAISS)
             .telephone(UPDATED_TELEPHONE)
             .adressePhysique(UPDATED_ADRESSE_PHYSIQUE)
-            .departResidence(UPDATED_DEPART_RESIDENCE)
+            .regionResidence(UPDATED_REGION_RESIDENCE)
             .niveauEtude(UPDATED_NIVEAU_ETUDE)
             .cni(UPDATED_CNI);
 
@@ -426,13 +460,13 @@ class EleveResourceIT {
         Eleve testEleve = eleveList.get(eleveList.size() - 1);
         assertThat(testEleve.getNom()).isEqualTo(UPDATED_NOM);
         assertThat(testEleve.getPrenom()).isEqualTo(DEFAULT_PRENOM);
-        assertThat(testEleve.getDateNaiss()).isEqualTo(DEFAULT_DATE_NAISS);
+        assertThat(testEleve.getDateNaiss()).isEqualTo(UPDATED_DATE_NAISS);
         assertThat(testEleve.getLieuNaiss()).isEqualTo(DEFAULT_LIEU_NAISS);
         assertThat(testEleve.getSexe()).isEqualTo(DEFAULT_SEXE);
         assertThat(testEleve.getTelephone()).isEqualTo(UPDATED_TELEPHONE);
         assertThat(testEleve.getAdressePhysique()).isEqualTo(UPDATED_ADRESSE_PHYSIQUE);
-        assertThat(testEleve.getRegionResidence()).isEqualTo(DEFAULT_REGION_RESIDENCE);
-        assertThat(testEleve.getDepartResidence()).isEqualTo(UPDATED_DEPART_RESIDENCE);
+        assertThat(testEleve.getRegionResidence()).isEqualTo(UPDATED_REGION_RESIDENCE);
+        assertThat(testEleve.getDepartResidence()).isEqualTo(DEFAULT_DEPART_RESIDENCE);
         assertThat(testEleve.getNiveauEtude()).isEqualTo(UPDATED_NIVEAU_ETUDE);
         assertThat(testEleve.getCni()).isEqualTo(UPDATED_CNI);
     }

@@ -6,8 +6,9 @@ import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of, Subject, from } from 'rxjs';
 
+import { ExperienceFormService } from './experience-form.service';
 import { ExperienceService } from '../service/experience.service';
-import { IExperience, Experience } from '../experience.model';
+import { IExperience } from '../experience.model';
 import { IEleve } from 'app/entities/eleve/eleve.model';
 import { EleveService } from 'app/entities/eleve/service/eleve.service';
 import { IEtudiant } from 'app/entities/etudiant/etudiant.model';
@@ -23,6 +24,7 @@ describe('Experience Management Update Component', () => {
   let comp: ExperienceUpdateComponent;
   let fixture: ComponentFixture<ExperienceUpdateComponent>;
   let activatedRoute: ActivatedRoute;
+  let experienceFormService: ExperienceFormService;
   let experienceService: ExperienceService;
   let eleveService: EleveService;
   let etudiantService: EtudiantService;
@@ -31,8 +33,7 @@ describe('Experience Management Update Component', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule, RouterTestingModule.withRoutes([])],
-      declarations: [ExperienceUpdateComponent],
+      imports: [HttpClientTestingModule, RouterTestingModule.withRoutes([]), ExperienceUpdateComponent],
       providers: [
         FormBuilder,
         {
@@ -48,6 +49,7 @@ describe('Experience Management Update Component', () => {
 
     fixture = TestBed.createComponent(ExperienceUpdateComponent);
     activatedRoute = TestBed.inject(ActivatedRoute);
+    experienceFormService = TestBed.inject(ExperienceFormService);
     experienceService = TestBed.inject(ExperienceService);
     eleveService = TestBed.inject(EleveService);
     etudiantService = TestBed.inject(EtudiantService);
@@ -60,10 +62,10 @@ describe('Experience Management Update Component', () => {
   describe('ngOnInit', () => {
     it('Should call Eleve query and add missing value', () => {
       const experience: IExperience = { id: 456 };
-      const eleve: IEleve = { id: 80796 };
+      const eleve: IEleve = { id: 12553 };
       experience.eleve = eleve;
 
-      const eleveCollection: IEleve[] = [{ id: 95538 }];
+      const eleveCollection: IEleve[] = [{ id: 26221 }];
       jest.spyOn(eleveService, 'query').mockReturnValue(of(new HttpResponse({ body: eleveCollection })));
       const additionalEleves = [eleve];
       const expectedCollection: IEleve[] = [...additionalEleves, ...eleveCollection];
@@ -73,16 +75,19 @@ describe('Experience Management Update Component', () => {
       comp.ngOnInit();
 
       expect(eleveService.query).toHaveBeenCalled();
-      expect(eleveService.addEleveToCollectionIfMissing).toHaveBeenCalledWith(eleveCollection, ...additionalEleves);
+      expect(eleveService.addEleveToCollectionIfMissing).toHaveBeenCalledWith(
+        eleveCollection,
+        ...additionalEleves.map(expect.objectContaining)
+      );
       expect(comp.elevesSharedCollection).toEqual(expectedCollection);
     });
 
     it('Should call Etudiant query and add missing value', () => {
       const experience: IExperience = { id: 456 };
-      const etudiant: IEtudiant = { id: 64184 };
+      const etudiant: IEtudiant = { id: 12256 };
       experience.etudiant = etudiant;
 
-      const etudiantCollection: IEtudiant[] = [{ id: 71949 }];
+      const etudiantCollection: IEtudiant[] = [{ id: 28007 }];
       jest.spyOn(etudiantService, 'query').mockReturnValue(of(new HttpResponse({ body: etudiantCollection })));
       const additionalEtudiants = [etudiant];
       const expectedCollection: IEtudiant[] = [...additionalEtudiants, ...etudiantCollection];
@@ -92,16 +97,19 @@ describe('Experience Management Update Component', () => {
       comp.ngOnInit();
 
       expect(etudiantService.query).toHaveBeenCalled();
-      expect(etudiantService.addEtudiantToCollectionIfMissing).toHaveBeenCalledWith(etudiantCollection, ...additionalEtudiants);
+      expect(etudiantService.addEtudiantToCollectionIfMissing).toHaveBeenCalledWith(
+        etudiantCollection,
+        ...additionalEtudiants.map(expect.objectContaining)
+      );
       expect(comp.etudiantsSharedCollection).toEqual(expectedCollection);
     });
 
     it('Should call Professionnel query and add missing value', () => {
       const experience: IExperience = { id: 456 };
-      const professionnel: IProfessionnel = { id: 37212 };
+      const professionnel: IProfessionnel = { id: 28490 };
       experience.professionnel = professionnel;
 
-      const professionnelCollection: IProfessionnel[] = [{ id: 21060 }];
+      const professionnelCollection: IProfessionnel[] = [{ id: 3642 }];
       jest.spyOn(professionnelService, 'query').mockReturnValue(of(new HttpResponse({ body: professionnelCollection })));
       const additionalProfessionnels = [professionnel];
       const expectedCollection: IProfessionnel[] = [...additionalProfessionnels, ...professionnelCollection];
@@ -113,17 +121,17 @@ describe('Experience Management Update Component', () => {
       expect(professionnelService.query).toHaveBeenCalled();
       expect(professionnelService.addProfessionnelToCollectionIfMissing).toHaveBeenCalledWith(
         professionnelCollection,
-        ...additionalProfessionnels
+        ...additionalProfessionnels.map(expect.objectContaining)
       );
       expect(comp.professionnelsSharedCollection).toEqual(expectedCollection);
     });
 
     it('Should call Demandeur query and add missing value', () => {
       const experience: IExperience = { id: 456 };
-      const demandeur: IDemandeur = { id: 69452 };
+      const demandeur: IDemandeur = { id: 14619 };
       experience.demandeur = demandeur;
 
-      const demandeurCollection: IDemandeur[] = [{ id: 22100 }];
+      const demandeurCollection: IDemandeur[] = [{ id: 15990 }];
       jest.spyOn(demandeurService, 'query').mockReturnValue(of(new HttpResponse({ body: demandeurCollection })));
       const additionalDemandeurs = [demandeur];
       const expectedCollection: IDemandeur[] = [...additionalDemandeurs, ...demandeurCollection];
@@ -133,37 +141,41 @@ describe('Experience Management Update Component', () => {
       comp.ngOnInit();
 
       expect(demandeurService.query).toHaveBeenCalled();
-      expect(demandeurService.addDemandeurToCollectionIfMissing).toHaveBeenCalledWith(demandeurCollection, ...additionalDemandeurs);
+      expect(demandeurService.addDemandeurToCollectionIfMissing).toHaveBeenCalledWith(
+        demandeurCollection,
+        ...additionalDemandeurs.map(expect.objectContaining)
+      );
       expect(comp.demandeursSharedCollection).toEqual(expectedCollection);
     });
 
     it('Should update editForm', () => {
       const experience: IExperience = { id: 456 };
-      const eleve: IEleve = { id: 91922 };
+      const eleve: IEleve = { id: 10875 };
       experience.eleve = eleve;
-      const etudiant: IEtudiant = { id: 11454 };
+      const etudiant: IEtudiant = { id: 7858 };
       experience.etudiant = etudiant;
-      const professionnel: IProfessionnel = { id: 47119 };
+      const professionnel: IProfessionnel = { id: 6329 };
       experience.professionnel = professionnel;
-      const demandeur: IDemandeur = { id: 10246 };
+      const demandeur: IDemandeur = { id: 24918 };
       experience.demandeur = demandeur;
 
       activatedRoute.data = of({ experience });
       comp.ngOnInit();
 
-      expect(comp.editForm.value).toEqual(expect.objectContaining(experience));
       expect(comp.elevesSharedCollection).toContain(eleve);
       expect(comp.etudiantsSharedCollection).toContain(etudiant);
       expect(comp.professionnelsSharedCollection).toContain(professionnel);
       expect(comp.demandeursSharedCollection).toContain(demandeur);
+      expect(comp.experience).toEqual(experience);
     });
   });
 
   describe('save', () => {
     it('Should call update service on save for existing entity', () => {
       // GIVEN
-      const saveSubject = new Subject<HttpResponse<Experience>>();
+      const saveSubject = new Subject<HttpResponse<IExperience>>();
       const experience = { id: 123 };
+      jest.spyOn(experienceFormService, 'getExperience').mockReturnValue(experience);
       jest.spyOn(experienceService, 'update').mockReturnValue(saveSubject);
       jest.spyOn(comp, 'previousState');
       activatedRoute.data = of({ experience });
@@ -176,18 +188,20 @@ describe('Experience Management Update Component', () => {
       saveSubject.complete();
 
       // THEN
+      expect(experienceFormService.getExperience).toHaveBeenCalled();
       expect(comp.previousState).toHaveBeenCalled();
-      expect(experienceService.update).toHaveBeenCalledWith(experience);
+      expect(experienceService.update).toHaveBeenCalledWith(expect.objectContaining(experience));
       expect(comp.isSaving).toEqual(false);
     });
 
     it('Should call create service on save for new entity', () => {
       // GIVEN
-      const saveSubject = new Subject<HttpResponse<Experience>>();
-      const experience = new Experience();
+      const saveSubject = new Subject<HttpResponse<IExperience>>();
+      const experience = { id: 123 };
+      jest.spyOn(experienceFormService, 'getExperience').mockReturnValue({ id: null });
       jest.spyOn(experienceService, 'create').mockReturnValue(saveSubject);
       jest.spyOn(comp, 'previousState');
-      activatedRoute.data = of({ experience });
+      activatedRoute.data = of({ experience: null });
       comp.ngOnInit();
 
       // WHEN
@@ -197,14 +211,15 @@ describe('Experience Management Update Component', () => {
       saveSubject.complete();
 
       // THEN
-      expect(experienceService.create).toHaveBeenCalledWith(experience);
+      expect(experienceFormService.getExperience).toHaveBeenCalled();
+      expect(experienceService.create).toHaveBeenCalled();
       expect(comp.isSaving).toEqual(false);
       expect(comp.previousState).toHaveBeenCalled();
     });
 
     it('Should set isSaving to false on error', () => {
       // GIVEN
-      const saveSubject = new Subject<HttpResponse<Experience>>();
+      const saveSubject = new Subject<HttpResponse<IExperience>>();
       const experience = { id: 123 };
       jest.spyOn(experienceService, 'update').mockReturnValue(saveSubject);
       jest.spyOn(comp, 'previousState');
@@ -217,42 +232,50 @@ describe('Experience Management Update Component', () => {
       saveSubject.error('This is an error!');
 
       // THEN
-      expect(experienceService.update).toHaveBeenCalledWith(experience);
+      expect(experienceService.update).toHaveBeenCalled();
       expect(comp.isSaving).toEqual(false);
       expect(comp.previousState).not.toHaveBeenCalled();
     });
   });
 
-  describe('Tracking relationships identifiers', () => {
-    describe('trackEleveById', () => {
-      it('Should return tracked Eleve primary key', () => {
+  describe('Compare relationships', () => {
+    describe('compareEleve', () => {
+      it('Should forward to eleveService', () => {
         const entity = { id: 123 };
-        const trackResult = comp.trackEleveById(0, entity);
-        expect(trackResult).toEqual(entity.id);
+        const entity2 = { id: 456 };
+        jest.spyOn(eleveService, 'compareEleve');
+        comp.compareEleve(entity, entity2);
+        expect(eleveService.compareEleve).toHaveBeenCalledWith(entity, entity2);
       });
     });
 
-    describe('trackEtudiantById', () => {
-      it('Should return tracked Etudiant primary key', () => {
+    describe('compareEtudiant', () => {
+      it('Should forward to etudiantService', () => {
         const entity = { id: 123 };
-        const trackResult = comp.trackEtudiantById(0, entity);
-        expect(trackResult).toEqual(entity.id);
+        const entity2 = { id: 456 };
+        jest.spyOn(etudiantService, 'compareEtudiant');
+        comp.compareEtudiant(entity, entity2);
+        expect(etudiantService.compareEtudiant).toHaveBeenCalledWith(entity, entity2);
       });
     });
 
-    describe('trackProfessionnelById', () => {
-      it('Should return tracked Professionnel primary key', () => {
+    describe('compareProfessionnel', () => {
+      it('Should forward to professionnelService', () => {
         const entity = { id: 123 };
-        const trackResult = comp.trackProfessionnelById(0, entity);
-        expect(trackResult).toEqual(entity.id);
+        const entity2 = { id: 456 };
+        jest.spyOn(professionnelService, 'compareProfessionnel');
+        comp.compareProfessionnel(entity, entity2);
+        expect(professionnelService.compareProfessionnel).toHaveBeenCalledWith(entity, entity2);
       });
     });
 
-    describe('trackDemandeurById', () => {
-      it('Should return tracked Demandeur primary key', () => {
+    describe('compareDemandeur', () => {
+      it('Should forward to demandeurService', () => {
         const entity = { id: 123 };
-        const trackResult = comp.trackDemandeurById(0, entity);
-        expect(trackResult).toEqual(entity.id);
+        const entity2 = { id: 456 };
+        jest.spyOn(demandeurService, 'compareDemandeur');
+        comp.compareDemandeur(entity, entity2);
+        expect(demandeurService.compareDemandeur).toHaveBeenCalledWith(entity, entity2);
       });
     });
   });

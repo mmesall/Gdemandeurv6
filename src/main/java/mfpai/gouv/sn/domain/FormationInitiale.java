@@ -1,11 +1,11 @@
 package mfpai.gouv.sn.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import jakarta.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
-import javax.persistence.*;
 import mfpai.gouv.sn.domain.enumeration.Admission;
 import mfpai.gouv.sn.domain.enumeration.CFP;
 import mfpai.gouv.sn.domain.enumeration.DiplomeObtenu;
@@ -23,6 +23,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Entity
 @Table(name = "formation_initiale")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+@SuppressWarnings("common-java:DuplicatedBlocks")
 public class FormationInitiale implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -92,12 +93,15 @@ public class FormationInitiale implements Serializable {
     @Column(name = "nom_debouche")
     private String nomDebouche;
 
-    @JsonIgnoreProperties(value = { "etablissements", "priseEnCharge" }, allowSetters = true)
-    @OneToOne
+    @JsonIgnoreProperties(
+        value = { "etablissements", "priseEnCharge", "formationInitiale", "formationContinue", "concours" },
+        allowSetters = true
+    )
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(unique = true)
     private Formation formation;
 
-    @OneToMany(mappedBy = "formationInitiale")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "formationInitiale")
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     @JsonIgnoreProperties(value = { "eleve", "etudiant", "formationInitiale", "etablissement" }, allowSetters = true)
     private Set<CandidatureE> candidatureES = new HashSet<>();

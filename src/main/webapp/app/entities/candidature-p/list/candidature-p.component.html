@@ -1,11 +1,11 @@
 <div>
   <h2 id="page-heading" data-cy="CandidaturePHeading">
-    <span>Candidature PS</span>
+    <span jhiTranslate="jhipsterProjectBaseJwtApp.candidatureP.home.title">CandidaturePS</span>
 
     <div class="d-flex justify-content-end">
-      <button class="btn btn-info me-2" (click)="reset()" [disabled]="isLoading">
+      <button class="btn btn-info me-2" (click)="load()" [disabled]="isLoading">
         <fa-icon icon="sync" [spin]="isLoading"></fa-icon>
-        <span>Refresh List</span>
+        <span jhiTranslate="jhipsterProjectBaseJwtApp.candidatureP.home.refreshListLabel">Actualiser la liste</span>
       </button>
 
       <button
@@ -15,7 +15,7 @@
         [routerLink]="['/candidature-p/new']"
       >
         <fa-icon icon="plus"></fa-icon>
-        <span> Create a new Candidature P </span>
+        <span jhiTranslate="jhipsterProjectBaseJwtApp.candidatureP.home.createLabel"> Créer un nouveau Candidature P </span>
       </button>
     </div>
   </h2>
@@ -25,51 +25,103 @@
   <jhi-alert></jhi-alert>
 
   <div class="alert alert-warning" id="no-result" *ngIf="candidaturePS?.length === 0">
-    <span>No candidaturePS found</span>
+    <span jhiTranslate="jhipsterProjectBaseJwtApp.candidatureP.home.notFound">Aucun Candidature P trouvé</span>
   </div>
 
-  <div class="table-responsive" id="entities" *ngIf="candidaturePS && candidaturePS.length > 0">
+  <div class="table-responsive table-entities" id="entities" *ngIf="candidaturePS && candidaturePS.length > 0">
     <table class="table table-striped" aria-describedby="page-heading">
       <thead>
-        <tr jhiSort [(predicate)]="predicate" [(ascending)]="ascending" (sortChange)="reset()">
-          <th scope="col" jhiSortBy="id"><span>ID</span> <fa-icon icon="sort"></fa-icon></th>
-          <th scope="col" jhiSortBy="offreFormation"><span>Offre Formation</span> <fa-icon icon="sort"></fa-icon></th>
-          <th scope="col" jhiSortBy="dateDebutOffre"><span>Date Debut Offre</span> <fa-icon icon="sort"></fa-icon></th>
-          <th scope="col" jhiSortBy="dateFinOffre"><span>Date Fin Offre</span> <fa-icon icon="sort"></fa-icon></th>
-          <th scope="col" jhiSortBy="dateDepot"><span>Date Depot</span> <fa-icon icon="sort"></fa-icon></th>
-          <th scope="col" jhiSortBy="resultat"><span>Resultat</span> <fa-icon icon="sort"></fa-icon></th>
-          <th scope="col" jhiSortBy="professionnel.profession"><span>Professionnel</span> <fa-icon icon="sort"></fa-icon></th>
-          <th scope="col" jhiSortBy="formationContinue.nomFormationC"><span>Formation Continue</span> <fa-icon icon="sort"></fa-icon></th>
-          <th scope="col" jhiSortBy="etablissement.nomEtablissement"><span>Etablissement</span> <fa-icon icon="sort"></fa-icon></th>
+        <tr jhiSort [(predicate)]="predicate" [(ascending)]="ascending" (sortChange)="navigateToWithComponentValues()">
+          <th scope="col" jhiSortBy="id">
+            <div class="d-flex">
+              <span jhiTranslate="global.field.id">ID</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="offreFormation">
+            <div class="d-flex">
+              <span jhiTranslate="jhipsterProjectBaseJwtApp.candidatureP.offreFormation">Offre Formation</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="dateDebutOffre">
+            <div class="d-flex">
+              <span jhiTranslate="jhipsterProjectBaseJwtApp.candidatureP.dateDebutOffre">Date Debut Offre</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="dateFinOffre">
+            <div class="d-flex">
+              <span jhiTranslate="jhipsterProjectBaseJwtApp.candidatureP.dateFinOffre">Date Fin Offre</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="dateDepot">
+            <div class="d-flex">
+              <span jhiTranslate="jhipsterProjectBaseJwtApp.candidatureP.dateDepot">Date Depot</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="resultat">
+            <div class="d-flex">
+              <span jhiTranslate="jhipsterProjectBaseJwtApp.candidatureP.resultat">Resultat</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="professionnel.profession">
+            <div class="d-flex">
+              <span jhiTranslate="jhipsterProjectBaseJwtApp.candidatureP.professionnel">Professionnel</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="formationContinue.nomFormationC">
+            <div class="d-flex">
+              <span jhiTranslate="jhipsterProjectBaseJwtApp.candidatureP.formationContinue">Formation Continue</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="etablissement.nomEtablissement">
+            <div class="d-flex">
+              <span jhiTranslate="jhipsterProjectBaseJwtApp.candidatureP.etablissement">Etablissement</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
           <th scope="col"></th>
         </tr>
       </thead>
-      <tbody infinite-scroll (scrolled)="loadPage(page + 1)" [infiniteScrollDisabled]="page >= links['last']" [infiniteScrollDistance]="0">
+      <tbody
+        infinite-scroll
+        (scrolled)="loadPage(page + 1)"
+        [infiniteScrollDisabled]="page - 1 >= links['last']"
+        [infiniteScrollDistance]="0"
+      >
         <tr *ngFor="let candidatureP of candidaturePS; trackBy: trackId" data-cy="entityTable">
           <td>
             <a [routerLink]="['/candidature-p', candidatureP.id, 'view']">{{ candidatureP.id }}</a>
           </td>
-          <td>{{ candidatureP.offreFormation }}</td>
+          <td jhiTranslate="{{ 'jhipsterProjectBaseJwtApp.NomFiliere.' + candidatureP.offreFormation }}">
+            {{ candidatureP.offreFormation }}
+          </td>
           <td>{{ candidatureP.dateDebutOffre | formatMediumDate }}</td>
           <td>{{ candidatureP.dateFinOffre | formatMediumDate }}</td>
           <td>{{ candidatureP.dateDepot | formatMediumDate }}</td>
-          <td>{{ candidatureP.resultat }}</td>
+          <td jhiTranslate="{{ 'jhipsterProjectBaseJwtApp.Resultat.' + candidatureP.resultat }}">{{ candidatureP.resultat }}</td>
           <td>
             <div *ngIf="candidatureP.professionnel">
-              <a [routerLink]="['/professionnel', candidatureP.professionnel?.id, 'view']">{{ candidatureP.professionnel?.profession }}</a>
+              <a [routerLink]="['/professionnel', candidatureP.professionnel.id, 'view']">{{ candidatureP.professionnel.profession }}</a>
             </div>
           </td>
           <td>
             <div *ngIf="candidatureP.formationContinue">
-              <a [routerLink]="['/formation-continue', candidatureP.formationContinue?.id, 'view']">{{
-                candidatureP.formationContinue?.nomFormationC
+              <a [routerLink]="['/formation-continue', candidatureP.formationContinue.id, 'view']">{{
+                candidatureP.formationContinue.nomFormationC
               }}</a>
             </div>
           </td>
           <td>
             <div *ngIf="candidatureP.etablissement">
-              <a [routerLink]="['/etablissement', candidatureP.etablissement?.id, 'view']">{{
-                candidatureP.etablissement?.nomEtablissement
+              <a [routerLink]="['/etablissement', candidatureP.etablissement.id, 'view']">{{
+                candidatureP.etablissement.nomEtablissement
               }}</a>
             </div>
           </td>
@@ -82,7 +134,7 @@
                 data-cy="entityDetailsButton"
               >
                 <fa-icon icon="eye"></fa-icon>
-                <span class="d-none d-md-inline">View</span>
+                <span class="d-none d-md-inline" jhiTranslate="entity.action.view">Voir</span>
               </button>
 
               <button
@@ -92,12 +144,12 @@
                 data-cy="entityEditButton"
               >
                 <fa-icon icon="pencil-alt"></fa-icon>
-                <span class="d-none d-md-inline">Edit</span>
+                <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Editer</span>
               </button>
 
               <button type="submit" (click)="delete(candidatureP)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
                 <fa-icon icon="times"></fa-icon>
-                <span class="d-none d-md-inline">Delete</span>
+                <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Supprimer</span>
               </button>
             </div>
           </td>

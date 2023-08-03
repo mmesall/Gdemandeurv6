@@ -1,18 +1,26 @@
 <div class="d-flex justify-content-center">
   <div class="col-8">
     <form name="editForm" role="form" novalidate (ngSubmit)="save()" [formGroup]="editForm">
-      <h2 id="jhi-etudiant-heading" data-cy="EtudiantCreateUpdateHeading">Create or edit a Etudiant</h2>
+      <h2
+        id="jhi-etudiant-heading"
+        data-cy="EtudiantCreateUpdateHeading"
+        jhiTranslate="jhipsterProjectBaseJwtApp.etudiant.home.createOrEditLabel"
+      >
+        Créer ou éditer un Etudiant
+      </h2>
 
       <div>
         <jhi-alert-error></jhi-alert-error>
 
-        <div class="row mb-3" [hidden]="editForm.get('id')!.value == null">
-          <label class="form-label" for="field_id">ID</label>
+        <div class="mb-3" *ngIf="editForm.controls.id.value !== null">
+          <label class="form-label" jhiTranslate="global.field.id" for="field_id">ID</label>
           <input type="number" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
         </div>
 
-        <div class="row mb-3">
-          <label class="form-label" for="field_carteEtudiant">Carte Etudiant</label>
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="jhipsterProjectBaseJwtApp.etudiant.carteEtudiant" for="field_carteEtudiant"
+            >Carte Etudiant</label
+          >
           <input
             type="text"
             class="form-control"
@@ -26,28 +34,38 @@
               editForm.get('carteEtudiant')!.invalid && (editForm.get('carteEtudiant')!.dirty || editForm.get('carteEtudiant')!.touched)
             "
           >
-            <small class="form-text text-danger" *ngIf="editForm.get('carteEtudiant')?.errors?.required"> This field is required. </small>
+            <small
+              class="form-text text-danger"
+              *ngIf="editForm.get('carteEtudiant')?.errors?.required"
+              jhiTranslate="entity.validation.required"
+            >
+              Ce champ est obligatoire.
+            </small>
           </div>
         </div>
 
-        <div class="row mb-3">
-          <label class="form-label" for="field_nom">Nom</label>
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="jhipsterProjectBaseJwtApp.etudiant.nom" for="field_nom">Nom</label>
           <input type="text" class="form-control" name="nom" id="field_nom" data-cy="nom" formControlName="nom" />
           <div *ngIf="editForm.get('nom')!.invalid && (editForm.get('nom')!.dirty || editForm.get('nom')!.touched)">
-            <small class="form-text text-danger" *ngIf="editForm.get('nom')?.errors?.required"> This field is required. </small>
+            <small class="form-text text-danger" *ngIf="editForm.get('nom')?.errors?.required" jhiTranslate="entity.validation.required">
+              Ce champ est obligatoire.
+            </small>
           </div>
         </div>
 
-        <div class="row mb-3">
-          <label class="form-label" for="field_prenom">Prenom</label>
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="jhipsterProjectBaseJwtApp.etudiant.prenom" for="field_prenom">Prenom</label>
           <input type="text" class="form-control" name="prenom" id="field_prenom" data-cy="prenom" formControlName="prenom" />
           <div *ngIf="editForm.get('prenom')!.invalid && (editForm.get('prenom')!.dirty || editForm.get('prenom')!.touched)">
-            <small class="form-text text-danger" *ngIf="editForm.get('prenom')?.errors?.required"> This field is required. </small>
+            <small class="form-text text-danger" *ngIf="editForm.get('prenom')?.errors?.required" jhiTranslate="entity.validation.required">
+              Ce champ est obligatoire.
+            </small>
           </div>
         </div>
 
-        <div class="row mb-3">
-          <label class="form-label" for="field_dateNaiss">Date Naiss</label>
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="jhipsterProjectBaseJwtApp.etudiant.dateNaiss" for="field_dateNaiss">Date Naiss</label>
           <div class="input-group">
             <input
               id="field_dateNaiss"
@@ -63,26 +81,37 @@
           </div>
         </div>
 
-        <div class="row mb-3">
-          <label class="form-label" for="field_lieuNaiss">Lieu Naiss</label>
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="jhipsterProjectBaseJwtApp.etudiant.lieuNaiss" for="field_lieuNaiss">Lieu Naiss</label>
           <input type="text" class="form-control" name="lieuNaiss" id="field_lieuNaiss" data-cy="lieuNaiss" formControlName="lieuNaiss" />
         </div>
 
-        <div class="row mb-3">
-          <label class="form-label" for="field_sexe">Sexe</label>
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="jhipsterProjectBaseJwtApp.etudiant.sexe" for="field_sexe">Sexe</label>
           <select class="form-control" name="sexe" formControlName="sexe" id="field_sexe" data-cy="sexe">
             <option [ngValue]="null"></option>
-            <option *ngFor="let sexe of sexeValues" [value]="sexe">sexe</option>
+            <option *ngFor="let sexe of sexeValues" [value]="sexe">{{ sexe }}</option>
           </select>
         </div>
 
-        <div class="row mb-3">
-          <label class="form-label" for="field_telephone">Telephone</label>
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="jhipsterProjectBaseJwtApp.etudiant.telephone" for="field_telephone">Telephone</label>
           <input type="number" class="form-control" name="telephone" id="field_telephone" data-cy="telephone" formControlName="telephone" />
+          <div *ngIf="editForm.get('telephone')!.invalid && (editForm.get('telephone')!.dirty || editForm.get('telephone')!.touched)">
+            <small
+              class="form-text text-danger"
+              [hidden]="!editForm.get('telephone')?.errors?.number"
+              jhiTranslate="entity.validation.number"
+            >
+              Ce champ doit être un nombre.
+            </small>
+          </div>
         </div>
 
-        <div class="row mb-3">
-          <label class="form-label" for="field_adressePhysique">Adresse Physique</label>
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="jhipsterProjectBaseJwtApp.etudiant.adressePhysique" for="field_adressePhysique"
+            >Adresse Physique</label
+          >
           <input
             type="text"
             class="form-control"
@@ -93,8 +122,10 @@
           />
         </div>
 
-        <div class="row mb-3">
-          <label class="form-label" for="field_regionResidence">Region Residence</label>
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="jhipsterProjectBaseJwtApp.etudiant.regionResidence" for="field_regionResidence"
+            >Region Residence</label
+          >
           <select
             class="form-control"
             name="regionResidence"
@@ -103,12 +134,14 @@
             data-cy="regionResidence"
           >
             <option [ngValue]="null"></option>
-            <option *ngFor="let nomRegion of nomRegionValues" [value]="nomRegion">nomRegion</option>
+            <option *ngFor="let nomRegion of nomRegionValues" [value]="nomRegion">{{ nomRegion }}</option>
           </select>
         </div>
 
-        <div class="row mb-3">
-          <label class="form-label" for="field_departResidence">Depart Residence</label>
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="jhipsterProjectBaseJwtApp.etudiant.departResidence" for="field_departResidence"
+            >Depart Residence</label
+          >
           <select
             class="form-control"
             name="departResidence"
@@ -117,42 +150,41 @@
             data-cy="departResidence"
           >
             <option [ngValue]="null"></option>
-            <option *ngFor="let nomDepartement of nomDepartementValues" [value]="nomDepartement">nomDepartement</option>
+            <option *ngFor="let nomDepartement of nomDepartementValues" [value]="nomDepartement">{{ nomDepartement }}</option>
           </select>
         </div>
 
-        <div class="row mb-3">
-          <label class="form-label" for="field_email">Email</label>
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="jhipsterProjectBaseJwtApp.etudiant.email" for="field_email">Email</label>
           <input type="text" class="form-control" name="email" id="field_email" data-cy="email" formControlName="email" />
           <div *ngIf="editForm.get('email')!.invalid && (editForm.get('email')!.dirty || editForm.get('email')!.touched)"></div>
         </div>
 
-        <div class="row mb-3">
-          <label class="form-label" for="field_cni">Cni</label>
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="jhipsterProjectBaseJwtApp.etudiant.cni" for="field_cni">Cni</label>
           <input type="number" class="form-control" name="cni" id="field_cni" data-cy="cni" formControlName="cni" />
           <div *ngIf="editForm.get('cni')!.invalid && (editForm.get('cni')!.dirty || editForm.get('cni')!.touched)">
-            <small class="form-text text-danger" *ngIf="editForm.get('cni')?.errors?.required"> This field is required. </small>
-            <small class="form-text text-danger" [hidden]="!editForm.get('cni')?.errors?.number"> This field should be a number. </small>
+            <small class="form-text text-danger" *ngIf="editForm.get('cni')?.errors?.required" jhiTranslate="entity.validation.required">
+              Ce champ est obligatoire.
+            </small>
+            <small class="form-text text-danger" [hidden]="!editForm.get('cni')?.errors?.number" jhiTranslate="entity.validation.number">
+              Ce champ doit être un nombre.
+            </small>
           </div>
         </div>
 
-        <div class="row mb-3">
-          <label class="form-label" for="field_user">User</label>
-          <select class="form-control" id="field_user" data-cy="user" name="user" formControlName="user">
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="jhipsterProjectBaseJwtApp.etudiant.user" for="field_user">User</label>
+          <select class="form-control" id="field_user" data-cy="user" name="user" formControlName="user" [compareWith]="compareUser">
             <option [ngValue]="null"></option>
-            <option
-              [ngValue]="userOption.id === editForm.get('user')!.value?.id ? editForm.get('user')!.value : userOption"
-              *ngFor="let userOption of usersSharedCollection; trackBy: trackUserById"
-            >
-              {{ userOption.login }}
-            </option>
+            <option [ngValue]="userOption" *ngFor="let userOption of usersSharedCollection">{{ userOption.login }}</option>
           </select>
         </div>
       </div>
 
       <div>
         <button type="button" id="cancel-save" data-cy="entityCreateCancelButton" class="btn btn-secondary" (click)="previousState()">
-          <fa-icon icon="ban"></fa-icon>&nbsp;<span>Cancel</span>
+          <fa-icon icon="ban"></fa-icon>&nbsp;<span jhiTranslate="entity.action.cancel">Annuler</span>
         </button>
 
         <button
@@ -162,7 +194,7 @@
           [disabled]="editForm.invalid || isSaving"
           class="btn btn-primary"
         >
-          <fa-icon icon="save"></fa-icon>&nbsp;<span>Save</span>
+          <fa-icon icon="save"></fa-icon>&nbsp;<span jhiTranslate="entity.action.save">Sauvegarder</span>
         </button>
       </div>
     </form>

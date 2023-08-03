@@ -1,12 +1,12 @@
 package mfpai.gouv.sn.web.rest;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 import mfpai.gouv.sn.domain.Bailleur;
 import mfpai.gouv.sn.repository.BailleurRepository;
 import mfpai.gouv.sn.service.BailleurService;
@@ -95,7 +95,7 @@ public class BailleurResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        Bailleur result = bailleurService.save(bailleur);
+        Bailleur result = bailleurService.update(bailleur);
         return ResponseEntity
             .ok()
             .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, bailleur.getId().toString()))
@@ -145,7 +145,7 @@ public class BailleurResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of bailleurs in body.
      */
     @GetMapping("/bailleurs")
-    public ResponseEntity<List<Bailleur>> getAllBailleurs(@org.springdoc.api.annotations.ParameterObject Pageable pageable) {
+    public ResponseEntity<List<Bailleur>> getAllBailleurs(@org.springdoc.core.annotations.ParameterObject Pageable pageable) {
         log.debug("REST request to get a page of Bailleurs");
         Page<Bailleur> page = bailleurService.findAll(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);

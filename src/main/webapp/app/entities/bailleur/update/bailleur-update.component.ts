@@ -1,34 +1,40 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpResponse } from '@angular/common/http';
-import { FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
 import { finalize } from 'rxjs/operators';
 
-import { IBailleur, Bailleur } from '../bailleur.model';
+import SharedModule from 'app/shared/shared.module';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+
+import { BailleurFormService, BailleurFormGroup } from './bailleur-form.service';
+import { IBailleur } from '../bailleur.model';
 import { BailleurService } from '../service/bailleur.service';
 
 @Component({
+  standalone: true,
   selector: 'jhi-bailleur-update',
   templateUrl: './bailleur-update.component.html',
+  imports: [SharedModule, FormsModule, ReactiveFormsModule],
 })
 export class BailleurUpdateComponent implements OnInit {
   isSaving = false;
+  bailleur: IBailleur | null = null;
 
-  editForm = this.fb.group({
-    id: [],
-    nomBailleur: [null, [Validators.required]],
-    budgetPrevu: [],
-    budgetDepense: [],
-    budgetRestant: [],
-    nbrePC: [],
-  });
+  editForm: BailleurFormGroup = this.bailleurFormService.createBailleurFormGroup();
 
-  constructor(protected bailleurService: BailleurService, protected activatedRoute: ActivatedRoute, protected fb: FormBuilder) {}
+  constructor(
+    protected bailleurService: BailleurService,
+    protected bailleurFormService: BailleurFormService,
+    protected activatedRoute: ActivatedRoute
+  ) {}
 
   ngOnInit(): void {
     this.activatedRoute.data.subscribe(({ bailleur }) => {
-      this.updateForm(bailleur);
+      this.bailleur = bailleur;
+      if (bailleur) {
+        this.updateForm(bailleur);
+      }
     });
   }
 
@@ -38,8 +44,8 @@ export class BailleurUpdateComponent implements OnInit {
 
   save(): void {
     this.isSaving = true;
-    const bailleur = this.createFromForm();
-    if (bailleur.id !== undefined) {
+    const bailleur = this.bailleurFormService.getBailleur(this.editForm);
+    if (bailleur.id !== null) {
       this.subscribeToSaveResponse(this.bailleurService.update(bailleur));
     } else {
       this.subscribeToSaveResponse(this.bailleurService.create(bailleur));
@@ -66,25 +72,7 @@ export class BailleurUpdateComponent implements OnInit {
   }
 
   protected updateForm(bailleur: IBailleur): void {
-    this.editForm.patchValue({
-      id: bailleur.id,
-      nomBailleur: bailleur.nomBailleur,
-      budgetPrevu: bailleur.budgetPrevu,
-      budgetDepense: bailleur.budgetDepense,
-      budgetRestant: bailleur.budgetRestant,
-      nbrePC: bailleur.nbrePC,
-    });
-  }
-
-  protected createFromForm(): IBailleur {
-    return {
-      ...new Bailleur(),
-      id: this.editForm.get(['id'])!.value,
-      nomBailleur: this.editForm.get(['nomBailleur'])!.value,
-      budgetPrevu: this.editForm.get(['budgetPrevu'])!.value,
-      budgetDepense: this.editForm.get(['budgetDepense'])!.value,
-      budgetRestant: this.editForm.get(['budgetRestant'])!.value,
-      nbrePC: this.editForm.get(['nbrePC'])!.value,
-    };
+    this.bailleur = bailleur;
+    this.bailleurFormService.resetForm(this.editForm, bailleur);
   }
 }

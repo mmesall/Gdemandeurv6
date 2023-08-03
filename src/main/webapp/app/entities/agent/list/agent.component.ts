@@ -1,97 +1,144 @@
 import { Component, OnInit } from '@angular/core';
-import { HttpHeaders, HttpResponse } from '@angular/common/http';
+import { HttpHeaders } from '@angular/common/http';
+import { ActivatedRoute, Data, ParamMap, Router, RouterModule } from '@angular/router';
+import { combineLatest, filter, Observable, switchMap, tap } from 'rxjs';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
+import SharedModule from 'app/shared/shared.module';
+import { SortDirective, SortByDirective } from 'app/shared/sort';
+import { DurationPipe, FormatMediumDatetimePipe, FormatMediumDatePipe } from 'app/shared/date';
+import { FormsModule } from '@angular/forms';
 import { IAgent } from '../agent.model';
 
-import { ASC, DESC, ITEMS_PER_PAGE } from 'app/config/pagination.constants';
-import { AgentService } from '../service/agent.service';
+import { ITEMS_PER_PAGE } from 'app/config/pagination.constants';
+import { ASC, DESC, SORT, ITEM_DELETED_EVENT, DEFAULT_SORT_DATA } from 'app/config/navigation.constants';
+import { EntityArrayResponseType, AgentService } from '../service/agent.service';
 import { AgentDeleteDialogComponent } from '../delete/agent-delete-dialog.component';
 import { ParseLinks } from 'app/core/util/parse-links.service';
+import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 
 @Component({
+  standalone: true,
   selector: 'jhi-agent',
   templateUrl: './agent.component.html',
+  imports: [
+    RouterModule,
+    FormsModule,
+    SharedModule,
+    SortDirective,
+    SortByDirective,
+    DurationPipe,
+    FormatMediumDatetimePipe,
+    FormatMediumDatePipe,
+    InfiniteScrollModule,
+  ],
 })
 export class AgentComponent implements OnInit {
-  agents: IAgent[];
+  agents?: IAgent[];
   isLoading = false;
-  itemsPerPage: number;
-  links: { [key: string]: number };
-  page: number;
-  predicate: string;
-  ascending: boolean;
 
-  constructor(protected agentService: AgentService, protected modalService: NgbModal, protected parseLinks: ParseLinks) {
-    this.agents = [];
-    this.itemsPerPage = ITEMS_PER_PAGE;
-    this.page = 0;
-    this.links = {
-      last: 0,
-    };
-    this.predicate = 'id';
-    this.ascending = true;
-  }
+  predicate = 'id';
+  ascending = true;
 
-  loadAll(): void {
-    this.isLoading = true;
+  itemsPerPage = ITEMS_PER_PAGE;
+  links: { [key: string]: number } = {
+    last: 0,
+  };
+  page = 1;
 
-    this.agentService
-      .query({
-        page: this.page,
-        size: this.itemsPerPage,
-        sort: this.sort(),
-      })
-      .subscribe({
-        next: (res: HttpResponse<IAgent[]>) => {
-          this.isLoading = false;
-          this.paginateAgents(res.body, res.headers);
-        },
-        error: () => {
-          this.isLoading = false;
-        },
-      });
-  }
+  constructor(
+    protected agentService: AgentService,
+    protected activatedRoute: ActivatedRoute,
+    public router: Router,
+    protected parseLinks: ParseLinks,
+    protected modalService: NgbModal
+  ) {}
 
   reset(): void {
-    this.page = 0;
+    this.page = 1;
     this.agents = [];
-    this.loadAll();
+    this.load();
   }
 
   loadPage(page: number): void {
     this.page = page;
-    this.loadAll();
+    this.load();
   }
+
+  trackId = (_index: number, item: IAgent): number => this.agentService.getAgentIdentifier(item);
 
   ngOnInit(): void {
-    this.loadAll();
-  }
-
-  trackId(index: number, item: IAgent): number {
-    return item.id!;
+    this.load();
   }
 
   delete(agent: IAgent): void {
     const modalRef = this.modalService.open(AgentDeleteDialogComponent, { size: 'lg', backdrop: 'static' });
     modalRef.componentInstance.agent = agent;
     // unsubscribe not needed because closed completes on modal close
-    modalRef.closed.subscribe(reason => {
-      if (reason === 'deleted') {
-        this.reset();
-      }
+    modalRef.closed
+      .pipe(
+        filter(reason => reason === ITEM_DELETED_EVENT),
+        switchMap(() => this.loadFromBackendWithRouteInformations())
+      )
+      .subscribe({
+        next: (res: EntityArrayResponseType) => {
+          this.onResponseSuccess(res);
+        },
+      });
+  }
+
+  load(): void {
+    this.loadFromBackendWithRouteInformations().subscribe({
+      next: (res: EntityArrayResponseType) => {
+        this.onResponseSuccess(res);
+      },
     });
   }
 
-  protected sort(): string[] {
-    const result = [this.predicate + ',' + (this.ascending ? ASC : DESC)];
-    if (this.predicate !== 'id') {
-      result.push('id');
-    }
-    return result;
+  navigateToWithComponentValues(): void {
+    this.handleNavigation(this.page, this.predicate, this.ascending);
   }
 
-  protected paginateAgents(data: IAgent[] | null, headers: HttpHeaders): void {
+  navigateToPage(page = this.page): void {
+    this.handleNavigation(page, this.predicate, this.ascending);
+  }
+
+  protected loadFromBackendWithRouteInformations(): Observable<EntityArrayResponseType> {
+    return combineLatest([this.activatedRoute.queryParamMap, this.activatedRoute.data]).pipe(
+      tap(([params, data]) => this.fillComponentAttributeFromRoute(params, data)),
+      switchMap(() => this.queryBackend(this.page, this.predicate, this.ascending))
+    );
+  }
+
+  protected fillComponentAttributeFromRoute(params: ParamMap, data: Data): void {
+    const sort = (params.get(SORT) ?? data[DEFAULT_SORT_DATA]).split(',');
+    this.predicate = sort[0];
+    this.ascending = sort[1] === ASC;
+  }
+
+  protected onResponseSuccess(response: EntityArrayResponseType): void {
+    this.fillComponentAttributesFromResponseHeader(response.headers);
+    const dataFromBody = this.fillComponentAttributesFromResponseBody(response.body);
+    this.agents = dataFromBody;
+  }
+
+  protected fillComponentAttributesFromResponseBody(data: IAgent[] | null): IAgent[] {
+    // If there is previus link, data is a infinite scroll pagination content.
+    if ('prev' in this.links) {
+      const agentsNew = this.agents ?? [];
+      if (data) {
+        for (const d of data) {
+          if (agentsNew.map(op => op.id).indexOf(d.id) === -1) {
+            agentsNew.push(d);
+          }
+        }
+      }
+      return agentsNew;
+    }
+    return data ?? [];
+  }
+
+  protected fillComponentAttributesFromResponseHeader(headers: HttpHeaders): void {
     const linkHeader = headers.get('link');
     if (linkHeader) {
       this.links = this.parseLinks.parse(linkHeader);
@@ -100,10 +147,39 @@ export class AgentComponent implements OnInit {
         last: 0,
       };
     }
-    if (data) {
-      for (const d of data) {
-        this.agents.push(d);
-      }
+  }
+
+  protected queryBackend(page?: number, predicate?: string, ascending?: boolean): Observable<EntityArrayResponseType> {
+    this.isLoading = true;
+    const pageToLoad: number = page ?? 1;
+    const queryObject: any = {
+      page: pageToLoad - 1,
+      size: this.itemsPerPage,
+      eagerload: true,
+      sort: this.getSortQueryParam(predicate, ascending),
+    };
+    return this.agentService.query(queryObject).pipe(tap(() => (this.isLoading = false)));
+  }
+
+  protected handleNavigation(page = this.page, predicate?: string, ascending?: boolean): void {
+    const queryParamsObj = {
+      page,
+      size: this.itemsPerPage,
+      sort: this.getSortQueryParam(predicate, ascending),
+    };
+
+    this.router.navigate(['./'], {
+      relativeTo: this.activatedRoute,
+      queryParams: queryParamsObj,
+    });
+  }
+
+  protected getSortQueryParam(predicate = this.predicate, ascending = this.ascending): string[] {
+    const ascendingQueryParam = ascending ? ASC : DESC;
+    if (predicate === '') {
+      return [];
+    } else {
+      return [predicate + ',' + ascendingQueryParam];
     }
   }
 }

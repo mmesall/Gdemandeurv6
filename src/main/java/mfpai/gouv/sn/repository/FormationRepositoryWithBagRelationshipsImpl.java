@@ -1,11 +1,13 @@
 package mfpai.gouv.sn.repository;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
-import javax.persistence.EntityManager;
+import java.util.stream.IntStream;
 import mfpai.gouv.sn.domain.Formation;
-import org.hibernate.annotations.QueryHints;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 
@@ -14,7 +16,7 @@ import org.springframework.data.domain.PageImpl;
  */
 public class FormationRepositoryWithBagRelationshipsImpl implements FormationRepositoryWithBagRelationships {
 
-    @Autowired
+    @PersistenceContext
     private EntityManager entityManager;
 
     @Override
@@ -29,28 +31,30 @@ public class FormationRepositoryWithBagRelationshipsImpl implements FormationRep
 
     @Override
     public List<Formation> fetchBagRelationships(List<Formation> formations) {
-        return Optional.of(formations).map(this::fetchEtablissements).get();
+        return Optional.of(formations).map(this::fetchEtablissements).orElse(Collections.emptyList());
     }
 
     Formation fetchEtablissements(Formation result) {
         return entityManager
             .createQuery(
-                "select formation from Formation formation left join fetch formation.etablissements where formation is :formation",
+                "select formation from Formation formation left join fetch formation.etablissements where formation.id = :id",
                 Formation.class
             )
-            .setParameter("formation", result)
-            .setHint(QueryHints.PASS_DISTINCT_THROUGH, false)
+            .setParameter("id", result.getId())
             .getSingleResult();
     }
 
     List<Formation> fetchEtablissements(List<Formation> formations) {
-        return entityManager
+        HashMap<Object, Integer> order = new HashMap<>();
+        IntStream.range(0, formations.size()).forEach(index -> order.put(formations.get(index).getId(), index));
+        List<Formation> result = entityManager
             .createQuery(
-                "select distinct formation from Formation formation left join fetch formation.etablissements where formation in :formations",
+                "select formation from Formation formation left join fetch formation.etablissements where formation in :formations",
                 Formation.class
             )
             .setParameter("formations", formations)
-            .setHint(QueryHints.PASS_DISTINCT_THROUGH, false)
             .getResultList();
+        Collections.sort(result, (o1, o2) -> Integer.compare(order.get(o1.getId()), order.get(o2.getId())));
+        return result;
     }
 }

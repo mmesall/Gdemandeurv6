@@ -18,6 +18,14 @@ public interface PriseEnChargeService {
     PriseEnCharge save(PriseEnCharge priseEnCharge);
 
     /**
+     * Updates a priseEnCharge.
+     *
+     * @param priseEnCharge the entity to update.
+     * @return the persisted entity.
+     */
+    PriseEnCharge update(PriseEnCharge priseEnCharge);
+
+    /**
      * Partially updates a priseEnCharge.
      *
      * @param priseEnCharge the entity to update partially.

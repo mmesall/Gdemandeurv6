@@ -1,12 +1,12 @@
 <div>
-  <h2 id="page-heading" data-cy="FormationInitialeHeading" style="text-align: center; font-style: italic; font-weight: bold">
-    <span>Les formations Initiales</span>
+  <h2 id="page-heading" data-cy="FormationInitialeHeading">
+    <span jhiTranslate="jhipsterProjectBaseJwtApp.formationInitiale.home.title">FormationInitiales</span>
 
-    <div *jhiHasAnyAuthority="'ROLE_ADMIN'" class="d-flex justify-content-end">
-      <!-- <button class="btn btn-info me-2" (click)="reset()" [disabled]="isLoading">
+    <div class="d-flex justify-content-end">
+      <button class="btn btn-info me-2" (click)="load()" [disabled]="isLoading">
         <fa-icon icon="sync" [spin]="isLoading"></fa-icon>
-        <span>Refresh List</span>
-      </button> -->
+        <span jhiTranslate="jhipsterProjectBaseJwtApp.formationInitiale.home.refreshListLabel">Actualiser la liste</span>
+      </button>
 
       <button
         id="jh-create-entity"
@@ -15,7 +15,7 @@
         [routerLink]="['/formation-initiale/new']"
       >
         <fa-icon icon="plus"></fa-icon>
-        <span> Ajouter une formation Initiale </span>
+        <span jhiTranslate="jhipsterProjectBaseJwtApp.formationInitiale.home.createLabel"> Créer un nouveau Formation Initiale </span>
       </button>
     </div>
   </h2>
@@ -25,107 +25,198 @@
   <jhi-alert></jhi-alert>
 
   <div class="alert alert-warning" id="no-result" *ngIf="formationInitiales?.length === 0">
-    <span>No formationInitiales found</span>
+    <span jhiTranslate="jhipsterProjectBaseJwtApp.formationInitiale.home.notFound">Aucun Formation Initiale trouvé</span>
   </div>
 
-  <div class="table-responsive" id="entities" *ngIf="formationInitiales && formationInitiales.length > 0">
+  <div class="table-responsive table-entities" id="entities" *ngIf="formationInitiales && formationInitiales.length > 0">
     <table class="table table-striped" aria-describedby="page-heading">
       <thead>
-        <tr jhiSort [(predicate)]="predicate" [(ascending)]="ascending" (sortChange)="reset()">
-          <th *jhiHasAnyAuthority="'ROLE_ADMIN'" scope="col" jhiSortBy="id"><span>ID</span> <fa-icon icon="sort"></fa-icon></th>
-          <th scope="col" jhiSortBy="nomFormationI"><span>Nom Formation I</span> <fa-icon icon="sort"></fa-icon></th>
-          <th scope="col" jhiSortBy="duree"><span>Duree</span> <fa-icon icon="sort"></fa-icon></th>
-          <th scope="col" jhiSortBy="admission"><span>Admission</span> <fa-icon icon="sort"></fa-icon></th>
-          <!-- <th scope="col" jhiSortBy="diplomeRequis"><span>Diplome Requis</span> <fa-icon icon="sort"></fa-icon></th> -->
-          <th scope="col" jhiSortBy="niveauEtude"><span>Niveau Etude</span> <fa-icon icon="sort"></fa-icon></th>
-          <th scope="col" jhiSortBy="ficheFormation"><span>Fiche Formation</span> <fa-icon icon="sort"></fa-icon></th>
-          <!-- <th scope="col" jhiSortBy="filiere"><span>Filiere</span> <fa-icon icon="sort"></fa-icon></th> -->
-          <!-- <th scope="col" jhiSortBy="serie"><span>Serie</span> <fa-icon icon="sort"></fa-icon></th> -->
-          <!-- <th scope="col" jhiSortBy="cfp"><span>Cfp</span> <fa-icon icon="sort"></fa-icon></th> -->
-          <!-- <th scope="col" jhiSortBy="lycee"><span>Lycee</span> <fa-icon icon="sort"></fa-icon></th> -->
-          <!-- <th scope="col" jhiSortBy="nomConcours"><span>Nom Concours</span> <fa-icon icon="sort"></fa-icon></th>
-          <th scope="col" jhiSortBy="dateOuverture"><span>Date Ouverture</span> <fa-icon icon="sort"></fa-icon></th>
-          <th scope="col" jhiSortBy="dateCloture"><span>Date Cloture</span> <fa-icon icon="sort"></fa-icon></th>
-          <th scope="col" jhiSortBy="dateConcours"><span>Date Concours</span> <fa-icon icon="sort"></fa-icon></th>
-          <th scope="col" jhiSortBy="nomDiplome"><span>Nom Diplome</span> <fa-icon icon="sort"></fa-icon></th>
-          <th scope="col" jhiSortBy="nomDebouche"><span>Nom Debouche</span> <fa-icon icon="sort"></fa-icon></th> -->
-          <!-- <th scope="col" jhiSortBy="formation.id"><span>Formation</span> <fa-icon icon="sort"></fa-icon></th> -->
+        <tr jhiSort [(predicate)]="predicate" [(ascending)]="ascending" (sortChange)="navigateToWithComponentValues()">
+          <th scope="col" jhiSortBy="id">
+            <div class="d-flex">
+              <span jhiTranslate="global.field.id">ID</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="nomFormationI">
+            <div class="d-flex">
+              <span jhiTranslate="jhipsterProjectBaseJwtApp.formationInitiale.nomFormationI">Nom Formation I</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="duree">
+            <div class="d-flex">
+              <span jhiTranslate="jhipsterProjectBaseJwtApp.formationInitiale.duree">Duree</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="admission">
+            <div class="d-flex">
+              <span jhiTranslate="jhipsterProjectBaseJwtApp.formationInitiale.admission">Admission</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="diplomeRequis">
+            <div class="d-flex">
+              <span jhiTranslate="jhipsterProjectBaseJwtApp.formationInitiale.diplomeRequis">Diplome Requis</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="niveauEtude">
+            <div class="d-flex">
+              <span jhiTranslate="jhipsterProjectBaseJwtApp.formationInitiale.niveauEtude">Niveau Etude</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="ficheFormation">
+            <div class="d-flex">
+              <span jhiTranslate="jhipsterProjectBaseJwtApp.formationInitiale.ficheFormation">Fiche Formation</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="filiere">
+            <div class="d-flex">
+              <span jhiTranslate="jhipsterProjectBaseJwtApp.formationInitiale.filiere">Filiere</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="serie">
+            <div class="d-flex">
+              <span jhiTranslate="jhipsterProjectBaseJwtApp.formationInitiale.serie">Serie</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="cfp">
+            <div class="d-flex">
+              <span jhiTranslate="jhipsterProjectBaseJwtApp.formationInitiale.cfp">Cfp</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="lycee">
+            <div class="d-flex">
+              <span jhiTranslate="jhipsterProjectBaseJwtApp.formationInitiale.lycee">Lycee</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="nomConcours">
+            <div class="d-flex">
+              <span jhiTranslate="jhipsterProjectBaseJwtApp.formationInitiale.nomConcours">Nom Concours</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="dateOuverture">
+            <div class="d-flex">
+              <span jhiTranslate="jhipsterProjectBaseJwtApp.formationInitiale.dateOuverture">Date Ouverture</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="dateCloture">
+            <div class="d-flex">
+              <span jhiTranslate="jhipsterProjectBaseJwtApp.formationInitiale.dateCloture">Date Cloture</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="dateConcours">
+            <div class="d-flex">
+              <span jhiTranslate="jhipsterProjectBaseJwtApp.formationInitiale.dateConcours">Date Concours</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="nomDiplome">
+            <div class="d-flex">
+              <span jhiTranslate="jhipsterProjectBaseJwtApp.formationInitiale.nomDiplome">Nom Diplome</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="nomDebouche">
+            <div class="d-flex">
+              <span jhiTranslate="jhipsterProjectBaseJwtApp.formationInitiale.nomDebouche">Nom Debouche</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="formation.id">
+            <div class="d-flex">
+              <span jhiTranslate="jhipsterProjectBaseJwtApp.formationInitiale.formation">Formation</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
           <th scope="col"></th>
         </tr>
       </thead>
-      <tbody infinite-scroll (scrolled)="loadPage(page + 1)" [infiniteScrollDisabled]="page >= links['last']" [infiniteScrollDistance]="0">
+      <tbody
+        infinite-scroll
+        (scrolled)="loadPage(page + 1)"
+        [infiniteScrollDisabled]="page - 1 >= links['last']"
+        [infiniteScrollDistance]="0"
+      >
         <tr *ngFor="let formationInitiale of formationInitiales; trackBy: trackId" data-cy="entityTable">
-          <td *jhiHasAnyAuthority="'ROLE_ADMIN'">
+          <td>
             <a [routerLink]="['/formation-initiale', formationInitiale.id, 'view']">{{ formationInitiale.id }}</a>
           </td>
           <td>{{ formationInitiale.nomFormationI }}</td>
           <td>{{ formationInitiale.duree }}</td>
-          <td>{{ formationInitiale.admission }}</td>
-          <!-- <td>{{ formationInitiale.diplomeRequis }}</td> -->
-          <td>{{ formationInitiale.niveauEtude }}</td>
+          <td jhiTranslate="{{ 'jhipsterProjectBaseJwtApp.Admission.' + formationInitiale.admission }}">
+            {{ formationInitiale.admission }}
+          </td>
+          <td jhiTranslate="{{ 'jhipsterProjectBaseJwtApp.DiplomeRequis.' + formationInitiale.diplomeRequis }}">
+            {{ formationInitiale.diplomeRequis }}
+          </td>
+          <td jhiTranslate="{{ 'jhipsterProjectBaseJwtApp.NiveauEtude.' + formationInitiale.niveauEtude }}">
+            {{ formationInitiale.niveauEtude }}
+          </td>
           <td>
             <a
               *ngIf="formationInitiale.ficheFormation"
               (click)="openFile(formationInitiale.ficheFormation, formationInitiale.ficheFormationContentType)"
-              >open</a
+              jhiTranslate="entity.action.open"
+              >Ouvrir</a
             >
             <span *ngIf="formationInitiale.ficheFormation"
               >{{ formationInitiale.ficheFormationContentType }}, {{ byteSize(formationInitiale.ficheFormation) }}</span
             >
           </td>
-          <!-- <td>{{ formationInitiale.filiere }}</td>
-          <td>{{ formationInitiale.serie }}</td>
-          <td>{{ formationInitiale.cfp }}</td>
-          <td>{{ formationInitiale.lycee }}</td>
+          <td jhiTranslate="{{ 'jhipsterProjectBaseJwtApp.NomFiliere.' + formationInitiale.filiere }}">{{ formationInitiale.filiere }}</td>
+          <td jhiTranslate="{{ 'jhipsterProjectBaseJwtApp.NomSerie.' + formationInitiale.serie }}">{{ formationInitiale.serie }}</td>
+          <td jhiTranslate="{{ 'jhipsterProjectBaseJwtApp.CFP.' + formationInitiale.cfp }}">{{ formationInitiale.cfp }}</td>
+          <td jhiTranslate="{{ 'jhipsterProjectBaseJwtApp.LYCEE.' + formationInitiale.lycee }}">{{ formationInitiale.lycee }}</td>
           <td>{{ formationInitiale.nomConcours }}</td>
           <td>{{ formationInitiale.dateOuverture | formatMediumDate }}</td>
           <td>{{ formationInitiale.dateCloture | formatMediumDate }}</td>
           <td>{{ formationInitiale.dateConcours | formatMediumDate }}</td>
-          <td>{{ formationInitiale.nomDiplome }}</td>
-          <td>{{ formationInitiale.nomDebouche }}</td> -->
-          <!-- <td>
+          <td jhiTranslate="{{ 'jhipsterProjectBaseJwtApp.DiplomeObtenu.' + formationInitiale.nomDiplome }}">
+            {{ formationInitiale.nomDiplome }}
+          </td>
+          <td>{{ formationInitiale.nomDebouche }}</td>
+          <td>
             <div *ngIf="formationInitiale.formation">
-              <a [routerLink]="['/formation', formationInitiale.formation?.id, 'view']">{{ formationInitiale.formation?.nomFormation }}</a>
+              <a [routerLink]="['/formation', formationInitiale.formation.id, 'view']">{{ formationInitiale.formation.id }}</a>
             </div>
-          </td> -->
+          </td>
           <td class="text-end">
             <div class="btn-group">
               <button
-                *jhiHasAnyAuthority="'ROLE_ADMIN'"
                 type="submit"
                 [routerLink]="['/formation-initiale', formationInitiale.id, 'view']"
                 class="btn btn-info btn-sm"
                 data-cy="entityDetailsButton"
               >
                 <fa-icon icon="eye"></fa-icon>
-                <!-- <span class="d-none d-md-inline">View</span> -->
-              </button>
-
-              <button type="submit" routerLink="/candidature-e/new" class="btn btn-success btn-sm" data-cy="entityDetailsButton">
-                <!-- <fa-icon icon="eye"></fa-icon> -->
-                <span class="d-none d-md-inline">Postuler</span>
+                <span class="d-none d-md-inline" jhiTranslate="entity.action.view">Voir</span>
               </button>
 
               <button
-                *jhiHasAnyAuthority="'ROLE_ADMIN'"
                 type="submit"
                 [routerLink]="['/formation-initiale', formationInitiale.id, 'edit']"
                 class="btn btn-primary btn-sm"
                 data-cy="entityEditButton"
               >
                 <fa-icon icon="pencil-alt"></fa-icon>
-                <span class="d-none d-md-inline">Edit</span>
+                <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Editer</span>
               </button>
 
-              <button
-                *jhiHasAnyAuthority="'ROLE_ADMIN'"
-                type="submit"
-                (click)="delete(formationInitiale)"
-                class="btn btn-danger btn-sm"
-                data-cy="entityDeleteButton"
-              >
+              <button type="submit" (click)="delete(formationInitiale)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
                 <fa-icon icon="times"></fa-icon>
-                <span class="d-none d-md-inline">Delete</span>
+                <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Supprimer</span>
               </button>
             </div>
           </td>

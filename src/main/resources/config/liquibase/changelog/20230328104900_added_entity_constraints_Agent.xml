@@ -2,7 +2,7 @@
 <databaseChangeLog
     xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.6.xsd">
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
     <!--
         Added the constraints for entity Agent.
     -->
@@ -12,12 +12,14 @@
                                  baseTableName="agent"
                                  constraintName="fk_agent__user_id"
                                  referencedColumnNames="id"
-                                 referencedTableName="jhi_user"/>
+                                 referencedTableName="user"
+                                 />
 
         <addForeignKeyConstraint baseColumnNames="servicemfpai_id"
                                  baseTableName="agent"
                                  constraintName="fk_agent__servicemfpai_id"
                                  referencedColumnNames="id"
-                                 referencedTableName="service_mfpai"/>
+                                 referencedTableName="service_mfpai"
+                                 />
     </changeSet>
 </databaseChangeLog>

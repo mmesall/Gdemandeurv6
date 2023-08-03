@@ -10,7 +10,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 /**
- * Spring Data SQL repository for the Dossier entity.
+ * Spring Data JPA repository for the Dossier entity.
  */
 @Repository
 public interface DossierRepository extends JpaRepository<Dossier, Long> {
@@ -27,13 +27,13 @@ public interface DossierRepository extends JpaRepository<Dossier, Long> {
     }
 
     @Query(
-        value = "select distinct dossier from Dossier dossier left join fetch dossier.eleve left join fetch dossier.etudiant left join fetch dossier.professionnel",
-        countQuery = "select count(distinct dossier) from Dossier dossier"
+        value = "select dossier from Dossier dossier left join fetch dossier.eleve left join fetch dossier.etudiant left join fetch dossier.professionnel",
+        countQuery = "select count(dossier) from Dossier dossier"
     )
     Page<Dossier> findAllWithToOneRelationships(Pageable pageable);
 
     @Query(
-        "select distinct dossier from Dossier dossier left join fetch dossier.eleve left join fetch dossier.etudiant left join fetch dossier.professionnel"
+        "select dossier from Dossier dossier left join fetch dossier.eleve left join fetch dossier.etudiant left join fetch dossier.professionnel"
     )
     List<Dossier> findAllWithToOneRelationships();
 
@@ -41,7 +41,4 @@ public interface DossierRepository extends JpaRepository<Dossier, Long> {
         "select dossier from Dossier dossier left join fetch dossier.eleve left join fetch dossier.etudiant left join fetch dossier.professionnel where dossier.id =:id"
     )
     Optional<Dossier> findOneWithToOneRelationships(@Param("id") Long id);
-    // @Query(value = "select max(id) from dossier"
-    // )
-    // public Long  findOneByIdDesc( );
 }

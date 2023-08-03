@@ -18,8 +18,7 @@ describe('Eleve Management Delete Component', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
-      declarations: [EleveDeleteDialogComponent],
+      imports: [HttpClientTestingModule, EleveDeleteDialogComponent],
       providers: [NgbActiveModal],
     })
       .overrideTemplate(EleveDeleteDialogComponent, '')

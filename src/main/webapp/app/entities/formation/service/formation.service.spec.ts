@@ -1,17 +1,18 @@
 import { TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 
-import { TypeFormation } from 'app/entities/enumerations/type-formation.model';
-import { Admission } from 'app/entities/enumerations/admission.model';
-import { DiplomeRequis } from 'app/entities/enumerations/diplome-requis.model';
-import { IFormation, Formation } from '../formation.model';
+import { IFormation } from '../formation.model';
+import { sampleWithRequiredData, sampleWithNewData, sampleWithPartialData, sampleWithFullData } from '../formation.test-samples';
 
 import { FormationService } from './formation.service';
+
+const requireRestSample: IFormation = {
+  ...sampleWithRequiredData,
+};
 
 describe('Formation Service', () => {
   let service: FormationService;
   let httpMock: HttpTestingController;
-  let elemDefault: IFormation;
   let expectedResult: IFormation | IFormation[] | boolean | null;
 
   beforeEach(() => {
@@ -21,43 +22,27 @@ describe('Formation Service', () => {
     expectedResult = null;
     service = TestBed.inject(FormationService);
     httpMock = TestBed.inject(HttpTestingController);
-
-    elemDefault = {
-      id: 0,
-      nomFormation: 'AAAAAAA',
-      imageFormationContentType: 'image/png',
-      imageFormation: 'AAAAAAA',
-      typeFormation: TypeFormation.INITIALE,
-      duree: 'AAAAAAA',
-      admission: Admission.CONCOURS,
-      diplomeRequis: DiplomeRequis.ATTESTATION,
-      ficheFormationContentType: 'image/png',
-      ficheFormation: 'AAAAAAA',
-    };
   });
 
   describe('Service methods', () => {
     it('should find an element', () => {
-      const returnedFromService = Object.assign({}, elemDefault);
+      const returnedFromService = { ...requireRestSample };
+      const expected = { ...sampleWithRequiredData };
 
       service.find(123).subscribe(resp => (expectedResult = resp.body));
 
       const req = httpMock.expectOne({ method: 'GET' });
       req.flush(returnedFromService);
-      expect(expectedResult).toMatchObject(elemDefault);
+      expect(expectedResult).toMatchObject(expected);
     });
 
     it('should create a Formation', () => {
-      const returnedFromService = Object.assign(
-        {
-          id: 0,
-        },
-        elemDefault
-      );
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const formation = { ...sampleWithNewData };
+      const returnedFromService = { ...requireRestSample };
+      const expected = { ...sampleWithRequiredData };
 
-      const expected = Object.assign({}, returnedFromService);
-
-      service.create(new Formation()).subscribe(resp => (expectedResult = resp.body));
+      service.create(formation).subscribe(resp => (expectedResult = resp.body));
 
       const req = httpMock.expectOne({ method: 'POST' });
       req.flush(returnedFromService);
@@ -65,23 +50,11 @@ describe('Formation Service', () => {
     });
 
     it('should update a Formation', () => {
-      const returnedFromService = Object.assign(
-        {
-          id: 1,
-          nomFormation: 'BBBBBB',
-          imageFormation: 'BBBBBB',
-          typeFormation: 'BBBBBB',
-          duree: 'BBBBBB',
-          admission: 'BBBBBB',
-          diplomeRequis: 'BBBBBB',
-          ficheFormation: 'BBBBBB',
-        },
-        elemDefault
-      );
+      const formation = { ...sampleWithRequiredData };
+      const returnedFromService = { ...requireRestSample };
+      const expected = { ...sampleWithRequiredData };
 
-      const expected = Object.assign({}, returnedFromService);
-
-      service.update(expected).subscribe(resp => (expectedResult = resp.body));
+      service.update(formation).subscribe(resp => (expectedResult = resp.body));
 
       const req = httpMock.expectOne({ method: 'PUT' });
       req.flush(returnedFromService);
@@ -89,19 +62,9 @@ describe('Formation Service', () => {
     });
 
     it('should partial update a Formation', () => {
-      const patchObject = Object.assign(
-        {
-          nomFormation: 'BBBBBB',
-          imageFormation: 'BBBBBB',
-          duree: 'BBBBBB',
-          admission: 'BBBBBB',
-        },
-        new Formation()
-      );
-
-      const returnedFromService = Object.assign(patchObject, elemDefault);
-
-      const expected = Object.assign({}, returnedFromService);
+      const patchObject = { ...sampleWithPartialData };
+      const returnedFromService = { ...requireRestSample };
+      const expected = { ...sampleWithRequiredData };
 
       service.partialUpdate(patchObject).subscribe(resp => (expectedResult = resp.body));
 
@@ -111,76 +74,66 @@ describe('Formation Service', () => {
     });
 
     it('should return a list of Formation', () => {
-      const returnedFromService = Object.assign(
-        {
-          id: 1,
-          nomFormation: 'BBBBBB',
-          imageFormation: 'BBBBBB',
-          typeFormation: 'BBBBBB',
-          duree: 'BBBBBB',
-          admission: 'BBBBBB',
-          diplomeRequis: 'BBBBBB',
-          ficheFormation: 'BBBBBB',
-        },
-        elemDefault
-      );
+      const returnedFromService = { ...requireRestSample };
 
-      const expected = Object.assign({}, returnedFromService);
+      const expected = { ...sampleWithRequiredData };
 
       service.query().subscribe(resp => (expectedResult = resp.body));
 
       const req = httpMock.expectOne({ method: 'GET' });
       req.flush([returnedFromService]);
       httpMock.verify();
-      expect(expectedResult).toContainEqual(expected);
+      expect(expectedResult).toMatchObject([expected]);
     });
 
     it('should delete a Formation', () => {
+      const expected = true;
+
       service.delete(123).subscribe(resp => (expectedResult = resp.ok));
 
       const req = httpMock.expectOne({ method: 'DELETE' });
       req.flush({ status: 200 });
-      expect(expectedResult);
+      expect(expectedResult).toBe(expected);
     });
 
     describe('addFormationToCollectionIfMissing', () => {
       it('should add a Formation to an empty array', () => {
-        const formation: IFormation = { id: 123 };
+        const formation: IFormation = sampleWithRequiredData;
         expectedResult = service.addFormationToCollectionIfMissing([], formation);
         expect(expectedResult).toHaveLength(1);
         expect(expectedResult).toContain(formation);
       });
 
       it('should not add a Formation to an array that contains it', () => {
-        const formation: IFormation = { id: 123 };
+        const formation: IFormation = sampleWithRequiredData;
         const formationCollection: IFormation[] = [
           {
             ...formation,
           },
-          { id: 456 },
+          sampleWithPartialData,
         ];
         expectedResult = service.addFormationToCollectionIfMissing(formationCollection, formation);
         expect(expectedResult).toHaveLength(2);
       });
 
       it("should add a Formation to an array that doesn't contain it", () => {
-        const formation: IFormation = { id: 123 };
-        const formationCollection: IFormation[] = [{ id: 456 }];
+        const formation: IFormation = sampleWithRequiredData;
+        const formationCollection: IFormation[] = [sampleWithPartialData];
         expectedResult = service.addFormationToCollectionIfMissing(formationCollection, formation);
         expect(expectedResult).toHaveLength(2);
         expect(expectedResult).toContain(formation);
       });
 
       it('should add only unique Formation to an array', () => {
-        const formationArray: IFormation[] = [{ id: 123 }, { id: 456 }, { id: 45183 }];
-        const formationCollection: IFormation[] = [{ id: 123 }];
+        const formationArray: IFormation[] = [sampleWithRequiredData, sampleWithPartialData, sampleWithFullData];
+        const formationCollection: IFormation[] = [sampleWithRequiredData];
         expectedResult = service.addFormationToCollectionIfMissing(formationCollection, ...formationArray);
         expect(expectedResult).toHaveLength(3);
       });
 
       it('should accept varargs', () => {
-        const formation: IFormation = { id: 123 };
-        const formation2: IFormation = { id: 456 };
+        const formation: IFormation = sampleWithRequiredData;
+        const formation2: IFormation = sampleWithPartialData;
         expectedResult = service.addFormationToCollectionIfMissing([], formation, formation2);
         expect(expectedResult).toHaveLength(2);
         expect(expectedResult).toContain(formation);
@@ -188,16 +141,60 @@ describe('Formation Service', () => {
       });
 
       it('should accept null and undefined values', () => {
-        const formation: IFormation = { id: 123 };
+        const formation: IFormation = sampleWithRequiredData;
         expectedResult = service.addFormationToCollectionIfMissing([], null, formation, undefined);
         expect(expectedResult).toHaveLength(1);
         expect(expectedResult).toContain(formation);
       });
 
       it('should return initial array if no Formation is added', () => {
-        const formationCollection: IFormation[] = [{ id: 123 }];
+        const formationCollection: IFormation[] = [sampleWithRequiredData];
         expectedResult = service.addFormationToCollectionIfMissing(formationCollection, undefined, null);
         expect(expectedResult).toEqual(formationCollection);
+      });
+    });
+
+    describe('compareFormation', () => {
+      it('Should return true if both entities are null', () => {
+        const entity1 = null;
+        const entity2 = null;
+
+        const compareResult = service.compareFormation(entity1, entity2);
+
+        expect(compareResult).toEqual(true);
+      });
+
+      it('Should return false if one entity is null', () => {
+        const entity1 = { id: 123 };
+        const entity2 = null;
+
+        const compareResult1 = service.compareFormation(entity1, entity2);
+        const compareResult2 = service.compareFormation(entity2, entity1);
+
+        expect(compareResult1).toEqual(false);
+        expect(compareResult2).toEqual(false);
+      });
+
+      it('Should return false if primaryKey differs', () => {
+        const entity1 = { id: 123 };
+        const entity2 = { id: 456 };
+
+        const compareResult1 = service.compareFormation(entity1, entity2);
+        const compareResult2 = service.compareFormation(entity2, entity1);
+
+        expect(compareResult1).toEqual(false);
+        expect(compareResult2).toEqual(false);
+      });
+
+      it('Should return false if primaryKey matches', () => {
+        const entity1 = { id: 123 };
+        const entity2 = { id: 123 };
+
+        const compareResult1 = service.compareFormation(entity1, entity2);
+        const compareResult2 = service.compareFormation(entity2, entity1);
+
+        expect(compareResult1).toEqual(true);
+        expect(compareResult2).toEqual(true);
       });
     });
   });

@@ -1,9 +1,9 @@
 package mfpai.gouv.sn.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import jakarta.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDate;
-import javax.persistence.*;
 import mfpai.gouv.sn.domain.enumeration.NomFiliere;
 import mfpai.gouv.sn.domain.enumeration.Resultat;
 import org.hibernate.annotations.Cache;
@@ -15,6 +15,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Entity
 @Table(name = "candidature_e")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+@SuppressWarnings("common-java:DuplicatedBlocks")
 public class CandidatureE implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -41,19 +42,19 @@ public class CandidatureE implements Serializable {
     @Column(name = "resultat")
     private Resultat resultat;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnoreProperties(value = { "user", "diplomes", "experiences", "candidatureES", "dossier", "demandeur" }, allowSetters = true)
     private Eleve eleve;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnoreProperties(value = { "user", "diplomes", "experiences", "candidatureES", "dossier", "demandeur" }, allowSetters = true)
     private Etudiant etudiant;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnoreProperties(value = { "formation", "candidatureES" }, allowSetters = true)
     private FormationInitiale formationInitiale;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnoreProperties(value = { "candidatureES", "candidaturePS", "formations" }, allowSetters = true)
     private Etablissement etablissement;
 

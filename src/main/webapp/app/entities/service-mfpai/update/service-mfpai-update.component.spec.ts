@@ -6,8 +6,9 @@ import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of, Subject, from } from 'rxjs';
 
+import { ServiceMFPAIFormService } from './service-mfpai-form.service';
 import { ServiceMFPAIService } from '../service/service-mfpai.service';
-import { IServiceMFPAI, ServiceMFPAI } from '../service-mfpai.model';
+import { IServiceMFPAI } from '../service-mfpai.model';
 
 import { ServiceMFPAIUpdateComponent } from './service-mfpai-update.component';
 
@@ -15,12 +16,12 @@ describe('ServiceMFPAI Management Update Component', () => {
   let comp: ServiceMFPAIUpdateComponent;
   let fixture: ComponentFixture<ServiceMFPAIUpdateComponent>;
   let activatedRoute: ActivatedRoute;
+  let serviceMFPAIFormService: ServiceMFPAIFormService;
   let serviceMFPAIService: ServiceMFPAIService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule, RouterTestingModule.withRoutes([])],
-      declarations: [ServiceMFPAIUpdateComponent],
+      imports: [HttpClientTestingModule, RouterTestingModule.withRoutes([]), ServiceMFPAIUpdateComponent],
       providers: [
         FormBuilder,
         {
@@ -36,6 +37,7 @@ describe('ServiceMFPAI Management Update Component', () => {
 
     fixture = TestBed.createComponent(ServiceMFPAIUpdateComponent);
     activatedRoute = TestBed.inject(ActivatedRoute);
+    serviceMFPAIFormService = TestBed.inject(ServiceMFPAIFormService);
     serviceMFPAIService = TestBed.inject(ServiceMFPAIService);
 
     comp = fixture.componentInstance;
@@ -48,15 +50,16 @@ describe('ServiceMFPAI Management Update Component', () => {
       activatedRoute.data = of({ serviceMFPAI });
       comp.ngOnInit();
 
-      expect(comp.editForm.value).toEqual(expect.objectContaining(serviceMFPAI));
+      expect(comp.serviceMFPAI).toEqual(serviceMFPAI);
     });
   });
 
   describe('save', () => {
     it('Should call update service on save for existing entity', () => {
       // GIVEN
-      const saveSubject = new Subject<HttpResponse<ServiceMFPAI>>();
+      const saveSubject = new Subject<HttpResponse<IServiceMFPAI>>();
       const serviceMFPAI = { id: 123 };
+      jest.spyOn(serviceMFPAIFormService, 'getServiceMFPAI').mockReturnValue(serviceMFPAI);
       jest.spyOn(serviceMFPAIService, 'update').mockReturnValue(saveSubject);
       jest.spyOn(comp, 'previousState');
       activatedRoute.data = of({ serviceMFPAI });
@@ -69,18 +72,20 @@ describe('ServiceMFPAI Management Update Component', () => {
       saveSubject.complete();
 
       // THEN
+      expect(serviceMFPAIFormService.getServiceMFPAI).toHaveBeenCalled();
       expect(comp.previousState).toHaveBeenCalled();
-      expect(serviceMFPAIService.update).toHaveBeenCalledWith(serviceMFPAI);
+      expect(serviceMFPAIService.update).toHaveBeenCalledWith(expect.objectContaining(serviceMFPAI));
       expect(comp.isSaving).toEqual(false);
     });
 
     it('Should call create service on save for new entity', () => {
       // GIVEN
-      const saveSubject = new Subject<HttpResponse<ServiceMFPAI>>();
-      const serviceMFPAI = new ServiceMFPAI();
+      const saveSubject = new Subject<HttpResponse<IServiceMFPAI>>();
+      const serviceMFPAI = { id: 123 };
+      jest.spyOn(serviceMFPAIFormService, 'getServiceMFPAI').mockReturnValue({ id: null });
       jest.spyOn(serviceMFPAIService, 'create').mockReturnValue(saveSubject);
       jest.spyOn(comp, 'previousState');
-      activatedRoute.data = of({ serviceMFPAI });
+      activatedRoute.data = of({ serviceMFPAI: null });
       comp.ngOnInit();
 
       // WHEN
@@ -90,14 +95,15 @@ describe('ServiceMFPAI Management Update Component', () => {
       saveSubject.complete();
 
       // THEN
-      expect(serviceMFPAIService.create).toHaveBeenCalledWith(serviceMFPAI);
+      expect(serviceMFPAIFormService.getServiceMFPAI).toHaveBeenCalled();
+      expect(serviceMFPAIService.create).toHaveBeenCalled();
       expect(comp.isSaving).toEqual(false);
       expect(comp.previousState).toHaveBeenCalled();
     });
 
     it('Should set isSaving to false on error', () => {
       // GIVEN
-      const saveSubject = new Subject<HttpResponse<ServiceMFPAI>>();
+      const saveSubject = new Subject<HttpResponse<IServiceMFPAI>>();
       const serviceMFPAI = { id: 123 };
       jest.spyOn(serviceMFPAIService, 'update').mockReturnValue(saveSubject);
       jest.spyOn(comp, 'previousState');
@@ -110,7 +116,7 @@ describe('ServiceMFPAI Management Update Component', () => {
       saveSubject.error('This is an error!');
 
       // THEN
-      expect(serviceMFPAIService.update).toHaveBeenCalledWith(serviceMFPAI);
+      expect(serviceMFPAIService.update).toHaveBeenCalled();
       expect(comp.isSaving).toEqual(false);
       expect(comp.previousState).not.toHaveBeenCalled();
     });

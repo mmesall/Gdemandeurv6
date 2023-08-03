@@ -1,13 +1,13 @@
 package mfpai.gouv.sn.web.rest;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.StreamSupport;
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 import mfpai.gouv.sn.domain.ServiceMFPAI;
 import mfpai.gouv.sn.repository.ServiceMFPAIRepository;
 import mfpai.gouv.sn.service.ServiceMFPAIService;
@@ -96,7 +96,7 @@ public class ServiceMFPAIResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        ServiceMFPAI result = serviceMFPAIService.save(serviceMFPAI);
+        ServiceMFPAI result = serviceMFPAIService.update(serviceMFPAI);
         return ResponseEntity
             .ok()
             .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, serviceMFPAI.getId().toString()))
@@ -148,7 +148,7 @@ public class ServiceMFPAIResource {
      */
     @GetMapping("/service-mfpais")
     public ResponseEntity<List<ServiceMFPAI>> getAllServiceMFPAIS(
-        @org.springdoc.api.annotations.ParameterObject Pageable pageable,
+        @org.springdoc.core.annotations.ParameterObject Pageable pageable,
         @RequestParam(required = false) String filter
     ) {
         if ("agent-is-null".equals(filter)) {

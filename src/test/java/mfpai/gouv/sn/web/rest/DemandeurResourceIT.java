@@ -2,24 +2,33 @@ package mfpai.gouv.sn.web.rest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import jakarta.persistence.EntityManager;
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicLong;
-import javax.persistence.EntityManager;
 import mfpai.gouv.sn.IntegrationTest;
 import mfpai.gouv.sn.domain.Demandeur;
 import mfpai.gouv.sn.domain.enumeration.Profil;
 import mfpai.gouv.sn.domain.enumeration.Sexe;
 import mfpai.gouv.sn.repository.DemandeurRepository;
+import mfpai.gouv.sn.service.DemandeurService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
@@ -29,6 +38,7 @@ import org.springframework.transaction.annotation.Transactional;
  * Integration tests for the {@link DemandeurResource} REST controller.
  */
 @IntegrationTest
+@ExtendWith(MockitoExtension.class)
 @AutoConfigureMockMvc
 @WithMockUser
 class DemandeurResourceIT {
@@ -65,6 +75,12 @@ class DemandeurResourceIT {
 
     @Autowired
     private DemandeurRepository demandeurRepository;
+
+    @Mock
+    private DemandeurRepository demandeurRepositoryMock;
+
+    @Mock
+    private DemandeurService demandeurServiceMock;
 
     @Autowired
     private EntityManager em;
@@ -180,6 +196,23 @@ class DemandeurResourceIT {
             .andExpect(jsonPath("$.[*].profil").value(hasItem(DEFAULT_PROFIL.toString())));
     }
 
+    @SuppressWarnings({ "unchecked" })
+    void getAllDemandeursWithEagerRelationshipsIsEnabled() throws Exception {
+        when(demandeurServiceMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
+
+        restDemandeurMockMvc.perform(get(ENTITY_API_URL + "?eagerload=true")).andExpect(status().isOk());
+
+        verify(demandeurServiceMock, times(1)).findAllWithEagerRelationships(any());
+    }
+
+    @SuppressWarnings({ "unchecked" })
+    void getAllDemandeursWithEagerRelationshipsIsNotEnabled() throws Exception {
+        when(demandeurServiceMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
+
+        restDemandeurMockMvc.perform(get(ENTITY_API_URL + "?eagerload=false")).andExpect(status().isOk());
+        verify(demandeurRepositoryMock, times(1)).findAll(any(Pageable.class));
+    }
+
     @Test
     @Transactional
     void getDemandeur() throws Exception {
@@ -211,14 +244,14 @@ class DemandeurResourceIT {
 
     @Test
     @Transactional
-    void putNewDemandeur() throws Exception {
+    void putExistingDemandeur() throws Exception {
         // Initialize the database
         demandeurRepository.saveAndFlush(demandeur);
 
         int databaseSizeBeforeUpdate = demandeurRepository.findAll().size();
 
         // Update the demandeur
-        Demandeur updatedDemandeur = demandeurRepository.findById(demandeur.getId()).get();
+        Demandeur updatedDemandeur = demandeurRepository.findById(demandeur.getId()).orElseThrow();
         // Disconnect from session so that the updates on updatedDemandeur are not directly saved in db
         em.detach(updatedDemandeur);
         updatedDemandeur
@@ -321,7 +354,7 @@ class DemandeurResourceIT {
         Demandeur partialUpdatedDemandeur = new Demandeur();
         partialUpdatedDemandeur.setId(demandeur.getId());
 
-        partialUpdatedDemandeur.nom(UPDATED_NOM).sexe(UPDATED_SEXE).telephone(UPDATED_TELEPHONE).profil(UPDATED_PROFIL);
+        partialUpdatedDemandeur.prenom(UPDATED_PRENOM).lieuNaiss(UPDATED_LIEU_NAISS).email(UPDATED_EMAIL).profil(UPDATED_PROFIL);
 
         restDemandeurMockMvc
             .perform(
@@ -335,13 +368,13 @@ class DemandeurResourceIT {
         List<Demandeur> demandeurList = demandeurRepository.findAll();
         assertThat(demandeurList).hasSize(databaseSizeBeforeUpdate);
         Demandeur testDemandeur = demandeurList.get(demandeurList.size() - 1);
-        assertThat(testDemandeur.getNom()).isEqualTo(UPDATED_NOM);
-        assertThat(testDemandeur.getPrenom()).isEqualTo(DEFAULT_PRENOM);
+        assertThat(testDemandeur.getNom()).isEqualTo(DEFAULT_NOM);
+        assertThat(testDemandeur.getPrenom()).isEqualTo(UPDATED_PRENOM);
         assertThat(testDemandeur.getDateNaiss()).isEqualTo(DEFAULT_DATE_NAISS);
-        assertThat(testDemandeur.getLieuNaiss()).isEqualTo(DEFAULT_LIEU_NAISS);
-        assertThat(testDemandeur.getSexe()).isEqualTo(UPDATED_SEXE);
-        assertThat(testDemandeur.getTelephone()).isEqualTo(UPDATED_TELEPHONE);
-        assertThat(testDemandeur.getEmail()).isEqualTo(DEFAULT_EMAIL);
+        assertThat(testDemandeur.getLieuNaiss()).isEqualTo(UPDATED_LIEU_NAISS);
+        assertThat(testDemandeur.getSexe()).isEqualTo(DEFAULT_SEXE);
+        assertThat(testDemandeur.getTelephone()).isEqualTo(DEFAULT_TELEPHONE);
+        assertThat(testDemandeur.getEmail()).isEqualTo(UPDATED_EMAIL);
         assertThat(testDemandeur.getProfil()).isEqualTo(UPDATED_PROFIL);
     }
 

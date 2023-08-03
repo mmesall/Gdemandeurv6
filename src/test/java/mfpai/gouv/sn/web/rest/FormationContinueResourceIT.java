@@ -5,10 +5,10 @@ import static org.hamcrest.Matchers.hasItem;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import jakarta.persistence.EntityManager;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicLong;
-import javax.persistence.EntityManager;
 import mfpai.gouv.sn.IntegrationTest;
 import mfpai.gouv.sn.domain.FormationContinue;
 import mfpai.gouv.sn.domain.enumeration.Admission;
@@ -299,14 +299,14 @@ class FormationContinueResourceIT {
 
     @Test
     @Transactional
-    void putNewFormationContinue() throws Exception {
+    void putExistingFormationContinue() throws Exception {
         // Initialize the database
         formationContinueRepository.saveAndFlush(formationContinue);
 
         int databaseSizeBeforeUpdate = formationContinueRepository.findAll().size();
 
         // Update the formationContinue
-        FormationContinue updatedFormationContinue = formationContinueRepository.findById(formationContinue.getId()).get();
+        FormationContinue updatedFormationContinue = formationContinueRepository.findById(formationContinue.getId()).orElseThrow();
         // Disconnect from session so that the updates on updatedFormationContinue are not directly saved in db
         em.detach(updatedFormationContinue);
         updatedFormationContinue
@@ -432,14 +432,11 @@ class FormationContinueResourceIT {
         partialUpdatedFormationContinue.setId(formationContinue.getId());
 
         partialUpdatedFormationContinue
-            .niveauEtude(UPDATED_NIVEAU_ETUDE)
-            .filiere(UPDATED_FILIERE)
-            .cfp(UPDATED_CFP)
-            .lycee(UPDATED_LYCEE)
             .ficheFormation(UPDATED_FICHE_FORMATION)
             .ficheFormationContentType(UPDATED_FICHE_FORMATION_CONTENT_TYPE)
-            .coutFormation(UPDATED_COUT_FORMATION)
-            .autreDiplome(UPDATED_AUTRE_DIPLOME);
+            .detailPC(UPDATED_DETAIL_PC)
+            .nomDiplome(UPDATED_NOM_DIPLOME)
+            .nomDebouche(UPDATED_NOM_DEBOUCHE);
 
         restFormationContinueMockMvc
             .perform(
@@ -457,20 +454,20 @@ class FormationContinueResourceIT {
         assertThat(testFormationContinue.getDuree()).isEqualTo(DEFAULT_DUREE);
         assertThat(testFormationContinue.getAdmission()).isEqualTo(DEFAULT_ADMISSION);
         assertThat(testFormationContinue.getDiplomeRequis()).isEqualTo(DEFAULT_DIPLOME_REQUIS);
-        assertThat(testFormationContinue.getNiveauEtude()).isEqualTo(UPDATED_NIVEAU_ETUDE);
-        assertThat(testFormationContinue.getFiliere()).isEqualTo(UPDATED_FILIERE);
+        assertThat(testFormationContinue.getNiveauEtude()).isEqualTo(DEFAULT_NIVEAU_ETUDE);
+        assertThat(testFormationContinue.getFiliere()).isEqualTo(DEFAULT_FILIERE);
         assertThat(testFormationContinue.getSerie()).isEqualTo(DEFAULT_SERIE);
-        assertThat(testFormationContinue.getCfp()).isEqualTo(UPDATED_CFP);
-        assertThat(testFormationContinue.getLycee()).isEqualTo(UPDATED_LYCEE);
+        assertThat(testFormationContinue.getCfp()).isEqualTo(DEFAULT_CFP);
+        assertThat(testFormationContinue.getLycee()).isEqualTo(DEFAULT_LYCEE);
         assertThat(testFormationContinue.getFicheFormation()).isEqualTo(UPDATED_FICHE_FORMATION);
         assertThat(testFormationContinue.getFicheFormationContentType()).isEqualTo(UPDATED_FICHE_FORMATION_CONTENT_TYPE);
         assertThat(testFormationContinue.getLibellePC()).isEqualTo(DEFAULT_LIBELLE_PC);
         assertThat(testFormationContinue.getMontantPriseEnCharge()).isEqualTo(DEFAULT_MONTANT_PRISE_EN_CHARGE);
-        assertThat(testFormationContinue.getCoutFormation()).isEqualTo(UPDATED_COUT_FORMATION);
-        assertThat(testFormationContinue.getDetailPC()).isEqualTo(DEFAULT_DETAIL_PC);
-        assertThat(testFormationContinue.getNomDiplome()).isEqualTo(DEFAULT_NOM_DIPLOME);
-        assertThat(testFormationContinue.getAutreDiplome()).isEqualTo(UPDATED_AUTRE_DIPLOME);
-        assertThat(testFormationContinue.getNomDebouche()).isEqualTo(DEFAULT_NOM_DEBOUCHE);
+        assertThat(testFormationContinue.getCoutFormation()).isEqualTo(DEFAULT_COUT_FORMATION);
+        assertThat(testFormationContinue.getDetailPC()).isEqualTo(UPDATED_DETAIL_PC);
+        assertThat(testFormationContinue.getNomDiplome()).isEqualTo(UPDATED_NOM_DIPLOME);
+        assertThat(testFormationContinue.getAutreDiplome()).isEqualTo(DEFAULT_AUTRE_DIPLOME);
+        assertThat(testFormationContinue.getNomDebouche()).isEqualTo(UPDATED_NOM_DEBOUCHE);
     }
 
     @Test

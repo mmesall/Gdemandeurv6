@@ -1,9 +1,4 @@
 export class Account {
-  dateNaiss: any;
-  lieuNaiss: any;
-  identity() {
-    throw new Error('Method not implemented.');
-  }
   constructor(
     public activated: boolean,
     public authorities: string[],

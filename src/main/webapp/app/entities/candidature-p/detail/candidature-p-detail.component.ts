@@ -1,22 +1,20 @@
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { Component, Input } from '@angular/core';
+import { ActivatedRoute, RouterModule } from '@angular/router';
 
+import SharedModule from 'app/shared/shared.module';
+import { DurationPipe, FormatMediumDatetimePipe, FormatMediumDatePipe } from 'app/shared/date';
 import { ICandidatureP } from '../candidature-p.model';
 
 @Component({
+  standalone: true,
   selector: 'jhi-candidature-p-detail',
   templateUrl: './candidature-p-detail.component.html',
+  imports: [SharedModule, RouterModule, DurationPipe, FormatMediumDatetimePipe, FormatMediumDatePipe],
 })
-export class CandidaturePDetailComponent implements OnInit {
-  candidatureP: ICandidatureP | null = null;
+export class CandidaturePDetailComponent {
+  @Input() candidatureP: ICandidatureP | null = null;
 
   constructor(protected activatedRoute: ActivatedRoute) {}
-
-  ngOnInit(): void {
-    this.activatedRoute.data.subscribe(({ candidatureP }) => {
-      this.candidatureP = candidatureP;
-    });
-  }
 
   previousState(): void {
     window.history.back();

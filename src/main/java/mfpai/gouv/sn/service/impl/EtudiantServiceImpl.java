@@ -36,6 +36,12 @@ public class EtudiantServiceImpl implements EtudiantService {
     }
 
     @Override
+    public Etudiant update(Etudiant etudiant) {
+        log.debug("Request to update Etudiant : {}", etudiant);
+        return etudiantRepository.save(etudiant);
+    }
+
+    @Override
     public Optional<Etudiant> partialUpdate(Etudiant etudiant) {
         log.debug("Request to partially update Etudiant : {}", etudiant);
 
@@ -105,7 +111,7 @@ public class EtudiantServiceImpl implements EtudiantService {
         return StreamSupport
             .stream(etudiantRepository.findAll().spliterator(), false)
             .filter(etudiant -> etudiant.getDossier() == null)
-            .collect(Collectors.toList());
+            .toList();
     }
 
     /**
@@ -118,7 +124,7 @@ public class EtudiantServiceImpl implements EtudiantService {
         return StreamSupport
             .stream(etudiantRepository.findAll().spliterator(), false)
             .filter(etudiant -> etudiant.getDemandeur() == null)
-            .collect(Collectors.toList());
+            .toList();
     }
 
     @Override

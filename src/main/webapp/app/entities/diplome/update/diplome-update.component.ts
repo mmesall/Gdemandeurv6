@@ -1,11 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpResponse } from '@angular/common/http';
-import { FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
 import { finalize, map } from 'rxjs/operators';
 
-import { IDiplome, Diplome } from '../diplome.model';
+import SharedModule from 'app/shared/shared.module';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+
+import { DiplomeFormService, DiplomeFormGroup } from './diplome-form.service';
+import { IDiplome } from '../diplome.model';
 import { DiplomeService } from '../service/diplome.service';
 import { AlertError } from 'app/shared/alert/alert-error.model';
 import { EventManager, EventWithContent } from 'app/core/util/event-manager.service';
@@ -23,11 +26,14 @@ import { NiveauEtude } from 'app/entities/enumerations/niveau-etude.model';
 import { Mention } from 'app/entities/enumerations/mention.model';
 
 @Component({
+  standalone: true,
   selector: 'jhi-diplome-update',
   templateUrl: './diplome-update.component.html',
+  imports: [SharedModule, FormsModule, ReactiveFormsModule],
 })
 export class DiplomeUpdateComponent implements OnInit {
   isSaving = false;
+  diplome: IDiplome | null = null;
   nomFiliereValues = Object.keys(NomFiliere);
   niveauEtudeValues = Object.keys(NiveauEtude);
   mentionValues = Object.keys(Mention);
@@ -37,37 +43,35 @@ export class DiplomeUpdateComponent implements OnInit {
   professionnelsSharedCollection: IProfessionnel[] = [];
   demandeursSharedCollection: IDemandeur[] = [];
 
-  editForm = this.fb.group({
-    id: [],
-    intitule: [],
-    domaine: [null, [Validators.required]],
-    niveau: [],
-    mention: [],
-    anneeObtention: [],
-    etablissement: [],
-    document: [null, [Validators.required]],
-    documentContentType: [],
-    eleve: [],
-    etudiant: [],
-    professionnel: [],
-    demandeur: [],
-  });
+  editForm: DiplomeFormGroup = this.diplomeFormService.createDiplomeFormGroup();
 
   constructor(
     protected dataUtils: DataUtils,
     protected eventManager: EventManager,
     protected diplomeService: DiplomeService,
+    protected diplomeFormService: DiplomeFormService,
     protected eleveService: EleveService,
     protected etudiantService: EtudiantService,
     protected professionnelService: ProfessionnelService,
     protected demandeurService: DemandeurService,
-    protected activatedRoute: ActivatedRoute,
-    protected fb: FormBuilder
+    protected activatedRoute: ActivatedRoute
   ) {}
+
+  compareEleve = (o1: IEleve | null, o2: IEleve | null): boolean => this.eleveService.compareEleve(o1, o2);
+
+  compareEtudiant = (o1: IEtudiant | null, o2: IEtudiant | null): boolean => this.etudiantService.compareEtudiant(o1, o2);
+
+  compareProfessionnel = (o1: IProfessionnel | null, o2: IProfessionnel | null): boolean =>
+    this.professionnelService.compareProfessionnel(o1, o2);
+
+  compareDemandeur = (o1: IDemandeur | null, o2: IDemandeur | null): boolean => this.demandeurService.compareDemandeur(o1, o2);
 
   ngOnInit(): void {
     this.activatedRoute.data.subscribe(({ diplome }) => {
-      this.updateForm(diplome);
+      this.diplome = diplome;
+      if (diplome) {
+        this.updateForm(diplome);
+      }
 
       this.loadRelationshipsOptions();
     });
@@ -94,28 +98,12 @@ export class DiplomeUpdateComponent implements OnInit {
 
   save(): void {
     this.isSaving = true;
-    const diplome = this.createFromForm();
-    if (diplome.id !== undefined) {
+    const diplome = this.diplomeFormService.getDiplome(this.editForm);
+    if (diplome.id !== null) {
       this.subscribeToSaveResponse(this.diplomeService.update(diplome));
     } else {
       this.subscribeToSaveResponse(this.diplomeService.create(diplome));
     }
-  }
-
-  trackEleveById(index: number, item: IEleve): number {
-    return item.id!;
-  }
-
-  trackEtudiantById(index: number, item: IEtudiant): number {
-    return item.id!;
-  }
-
-  trackProfessionnelById(index: number, item: IProfessionnel): number {
-    return item.id!;
-  }
-
-  trackDemandeurById(index: number, item: IDemandeur): number {
-    return item.id!;
   }
 
   protected subscribeToSaveResponse(result: Observable<HttpResponse<IDiplome>>): void {
@@ -138,32 +126,19 @@ export class DiplomeUpdateComponent implements OnInit {
   }
 
   protected updateForm(diplome: IDiplome): void {
-    this.editForm.patchValue({
-      id: diplome.id,
-      intitule: diplome.intitule,
-      domaine: diplome.domaine,
-      niveau: diplome.niveau,
-      mention: diplome.mention,
-      anneeObtention: diplome.anneeObtention,
-      etablissement: diplome.etablissement,
-      document: diplome.document,
-      documentContentType: diplome.documentContentType,
-      eleve: diplome.eleve,
-      etudiant: diplome.etudiant,
-      professionnel: diplome.professionnel,
-      demandeur: diplome.demandeur,
-    });
+    this.diplome = diplome;
+    this.diplomeFormService.resetForm(this.editForm, diplome);
 
-    this.elevesSharedCollection = this.eleveService.addEleveToCollectionIfMissing(this.elevesSharedCollection, diplome.eleve);
-    this.etudiantsSharedCollection = this.etudiantService.addEtudiantToCollectionIfMissing(
+    this.elevesSharedCollection = this.eleveService.addEleveToCollectionIfMissing<IEleve>(this.elevesSharedCollection, diplome.eleve);
+    this.etudiantsSharedCollection = this.etudiantService.addEtudiantToCollectionIfMissing<IEtudiant>(
       this.etudiantsSharedCollection,
       diplome.etudiant
     );
-    this.professionnelsSharedCollection = this.professionnelService.addProfessionnelToCollectionIfMissing(
+    this.professionnelsSharedCollection = this.professionnelService.addProfessionnelToCollectionIfMissing<IProfessionnel>(
       this.professionnelsSharedCollection,
       diplome.professionnel
     );
-    this.demandeursSharedCollection = this.demandeurService.addDemandeurToCollectionIfMissing(
+    this.demandeursSharedCollection = this.demandeurService.addDemandeurToCollectionIfMissing<IDemandeur>(
       this.demandeursSharedCollection,
       diplome.demandeur
     );
@@ -173,16 +148,14 @@ export class DiplomeUpdateComponent implements OnInit {
     this.eleveService
       .query()
       .pipe(map((res: HttpResponse<IEleve[]>) => res.body ?? []))
-      .pipe(map((eleves: IEleve[]) => this.eleveService.addEleveToCollectionIfMissing(eleves, this.editForm.get('eleve')!.value)))
+      .pipe(map((eleves: IEleve[]) => this.eleveService.addEleveToCollectionIfMissing<IEleve>(eleves, this.diplome?.eleve)))
       .subscribe((eleves: IEleve[]) => (this.elevesSharedCollection = eleves));
 
     this.etudiantService
       .query()
       .pipe(map((res: HttpResponse<IEtudiant[]>) => res.body ?? []))
       .pipe(
-        map((etudiants: IEtudiant[]) =>
-          this.etudiantService.addEtudiantToCollectionIfMissing(etudiants, this.editForm.get('etudiant')!.value)
-        )
+        map((etudiants: IEtudiant[]) => this.etudiantService.addEtudiantToCollectionIfMissing<IEtudiant>(etudiants, this.diplome?.etudiant))
       )
       .subscribe((etudiants: IEtudiant[]) => (this.etudiantsSharedCollection = etudiants));
 
@@ -191,7 +164,7 @@ export class DiplomeUpdateComponent implements OnInit {
       .pipe(map((res: HttpResponse<IProfessionnel[]>) => res.body ?? []))
       .pipe(
         map((professionnels: IProfessionnel[]) =>
-          this.professionnelService.addProfessionnelToCollectionIfMissing(professionnels, this.editForm.get('professionnel')!.value)
+          this.professionnelService.addProfessionnelToCollectionIfMissing<IProfessionnel>(professionnels, this.diplome?.professionnel)
         )
       )
       .subscribe((professionnels: IProfessionnel[]) => (this.professionnelsSharedCollection = professionnels));
@@ -201,28 +174,9 @@ export class DiplomeUpdateComponent implements OnInit {
       .pipe(map((res: HttpResponse<IDemandeur[]>) => res.body ?? []))
       .pipe(
         map((demandeurs: IDemandeur[]) =>
-          this.demandeurService.addDemandeurToCollectionIfMissing(demandeurs, this.editForm.get('demandeur')!.value)
+          this.demandeurService.addDemandeurToCollectionIfMissing<IDemandeur>(demandeurs, this.diplome?.demandeur)
         )
       )
       .subscribe((demandeurs: IDemandeur[]) => (this.demandeursSharedCollection = demandeurs));
-  }
-
-  protected createFromForm(): IDiplome {
-    return {
-      ...new Diplome(),
-      id: this.editForm.get(['id'])!.value,
-      intitule: this.editForm.get(['intitule'])!.value,
-      domaine: this.editForm.get(['domaine'])!.value,
-      niveau: this.editForm.get(['niveau'])!.value,
-      mention: this.editForm.get(['mention'])!.value,
-      anneeObtention: this.editForm.get(['anneeObtention'])!.value,
-      etablissement: this.editForm.get(['etablissement'])!.value,
-      documentContentType: this.editForm.get(['documentContentType'])!.value,
-      document: this.editForm.get(['document'])!.value,
-      eleve: this.editForm.get(['eleve'])!.value,
-      etudiant: this.editForm.get(['etudiant'])!.value,
-      professionnel: this.editForm.get(['professionnel'])!.value,
-      demandeur: this.editForm.get(['demandeur'])!.value,
-    };
   }
 }

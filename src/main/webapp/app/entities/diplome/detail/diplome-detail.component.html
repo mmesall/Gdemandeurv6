@@ -1,7 +1,7 @@
 <div class="d-flex justify-content-center">
   <div class="col-8">
     <div *ngIf="diplome">
-      <h2 data-cy="diplomeDetailsHeading"><span>Diplome</span></h2>
+      <h2 data-cy="diplomeDetailsHeading"><span jhiTranslate="jhipsterProjectBaseJwtApp.diplome.detail.title">Diplome</span></h2>
 
       <hr />
 
@@ -10,73 +10,73 @@
       <jhi-alert></jhi-alert>
 
       <dl class="row-md jh-entity-details">
-        <dt><span>ID</span></dt>
+        <dt><span jhiTranslate="global.field.id">ID</span></dt>
         <dd>
           <span>{{ diplome.id }}</span>
         </dd>
-        <dt><span>Intitule</span></dt>
+        <dt><span jhiTranslate="jhipsterProjectBaseJwtApp.diplome.intitule">Intitule</span></dt>
         <dd>
           <span>{{ diplome.intitule }}</span>
         </dd>
-        <dt><span>Domaine</span></dt>
+        <dt><span jhiTranslate="jhipsterProjectBaseJwtApp.diplome.domaine">Domaine</span></dt>
         <dd>
-          <span>{{ diplome.domaine }}</span>
+          <span jhiTranslate="{{ 'jhipsterProjectBaseJwtApp.NomFiliere.' + diplome.domaine }}">{{ diplome.domaine }}</span>
         </dd>
-        <dt><span>Niveau</span></dt>
+        <dt><span jhiTranslate="jhipsterProjectBaseJwtApp.diplome.niveau">Niveau</span></dt>
         <dd>
-          <span>{{ diplome.niveau }}</span>
+          <span jhiTranslate="{{ 'jhipsterProjectBaseJwtApp.NiveauEtude.' + diplome.niveau }}">{{ diplome.niveau }}</span>
         </dd>
-        <dt><span>Mention</span></dt>
+        <dt><span jhiTranslate="jhipsterProjectBaseJwtApp.diplome.mention">Mention</span></dt>
         <dd>
-          <span>{{ diplome.mention }}</span>
+          <span jhiTranslate="{{ 'jhipsterProjectBaseJwtApp.Mention.' + diplome.mention }}">{{ diplome.mention }}</span>
         </dd>
-        <dt><span>Annee Obtention</span></dt>
+        <dt><span jhiTranslate="jhipsterProjectBaseJwtApp.diplome.anneeObtention">Annee Obtention</span></dt>
         <dd>
           <span>{{ diplome.anneeObtention }}</span>
         </dd>
-        <dt><span>Etablissement</span></dt>
+        <dt><span jhiTranslate="jhipsterProjectBaseJwtApp.diplome.etablissement">Etablissement</span></dt>
         <dd>
           <span>{{ diplome.etablissement }}</span>
         </dd>
-        <dt><span>Document</span></dt>
+        <dt><span jhiTranslate="jhipsterProjectBaseJwtApp.diplome.document">Document</span></dt>
         <dd>
           <div *ngIf="diplome.document">
-            <a (click)="openFile(diplome.document, diplome.documentContentType)">open</a>
+            <a (click)="openFile(diplome.document, diplome.documentContentType)" jhiTranslate="entity.action.open">Ouvrir</a>
             {{ diplome.documentContentType }}, {{ byteSize(diplome.document) }}
           </div>
         </dd>
-        <dt><span>Eleve</span></dt>
+        <dt><span jhiTranslate="jhipsterProjectBaseJwtApp.diplome.eleve">Eleve</span></dt>
         <dd>
           <div *ngIf="diplome.eleve">
-            <a [routerLink]="['/eleve', diplome.eleve?.id, 'view']">{{ diplome.eleve?.niveauEtude }}</a>
+            <a [routerLink]="['/eleve', diplome.eleve.id, 'view']">{{ diplome.eleve.niveauEtude }}</a>
           </div>
         </dd>
-        <dt><span>Etudiant</span></dt>
+        <dt><span jhiTranslate="jhipsterProjectBaseJwtApp.diplome.etudiant">Etudiant</span></dt>
         <dd>
           <div *ngIf="diplome.etudiant">
-            <a [routerLink]="['/etudiant', diplome.etudiant?.id, 'view']">{{ diplome.etudiant?.carteEtudiant }}</a>
+            <a [routerLink]="['/etudiant', diplome.etudiant.id, 'view']">{{ diplome.etudiant.carteEtudiant }}</a>
           </div>
         </dd>
-        <dt><span>Professionnel</span></dt>
+        <dt><span jhiTranslate="jhipsterProjectBaseJwtApp.diplome.professionnel">Professionnel</span></dt>
         <dd>
           <div *ngIf="diplome.professionnel">
-            <a [routerLink]="['/professionnel', diplome.professionnel?.id, 'view']">{{ diplome.professionnel?.profession }}</a>
+            <a [routerLink]="['/professionnel', diplome.professionnel.id, 'view']">{{ diplome.professionnel.profession }}</a>
           </div>
         </dd>
-        <dt><span>Demandeur</span></dt>
+        <dt><span jhiTranslate="jhipsterProjectBaseJwtApp.diplome.demandeur">Demandeur</span></dt>
         <dd>
           <div *ngIf="diplome.demandeur">
-            <a [routerLink]="['/demandeur', diplome.demandeur?.id, 'view']">{{ diplome.demandeur?.profil }}</a>
+            <a [routerLink]="['/demandeur', diplome.demandeur.id, 'view']">{{ diplome.demandeur.profil }}</a>
           </div>
         </dd>
       </dl>
 
       <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
-        <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span>Back</span>
+        <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Retour</span>
       </button>
 
       <button type="button" [routerLink]="['/diplome', diplome.id, 'edit']" class="btn btn-primary">
-        <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span>Edit</span>
+        <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Editer</span>
       </button>
     </div>
   </div>

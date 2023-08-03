@@ -2,24 +2,33 @@ package mfpai.gouv.sn.web.rest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import jakarta.persistence.EntityManager;
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicLong;
-import javax.persistence.EntityManager;
 import mfpai.gouv.sn.IntegrationTest;
 import mfpai.gouv.sn.domain.Concours;
 import mfpai.gouv.sn.domain.enumeration.NiveauEtude;
 import mfpai.gouv.sn.domain.enumeration.NomEtablissement;
 import mfpai.gouv.sn.repository.ConcoursRepository;
+import mfpai.gouv.sn.service.ConcoursService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
@@ -30,6 +39,7 @@ import org.springframework.util.Base64Utils;
  * Integration tests for the {@link ConcoursResource} REST controller.
  */
 @IntegrationTest
+@ExtendWith(MockitoExtension.class)
 @AutoConfigureMockMvc
 @WithMockUser
 class ConcoursResourceIT {
@@ -65,6 +75,12 @@ class ConcoursResourceIT {
 
     @Autowired
     private ConcoursRepository concoursRepository;
+
+    @Mock
+    private ConcoursRepository concoursRepositoryMock;
+
+    @Mock
+    private ConcoursService concoursServiceMock;
 
     @Autowired
     private EntityManager em;
@@ -180,6 +196,23 @@ class ConcoursResourceIT {
             .andExpect(jsonPath("$.[*].affiche").value(hasItem(Base64Utils.encodeToString(DEFAULT_AFFICHE))));
     }
 
+    @SuppressWarnings({ "unchecked" })
+    void getAllConcoursWithEagerRelationshipsIsEnabled() throws Exception {
+        when(concoursServiceMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
+
+        restConcoursMockMvc.perform(get(ENTITY_API_URL + "?eagerload=true")).andExpect(status().isOk());
+
+        verify(concoursServiceMock, times(1)).findAllWithEagerRelationships(any());
+    }
+
+    @SuppressWarnings({ "unchecked" })
+    void getAllConcoursWithEagerRelationshipsIsNotEnabled() throws Exception {
+        when(concoursServiceMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
+
+        restConcoursMockMvc.perform(get(ENTITY_API_URL + "?eagerload=false")).andExpect(status().isOk());
+        verify(concoursRepositoryMock, times(1)).findAll(any(Pageable.class));
+    }
+
     @Test
     @Transactional
     void getConcours() throws Exception {
@@ -211,14 +244,14 @@ class ConcoursResourceIT {
 
     @Test
     @Transactional
-    void putNewConcours() throws Exception {
+    void putExistingConcours() throws Exception {
         // Initialize the database
         concoursRepository.saveAndFlush(concours);
 
         int databaseSizeBeforeUpdate = concoursRepository.findAll().size();
 
         // Update the concours
-        Concours updatedConcours = concoursRepository.findById(concours.getId()).get();
+        Concours updatedConcours = concoursRepository.findById(concours.getId()).orElseThrow();
         // Disconnect from session so that the updates on updatedConcours are not directly saved in db
         em.detach(updatedConcours);
         updatedConcours
@@ -321,12 +354,7 @@ class ConcoursResourceIT {
         Concours partialUpdatedConcours = new Concours();
         partialUpdatedConcours.setId(concours.getId());
 
-        partialUpdatedConcours
-            .nomEtablissement(UPDATED_NOM_ETABLISSEMENT)
-            .niveauEtude(UPDATED_NIVEAU_ETUDE)
-            .dateCloture(UPDATED_DATE_CLOTURE)
-            .affiche(UPDATED_AFFICHE)
-            .afficheContentType(UPDATED_AFFICHE_CONTENT_TYPE);
+        partialUpdatedConcours.nomEtablissement(UPDATED_NOM_ETABLISSEMENT);
 
         restConcoursMockMvc
             .perform(
@@ -342,12 +370,12 @@ class ConcoursResourceIT {
         Concours testConcours = concoursList.get(concoursList.size() - 1);
         assertThat(testConcours.getNomConcours()).isEqualTo(DEFAULT_NOM_CONCOURS);
         assertThat(testConcours.getNomEtablissement()).isEqualTo(UPDATED_NOM_ETABLISSEMENT);
-        assertThat(testConcours.getNiveauEtude()).isEqualTo(UPDATED_NIVEAU_ETUDE);
+        assertThat(testConcours.getNiveauEtude()).isEqualTo(DEFAULT_NIVEAU_ETUDE);
         assertThat(testConcours.getDateOuverture()).isEqualTo(DEFAULT_DATE_OUVERTURE);
-        assertThat(testConcours.getDateCloture()).isEqualTo(UPDATED_DATE_CLOTURE);
+        assertThat(testConcours.getDateCloture()).isEqualTo(DEFAULT_DATE_CLOTURE);
         assertThat(testConcours.getDateConcours()).isEqualTo(DEFAULT_DATE_CONCOURS);
-        assertThat(testConcours.getAffiche()).isEqualTo(UPDATED_AFFICHE);
-        assertThat(testConcours.getAfficheContentType()).isEqualTo(UPDATED_AFFICHE_CONTENT_TYPE);
+        assertThat(testConcours.getAffiche()).isEqualTo(DEFAULT_AFFICHE);
+        assertThat(testConcours.getAfficheContentType()).isEqualTo(DEFAULT_AFFICHE_CONTENT_TYPE);
     }
 
     @Test

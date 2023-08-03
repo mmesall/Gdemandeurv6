@@ -39,6 +39,7 @@
       "otherEntityName": "professionnel",
       "otherEntityRelationshipName": "candidatureProf",
       "relationshipName": "professionnel",
+      "relationshipSide": "right",
       "relationshipType": "many-to-one"
     },
     {
@@ -46,8 +47,10 @@
       "otherEntityName": "formationContinue",
       "otherEntityRelationshipName": "candidatureProf",
       "relationshipName": "formationContinue",
+      "relationshipSide": "right",
       "relationshipType": "many-to-one"
     }
   ],
+  "searchEngine": "no",
   "service": "serviceImpl"
 }

@@ -10,53 +10,26 @@ import { NomFiliere } from 'app/entities/enumerations/nom-filiere.model';
 import { NomSerie } from 'app/entities/enumerations/nom-serie.model';
 
 export interface IEtablissement {
-  id?: number;
-  nomEtablissement?: NomEtablissement | null;
-  photoContentType?: string | null;
+  id: number;
+  nomEtablissement?: keyof typeof NomEtablissement | null;
   photo?: string | null;
-  region?: NomRegion;
-  departement?: NomDepartement;
+  photoContentType?: string | null;
+  region?: keyof typeof NomRegion | null;
+  departement?: keyof typeof NomDepartement | null;
   email?: string | null;
   telephone?: number | null;
-  typeEtablissement?: TypeEtablissement | null;
-  statut?: StatutEtab;
+  typeEtablissement?: keyof typeof TypeEtablissement | null;
+  statut?: keyof typeof StatutEtab | null;
   autreRegion?: string | null;
   autreDepartement?: string | null;
-  cfp?: CFP | null;
-  lycee?: LYCEE | null;
-  filiere?: NomFiliere | null;
-  serie?: NomSerie | null;
+  cfp?: keyof typeof CFP | null;
+  lycee?: keyof typeof LYCEE | null;
+  filiere?: keyof typeof NomFiliere | null;
+  serie?: keyof typeof NomSerie | null;
   autreFiliere?: string | null;
   autreSerie?: string | null;
   autreNomEtablissement?: string | null;
-  formations?: IFormation[];
+  formations?: Pick<IFormation, 'id'>[] | null;
 }
 
-export class Etablissement implements IEtablissement {
-  constructor(
-    public id?: number,
-    public nomEtablissement?: NomEtablissement | null,
-    public photoContentType?: string | null,
-    public photo?: string | null,
-    public region?: NomRegion,
-    public departement?: NomDepartement,
-    public email?: string | null,
-    public telephone?: number | null,
-    public typeEtablissement?: TypeEtablissement | null,
-    public statut?: StatutEtab,
-    public autreRegion?: string | null,
-    public autreDepartement?: string | null,
-    public cfp?: CFP | null,
-    public lycee?: LYCEE | null,
-    public filiere?: NomFiliere | null,
-    public serie?: NomSerie | null,
-    public autreFiliere?: string | null,
-    public autreSerie?: string | null,
-    public autreNomEtablissement?: string | null,
-    public formations?: IFormation[]
-  ) {}
-}
-
-export function getEtablissementIdentifier(etablissement: IEtablissement): number | undefined {
-  return etablissement.id;
-}
+export type NewEtablissement = Omit<IEtablissement, 'id'> & { id: null };

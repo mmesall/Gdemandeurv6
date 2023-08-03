@@ -1,11 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpResponse } from '@angular/common/http';
-import { FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
 import { finalize, map } from 'rxjs/operators';
 
-import { IDossier, Dossier } from '../dossier.model';
+//import SharedModule from 'app/shared/shared.module';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+
+import { DossierFormService, DossierFormGroup } from './dossier-form.service';
+import { IDossier } from '../dossier.model';
 import { DossierService } from '../service/dossier.service';
 import { AlertError } from 'app/shared/alert/alert-error.model';
 import { EventManager, EventWithContent } from 'app/core/util/event-manager.service';
@@ -22,76 +25,55 @@ import { TypePiece } from 'app/entities/enumerations/type-piece.model';
 import { Sexe } from 'app/entities/enumerations/sexe.model';
 import { NiveauEtude } from 'app/entities/enumerations/niveau-etude.model';
 import { NomFiliere } from 'app/entities/enumerations/nom-filiere.model';
-import { NomSerie } from 'app/entities/enumerations/nom-serie.model';
-import { DiplomeRequis } from 'app/entities/enumerations/diplome-requis.model';
-import { Account } from 'app/core/auth/account.model';
+import { NIVEAUCOMP } from 'app/entities/enumerations/niveaucomp.model';
 
 @Component({
+  //standalone: true,
   selector: 'jhi-dossier-update',
   templateUrl: './dossier-update.component.html',
+  //imports: [SharedModule, FormsModule, ReactiveFormsModule],
 })
 export class DossierUpdateComponent implements OnInit {
-  account!: Account;
   isSaving = false;
+  dossier: IDossier | null = null;
   nomRegionValues = Object.keys(NomRegion);
   nomDepartementValues = Object.keys(NomDepartement);
   typePieceValues = Object.keys(TypePiece);
   sexeValues = Object.keys(Sexe);
   niveauEtudeValues = Object.keys(NiveauEtude);
   nomFiliereValues = Object.keys(NomFiliere);
-  nomSerieValues = Object.keys(NomSerie);
-  diplomeRequisValues = Object.keys(DiplomeRequis);
+  nIVEAUCOMPValues = Object.keys(NIVEAUCOMP);
 
   elevesCollection: IEleve[] = [];
   etudiantsCollection: IEtudiant[] = [];
   professionnelsCollection: IProfessionnel[] = [];
 
-  editForm = this.fb.group({
-    id: [],
-    numDossier: [null, []],
-    dateNaiss: [],
-    prenom: [null, [Validators.required]],
-    nom: [null, [Validators.required]],
-    nomUtilisateur: [],
-    regionNaiss: [],
-    departementNaiss: [],
-    lieuNaiss: [],
-    typePiece: [],
-    numeroPiece: [null, []],
-    sexe: [],
-    regionResidence: [],
-    depResidence: [],
-    adresseResidence: [],
-    telephone1: [],
-    telephone2: [],
-    email: [],
-    niveauFormation: [],
-    specialite1: [],
-    specialite2: [],
-    diplomeRequis: [],
-    cv: [],
-    cvContentType: [],
-    lettreMotivation: [],
-    profession: [],
-    eleve: [],
-    etudiant: [],
-    professionnel: [],
-  });
+  editForm: DossierFormGroup = this.dossierFormService.createDossierFormGroup();
 
   constructor(
     protected dataUtils: DataUtils,
     protected eventManager: EventManager,
     protected dossierService: DossierService,
+    protected dossierFormService: DossierFormService,
     protected eleveService: EleveService,
     protected etudiantService: EtudiantService,
     protected professionnelService: ProfessionnelService,
-    protected activatedRoute: ActivatedRoute,
-    protected fb: FormBuilder
+    protected activatedRoute: ActivatedRoute
   ) {}
+
+  compareEleve = (o1: IEleve | null, o2: IEleve | null): boolean => this.eleveService.compareEleve(o1, o2);
+
+  compareEtudiant = (o1: IEtudiant | null, o2: IEtudiant | null): boolean => this.etudiantService.compareEtudiant(o1, o2);
+
+  compareProfessionnel = (o1: IProfessionnel | null, o2: IProfessionnel | null): boolean =>
+    this.professionnelService.compareProfessionnel(o1, o2);
 
   ngOnInit(): void {
     this.activatedRoute.data.subscribe(({ dossier }) => {
-      this.updateForm(dossier);
+      this.dossier = dossier;
+      if (dossier) {
+        this.updateForm(dossier);
+      }
 
       this.loadRelationshipsOptions();
     });
@@ -118,24 +100,12 @@ export class DossierUpdateComponent implements OnInit {
 
   save(): void {
     this.isSaving = true;
-    const dossier = this.createFromForm();
-    if (dossier.id !== undefined) {
+    const dossier = this.dossierFormService.getDossier(this.editForm);
+    if (dossier.id !== null) {
       this.subscribeToSaveResponse(this.dossierService.update(dossier));
     } else {
       this.subscribeToSaveResponse(this.dossierService.create(dossier));
     }
-  }
-
-  trackEleveById(index: number, item: IEleve): number {
-    return item.id!;
-  }
-
-  trackEtudiantById(index: number, item: IEtudiant): number {
-    return item.id!;
-  }
-
-  trackProfessionnelById(index: number, item: IProfessionnel): number {
-    return item.id!;
   }
 
   protected subscribeToSaveResponse(result: Observable<HttpResponse<IDossier>>): void {
@@ -158,41 +128,12 @@ export class DossierUpdateComponent implements OnInit {
   }
 
   protected updateForm(dossier: IDossier): void {
-    this.editForm.patchValue({
-      id: dossier.id,
-      numDossier: dossier.numDossier,
-      dateNaiss: dossier.dateNaiss,
-      prenom: dossier.prenom,
-      nom: dossier.nom,
-      nomUtilisateur: dossier.nomUtilisateur,
-      regionNaiss: dossier.regionNaiss,
-      departementNaiss: dossier.departementNaiss,
-      lieuNaiss: dossier.lieuNaiss,
-      typePiece: dossier.typePiece,
-      numeroPiece: dossier.numeroPiece,
-      sexe: dossier.sexe,
-      regionResidence: dossier.regionResidence,
-      depResidence: dossier.depResidence,
-      adresseResidence: dossier.adresseResidence,
-      telephone1: dossier.telephone1,
-      telephone2: dossier.telephone2,
-      email: dossier.email,
-      niveauFormation: dossier.niveauFormation,
-      specialite1: dossier.specialite1,
-      specialite2: dossier.specialite2,
-      diplomeRequis: dossier.diplomeRequis,
-      cv: dossier.cv,
-      cvContentType: dossier.cvContentType,
-      lettreMotivation: dossier.lettreMotivation,
-      profession: dossier.profession,
-      eleve: dossier.eleve,
-      etudiant: dossier.etudiant,
-      professionnel: dossier.professionnel,
-    });
+    this.dossier = dossier;
+    this.dossierFormService.resetForm(this.editForm, dossier);
 
-    this.elevesCollection = this.eleveService.addEleveToCollectionIfMissing(this.elevesCollection, dossier.eleve);
-    this.etudiantsCollection = this.etudiantService.addEtudiantToCollectionIfMissing(this.etudiantsCollection, dossier.etudiant);
-    this.professionnelsCollection = this.professionnelService.addProfessionnelToCollectionIfMissing(
+    this.elevesCollection = this.eleveService.addEleveToCollectionIfMissing<IEleve>(this.elevesCollection, dossier.eleve);
+    this.etudiantsCollection = this.etudiantService.addEtudiantToCollectionIfMissing<IEtudiant>(this.etudiantsCollection, dossier.etudiant);
+    this.professionnelsCollection = this.professionnelService.addProfessionnelToCollectionIfMissing<IProfessionnel>(
       this.professionnelsCollection,
       dossier.professionnel
     );
@@ -202,16 +143,14 @@ export class DossierUpdateComponent implements OnInit {
     this.eleveService
       .query({ filter: 'dossier-is-null' })
       .pipe(map((res: HttpResponse<IEleve[]>) => res.body ?? []))
-      .pipe(map((eleves: IEleve[]) => this.eleveService.addEleveToCollectionIfMissing(eleves, this.editForm.get('eleve')!.value)))
+      .pipe(map((eleves: IEleve[]) => this.eleveService.addEleveToCollectionIfMissing<IEleve>(eleves, this.dossier?.eleve)))
       .subscribe((eleves: IEleve[]) => (this.elevesCollection = eleves));
 
     this.etudiantService
       .query({ filter: 'dossier-is-null' })
       .pipe(map((res: HttpResponse<IEtudiant[]>) => res.body ?? []))
       .pipe(
-        map((etudiants: IEtudiant[]) =>
-          this.etudiantService.addEtudiantToCollectionIfMissing(etudiants, this.editForm.get('etudiant')!.value)
-        )
+        map((etudiants: IEtudiant[]) => this.etudiantService.addEtudiantToCollectionIfMissing<IEtudiant>(etudiants, this.dossier?.etudiant))
       )
       .subscribe((etudiants: IEtudiant[]) => (this.etudiantsCollection = etudiants));
 
@@ -220,44 +159,9 @@ export class DossierUpdateComponent implements OnInit {
       .pipe(map((res: HttpResponse<IProfessionnel[]>) => res.body ?? []))
       .pipe(
         map((professionnels: IProfessionnel[]) =>
-          this.professionnelService.addProfessionnelToCollectionIfMissing(professionnels, this.editForm.get('professionnel')!.value)
+          this.professionnelService.addProfessionnelToCollectionIfMissing<IProfessionnel>(professionnels, this.dossier?.professionnel)
         )
       )
       .subscribe((professionnels: IProfessionnel[]) => (this.professionnelsCollection = professionnels));
-  }
-
-  protected createFromForm(): IDossier {
-    return {
-      ...new Dossier(),
-      id: this.editForm.get(['id'])!.value,
-      numDossier: this.editForm.get(['numDossier'])!.value,
-      dateNaiss: this.editForm.get(['dateNaiss'])!.value,
-      prenom: this.editForm.get(['prenom'])!.value,
-      nom: this.editForm.get(['nom'])!.value,
-      nomUtilisateur: this.editForm.get(['nomUtilisateur'])!.value,
-      regionNaiss: this.editForm.get(['regionNaiss'])!.value,
-      departementNaiss: this.editForm.get(['departementNaiss'])!.value,
-      lieuNaiss: this.editForm.get(['lieuNaiss'])!.value,
-      typePiece: this.editForm.get(['typePiece'])!.value,
-      numeroPiece: this.editForm.get(['numeroPiece'])!.value,
-      sexe: this.editForm.get(['sexe'])!.value,
-      regionResidence: this.editForm.get(['regionResidence'])!.value,
-      depResidence: this.editForm.get(['depResidence'])!.value,
-      adresseResidence: this.editForm.get(['adresseResidence'])!.value,
-      telephone1: this.editForm.get(['telephone1'])!.value,
-      telephone2: this.editForm.get(['telephone2'])!.value,
-      email: this.editForm.get(['email'])!.value,
-      niveauFormation: this.editForm.get(['niveauFormation'])!.value,
-      specialite1: this.editForm.get(['specialite1'])!.value,
-      specialite2: this.editForm.get(['specialite2'])!.value,
-      diplomeRequis: this.editForm.get(['diplomeRequis'])!.value,
-      cvContentType: this.editForm.get(['cvContentType'])!.value,
-      cv: this.editForm.get(['cv'])!.value,
-      lettreMotivation: this.editForm.get(['lettreMotivation'])!.value,
-      profession: this.editForm.get(['profession'])!.value,
-      eleve: this.editForm.get(['eleve'])!.value,
-      etudiant: this.editForm.get(['etudiant'])!.value,
-      professionnel: this.editForm.get(['professionnel'])!.value,
-    };
   }
 }

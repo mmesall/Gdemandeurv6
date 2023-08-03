@@ -10,7 +10,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 /**
- * Spring Data SQL repository for the Concours entity.
+ * Spring Data JPA repository for the Concours entity.
  */
 @Repository
 public interface ConcoursRepository extends JpaRepository<Concours, Long> {
@@ -27,12 +27,12 @@ public interface ConcoursRepository extends JpaRepository<Concours, Long> {
     }
 
     @Query(
-        value = "select distinct concours from Concours concours left join fetch concours.formation",
-        countQuery = "select count(distinct concours) from Concours concours"
+        value = "select concours from Concours concours left join fetch concours.formation",
+        countQuery = "select count(concours) from Concours concours"
     )
     Page<Concours> findAllWithToOneRelationships(Pageable pageable);
 
-    @Query("select distinct concours from Concours concours left join fetch concours.formation")
+    @Query("select concours from Concours concours left join fetch concours.formation")
     List<Concours> findAllWithToOneRelationships();
 
     @Query("select concours from Concours concours left join fetch concours.formation where concours.id =:id")

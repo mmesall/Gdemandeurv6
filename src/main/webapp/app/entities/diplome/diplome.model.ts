@@ -7,39 +7,19 @@ import { NiveauEtude } from 'app/entities/enumerations/niveau-etude.model';
 import { Mention } from 'app/entities/enumerations/mention.model';
 
 export interface IDiplome {
-  id?: number;
+  id: number;
   intitule?: string | null;
-  domaine?: NomFiliere;
-  niveau?: NiveauEtude | null;
-  mention?: Mention | null;
+  domaine?: keyof typeof NomFiliere | null;
+  niveau?: keyof typeof NiveauEtude | null;
+  mention?: keyof typeof Mention | null;
   anneeObtention?: string | null;
   etablissement?: string | null;
-  documentContentType?: string;
-  document?: string;
-  eleve?: IEleve | null;
-  etudiant?: IEtudiant | null;
-  professionnel?: IProfessionnel | null;
-  demandeur?: IDemandeur | null;
+  document?: string | null;
+  documentContentType?: string | null;
+  eleve?: Pick<IEleve, 'id' | 'niveauEtude'> | null;
+  etudiant?: Pick<IEtudiant, 'id' | 'carteEtudiant'> | null;
+  professionnel?: Pick<IProfessionnel, 'id' | 'profession'> | null;
+  demandeur?: Pick<IDemandeur, 'id' | 'profil'> | null;
 }
 
-export class Diplome implements IDiplome {
-  constructor(
-    public id?: number,
-    public intitule?: string | null,
-    public domaine?: NomFiliere,
-    public niveau?: NiveauEtude | null,
-    public mention?: Mention | null,
-    public anneeObtention?: string | null,
-    public etablissement?: string | null,
-    public documentContentType?: string,
-    public document?: string,
-    public eleve?: IEleve | null,
-    public etudiant?: IEtudiant | null,
-    public professionnel?: IProfessionnel | null,
-    public demandeur?: IDemandeur | null
-  ) {}
-}
-
-export function getDiplomeIdentifier(diplome: IDiplome): number | undefined {
-  return diplome.id;
-}
+export type NewDiplome = Omit<IDiplome, 'id'> & { id: null };

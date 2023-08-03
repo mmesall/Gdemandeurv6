@@ -1,8 +1,6 @@
 {
   "applications": "*",
   "changelogDate": "20230328104857",
-  "dto": "no",
-  "embedded": false,
   "entityTableName": "eleve",
   "fields": [
     {
@@ -58,52 +56,52 @@
       "fieldValidateRules": ["unique"]
     }
   ],
-  "fluentMethods": true,
-  "jpaMetamodelFiltering": false,
   "name": "Eleve",
   "pagination": "infinite-scroll",
-  "readOnly": false,
   "relationships": [
     {
       "otherEntityField": "login",
       "otherEntityName": "user",
-      "otherEntityRelationshipName": "eleve",
-      "ownerSide": true,
       "relationshipName": "user",
+      "relationshipSide": "left",
       "relationshipType": "one-to-one"
     },
     {
       "otherEntityName": "diplome",
       "otherEntityRelationshipName": "eleve",
       "relationshipName": "diplome",
+      "relationshipSide": "left",
       "relationshipType": "one-to-many"
     },
     {
       "otherEntityName": "experience",
       "otherEntityRelationshipName": "eleve",
       "relationshipName": "experience",
+      "relationshipSide": "left",
       "relationshipType": "one-to-many"
     },
     {
       "otherEntityName": "candidatureE",
       "otherEntityRelationshipName": "eleve",
       "relationshipName": "candidatureE",
+      "relationshipSide": "left",
       "relationshipType": "one-to-many"
     },
     {
       "otherEntityName": "dossier",
       "otherEntityRelationshipName": "eleve",
-      "ownerSide": false,
       "relationshipName": "dossier",
+      "relationshipSide": "right",
       "relationshipType": "one-to-one"
     },
     {
       "otherEntityName": "demandeur",
       "otherEntityRelationshipName": "eleve",
-      "ownerSide": false,
       "relationshipName": "demandeur",
+      "relationshipSide": "right",
       "relationshipType": "one-to-one"
     }
   ],
+  "searchEngine": "no",
   "service": "serviceImpl"
 }

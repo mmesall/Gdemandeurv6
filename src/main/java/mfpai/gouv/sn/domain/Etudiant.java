@@ -1,12 +1,12 @@
 package mfpai.gouv.sn.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
-import javax.persistence.*;
-import javax.validation.constraints.*;
 import mfpai.gouv.sn.domain.enumeration.NomDepartement;
 import mfpai.gouv.sn.domain.enumeration.NomRegion;
 import mfpai.gouv.sn.domain.enumeration.Sexe;
@@ -19,6 +19,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Entity
 @Table(name = "etudiant")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+@SuppressWarnings("common-java:DuplicatedBlocks")
 public class Etudiant implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -50,7 +51,7 @@ public class Etudiant implements Serializable {
     @Column(name = "sexe")
     private Sexe sexe;
 
-    @Column(name = "telephone")
+    @Column(name = "telephone", unique = true)
     private Long telephone;
 
     @Column(name = "adresse_physique")
@@ -71,34 +72,34 @@ public class Etudiant implements Serializable {
     @Column(name = "cni", nullable = false, unique = true)
     private Long cni;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(unique = true)
     private User user;
 
-    @OneToMany(mappedBy = "etudiant")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "etudiant")
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     @JsonIgnoreProperties(value = { "eleve", "etudiant", "professionnel", "demandeur" }, allowSetters = true)
     private Set<Diplome> diplomes = new HashSet<>();
 
-    @OneToMany(mappedBy = "etudiant")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "etudiant")
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     @JsonIgnoreProperties(value = { "eleve", "etudiant", "professionnel", "demandeur" }, allowSetters = true)
     private Set<Experience> experiences = new HashSet<>();
 
-    @OneToMany(mappedBy = "etudiant")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "etudiant")
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     @JsonIgnoreProperties(value = { "eleve", "etudiant", "formationInitiale", "etablissement" }, allowSetters = true)
     private Set<CandidatureE> candidatureES = new HashSet<>();
 
     @JsonIgnoreProperties(value = { "eleve", "etudiant", "professionnel", "demandeur" }, allowSetters = true)
-    @OneToOne(mappedBy = "etudiant")
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "etudiant")
     private Dossier dossier;
 
     @JsonIgnoreProperties(
         value = { "user", "dossier", "eleve", "etudiant", "professionnel", "diplomes", "experiences" },
         allowSetters = true
     )
-    @OneToOne(mappedBy = "etudiant")
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "etudiant")
     private Demandeur demandeur;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here

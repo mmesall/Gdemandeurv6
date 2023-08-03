@@ -19,6 +19,14 @@ public interface EtudiantService {
     Etudiant save(Etudiant etudiant);
 
     /**
+     * Updates a etudiant.
+     *
+     * @param etudiant the entity to update.
+     * @return the persisted entity.
+     */
+    Etudiant update(Etudiant etudiant);
+
+    /**
      * Partially updates a etudiant.
      *
      * @param etudiant the entity to update partially.
@@ -33,6 +41,7 @@ public interface EtudiantService {
      * @return the list of entities.
      */
     Page<Etudiant> findAll(Pageable pageable);
+
     /**
      * Get all the Etudiant where Dossier is {@code null}.
      *

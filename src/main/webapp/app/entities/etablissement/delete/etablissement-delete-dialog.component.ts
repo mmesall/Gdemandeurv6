@@ -1,11 +1,16 @@
 import { Component } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 
+import SharedModule from 'app/shared/shared.module';
 import { IEtablissement } from '../etablissement.model';
 import { EtablissementService } from '../service/etablissement.service';
+import { ITEM_DELETED_EVENT } from 'app/config/navigation.constants';
 
 @Component({
+  standalone: true,
   templateUrl: './etablissement-delete-dialog.component.html',
+  imports: [SharedModule, FormsModule],
 })
 export class EtablissementDeleteDialogComponent {
   etablissement?: IEtablissement;
@@ -18,7 +23,7 @@ export class EtablissementDeleteDialogComponent {
 
   confirmDelete(id: number): void {
     this.etablissementService.delete(id).subscribe(() => {
-      this.activeModal.close('deleted');
+      this.activeModal.close(ITEM_DELETED_EVENT);
     });
   }
 }

@@ -18,6 +18,14 @@ public interface FormationContinueService {
     FormationContinue save(FormationContinue formationContinue);
 
     /**
+     * Updates a formationContinue.
+     *
+     * @param formationContinue the entity to update.
+     * @return the persisted entity.
+     */
+    FormationContinue update(FormationContinue formationContinue);
+
+    /**
      * Partially updates a formationContinue.
      *
      * @param formationContinue the entity to update partially.

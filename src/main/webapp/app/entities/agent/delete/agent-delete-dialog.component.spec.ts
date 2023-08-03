@@ -18,8 +18,7 @@ describe('Agent Management Delete Component', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
-      declarations: [AgentDeleteDialogComponent],
+      imports: [HttpClientTestingModule, AgentDeleteDialogComponent],
       providers: [NgbActiveModal],
     })
       .overrideTemplate(AgentDeleteDialogComponent, '')

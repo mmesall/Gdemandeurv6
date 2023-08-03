@@ -1,14 +1,30 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
+
 import { map } from 'rxjs/operators';
+
 import dayjs from 'dayjs/esm';
 
 import { isPresent } from 'app/core/util/operators';
 import { DATE_FORMAT } from 'app/config/input.constants';
 import { ApplicationConfigService } from 'app/core/config/application-config.service';
 import { createRequestOption } from 'app/core/request/request-util';
-import { IConcours, getConcoursIdentifier } from '../concours.model';
+import { IConcours, NewConcours } from '../concours.model';
+
+export type PartialUpdateConcours = Partial<IConcours> & Pick<IConcours, 'id'>;
+
+type RestOf<T extends IConcours | NewConcours> = Omit<T, 'dateOuverture' | 'dateCloture' | 'dateConcours'> & {
+  dateOuverture?: string | null;
+  dateCloture?: string | null;
+  dateConcours?: string | null;
+};
+
+export type RestConcours = RestOf<IConcours>;
+
+export type NewRestConcours = RestOf<NewConcours>;
+
+export type PartialUpdateRestConcours = RestOf<PartialUpdateConcours>;
 
 export type EntityResponseType = HttpResponse<IConcours>;
 export type EntityArrayResponseType = HttpResponse<IConcours[]>;
@@ -19,51 +35,62 @@ export class ConcoursService {
 
   constructor(protected http: HttpClient, protected applicationConfigService: ApplicationConfigService) {}
 
-  create(concours: IConcours): Observable<EntityResponseType> {
+  create(concours: NewConcours): Observable<EntityResponseType> {
     const copy = this.convertDateFromClient(concours);
     return this.http
-      .post<IConcours>(this.resourceUrl, copy, { observe: 'response' })
-      .pipe(map((res: EntityResponseType) => this.convertDateFromServer(res)));
+      .post<RestConcours>(this.resourceUrl, copy, { observe: 'response' })
+      .pipe(map(res => this.convertResponseFromServer(res)));
   }
 
   update(concours: IConcours): Observable<EntityResponseType> {
     const copy = this.convertDateFromClient(concours);
     return this.http
-      .put<IConcours>(`${this.resourceUrl}/${getConcoursIdentifier(concours) as number}`, copy, { observe: 'response' })
-      .pipe(map((res: EntityResponseType) => this.convertDateFromServer(res)));
+      .put<RestConcours>(`${this.resourceUrl}/${this.getConcoursIdentifier(concours)}`, copy, { observe: 'response' })
+      .pipe(map(res => this.convertResponseFromServer(res)));
   }
 
-  partialUpdate(concours: IConcours): Observable<EntityResponseType> {
+  partialUpdate(concours: PartialUpdateConcours): Observable<EntityResponseType> {
     const copy = this.convertDateFromClient(concours);
     return this.http
-      .patch<IConcours>(`${this.resourceUrl}/${getConcoursIdentifier(concours) as number}`, copy, { observe: 'response' })
-      .pipe(map((res: EntityResponseType) => this.convertDateFromServer(res)));
+      .patch<RestConcours>(`${this.resourceUrl}/${this.getConcoursIdentifier(concours)}`, copy, { observe: 'response' })
+      .pipe(map(res => this.convertResponseFromServer(res)));
   }
 
   find(id: number): Observable<EntityResponseType> {
     return this.http
-      .get<IConcours>(`${this.resourceUrl}/${id}`, { observe: 'response' })
-      .pipe(map((res: EntityResponseType) => this.convertDateFromServer(res)));
+      .get<RestConcours>(`${this.resourceUrl}/${id}`, { observe: 'response' })
+      .pipe(map(res => this.convertResponseFromServer(res)));
   }
 
   query(req?: any): Observable<EntityArrayResponseType> {
     const options = createRequestOption(req);
     return this.http
-      .get<IConcours[]>(this.resourceUrl, { params: options, observe: 'response' })
-      .pipe(map((res: EntityArrayResponseType) => this.convertDateArrayFromServer(res)));
+      .get<RestConcours[]>(this.resourceUrl, { params: options, observe: 'response' })
+      .pipe(map(res => this.convertResponseArrayFromServer(res)));
   }
 
   delete(id: number): Observable<HttpResponse<{}>> {
     return this.http.delete(`${this.resourceUrl}/${id}`, { observe: 'response' });
   }
 
-  addConcoursToCollectionIfMissing(concoursCollection: IConcours[], ...concoursToCheck: (IConcours | null | undefined)[]): IConcours[] {
-    const concours: IConcours[] = concoursToCheck.filter(isPresent);
+  getConcoursIdentifier(concours: Pick<IConcours, 'id'>): number {
+    return concours.id;
+  }
+
+  compareConcours(o1: Pick<IConcours, 'id'> | null, o2: Pick<IConcours, 'id'> | null): boolean {
+    return o1 && o2 ? this.getConcoursIdentifier(o1) === this.getConcoursIdentifier(o2) : o1 === o2;
+  }
+
+  addConcoursToCollectionIfMissing<Type extends Pick<IConcours, 'id'>>(
+    concoursCollection: Type[],
+    ...concoursToCheck: (Type | null | undefined)[]
+  ): Type[] {
+    const concours: Type[] = concoursToCheck.filter(isPresent);
     if (concours.length > 0) {
-      const concoursCollectionIdentifiers = concoursCollection.map(concoursItem => getConcoursIdentifier(concoursItem)!);
+      const concoursCollectionIdentifiers = concoursCollection.map(concoursItem => this.getConcoursIdentifier(concoursItem)!);
       const concoursToAdd = concours.filter(concoursItem => {
-        const concoursIdentifier = getConcoursIdentifier(concoursItem);
-        if (concoursIdentifier == null || concoursCollectionIdentifiers.includes(concoursIdentifier)) {
+        const concoursIdentifier = this.getConcoursIdentifier(concoursItem);
+        if (concoursCollectionIdentifiers.includes(concoursIdentifier)) {
           return false;
         }
         concoursCollectionIdentifiers.push(concoursIdentifier);
@@ -74,31 +101,33 @@ export class ConcoursService {
     return concoursCollection;
   }
 
-  protected convertDateFromClient(concours: IConcours): IConcours {
-    return Object.assign({}, concours, {
-      dateOuverture: concours.dateOuverture?.isValid() ? concours.dateOuverture.format(DATE_FORMAT) : undefined,
-      dateCloture: concours.dateCloture?.isValid() ? concours.dateCloture.format(DATE_FORMAT) : undefined,
-      dateConcours: concours.dateConcours?.isValid() ? concours.dateConcours.format(DATE_FORMAT) : undefined,
+  protected convertDateFromClient<T extends IConcours | NewConcours | PartialUpdateConcours>(concours: T): RestOf<T> {
+    return {
+      ...concours,
+      dateOuverture: concours.dateOuverture?.format(DATE_FORMAT) ?? null,
+      dateCloture: concours.dateCloture?.format(DATE_FORMAT) ?? null,
+      dateConcours: concours.dateConcours?.format(DATE_FORMAT) ?? null,
+    };
+  }
+
+  protected convertDateFromServer(restConcours: RestConcours): IConcours {
+    return {
+      ...restConcours,
+      dateOuverture: restConcours.dateOuverture ? dayjs(restConcours.dateOuverture) : undefined,
+      dateCloture: restConcours.dateCloture ? dayjs(restConcours.dateCloture) : undefined,
+      dateConcours: restConcours.dateConcours ? dayjs(restConcours.dateConcours) : undefined,
+    };
+  }
+
+  protected convertResponseFromServer(res: HttpResponse<RestConcours>): HttpResponse<IConcours> {
+    return res.clone({
+      body: res.body ? this.convertDateFromServer(res.body) : null,
     });
   }
 
-  protected convertDateFromServer(res: EntityResponseType): EntityResponseType {
-    if (res.body) {
-      res.body.dateOuverture = res.body.dateOuverture ? dayjs(res.body.dateOuverture) : undefined;
-      res.body.dateCloture = res.body.dateCloture ? dayjs(res.body.dateCloture) : undefined;
-      res.body.dateConcours = res.body.dateConcours ? dayjs(res.body.dateConcours) : undefined;
-    }
-    return res;
-  }
-
-  protected convertDateArrayFromServer(res: EntityArrayResponseType): EntityArrayResponseType {
-    if (res.body) {
-      res.body.forEach((concours: IConcours) => {
-        concours.dateOuverture = concours.dateOuverture ? dayjs(concours.dateOuverture) : undefined;
-        concours.dateCloture = concours.dateCloture ? dayjs(concours.dateCloture) : undefined;
-        concours.dateConcours = concours.dateConcours ? dayjs(concours.dateConcours) : undefined;
-      });
-    }
-    return res;
+  protected convertResponseArrayFromServer(res: HttpResponse<RestConcours[]>): HttpResponse<IConcours[]> {
+    return res.clone({
+      body: res.body ? res.body.map(item => this.convertDateFromServer(item)) : null,
+    });
   }
 }

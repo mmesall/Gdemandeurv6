@@ -1,9 +1,9 @@
 package mfpai.gouv.sn.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import jakarta.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDate;
-import javax.persistence.*;
 import mfpai.gouv.sn.domain.enumeration.NiveauEtude;
 import mfpai.gouv.sn.domain.enumeration.NomEtablissement;
 import org.hibernate.annotations.Cache;
@@ -15,6 +15,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Entity
 @Table(name = "concours")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+@SuppressWarnings("common-java:DuplicatedBlocks")
 public class Concours implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -51,8 +52,11 @@ public class Concours implements Serializable {
     @Column(name = "affiche_content_type")
     private String afficheContentType;
 
-    @JsonIgnoreProperties(value = { "etablissements", "priseEnCharge" }, allowSetters = true)
-    @OneToOne
+    @JsonIgnoreProperties(
+        value = { "etablissements", "priseEnCharge", "formationInitiale", "formationContinue", "concours" },
+        allowSetters = true
+    )
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(unique = true)
     private Formation formation;
 

@@ -1,12 +1,12 @@
 package mfpai.gouv.sn.web.rest;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 import mfpai.gouv.sn.domain.Experience;
 import mfpai.gouv.sn.repository.ExperienceRepository;
 import mfpai.gouv.sn.service.ExperienceService;
@@ -95,7 +95,7 @@ public class ExperienceResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        Experience result = experienceService.save(experience);
+        Experience result = experienceService.update(experience);
         return ResponseEntity
             .ok()
             .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, experience.getId().toString()))
@@ -147,8 +147,8 @@ public class ExperienceResource {
      */
     @GetMapping("/experiences")
     public ResponseEntity<List<Experience>> getAllExperiences(
-        @org.springdoc.api.annotations.ParameterObject Pageable pageable,
-        @RequestParam(required = false, defaultValue = "true") boolean eagerload
+        @org.springdoc.core.annotations.ParameterObject Pageable pageable,
+        @RequestParam(required = false, defaultValue = "false") boolean eagerload
     ) {
         log.debug("REST request to get a page of Experiences");
         Page<Experience> page;

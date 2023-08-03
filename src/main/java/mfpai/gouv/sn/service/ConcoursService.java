@@ -18,6 +18,14 @@ public interface ConcoursService {
     Concours save(Concours concours);
 
     /**
+     * Updates a concours.
+     *
+     * @param concours the entity to update.
+     * @return the persisted entity.
+     */
+    Concours update(Concours concours);
+
+    /**
      * Partially updates a concours.
      *
      * @param concours the entity to update partially.

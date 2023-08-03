@@ -39,6 +39,7 @@
       "otherEntityName": "eleve",
       "otherEntityRelationshipName": "candidatureElev",
       "relationshipName": "eleve",
+      "relationshipSide": "right",
       "relationshipType": "many-to-one"
     },
     {
@@ -46,8 +47,10 @@
       "otherEntityName": "formationInitiale",
       "otherEntityRelationshipName": "candidatureElev",
       "relationshipName": "formationInitiale",
+      "relationshipSide": "right",
       "relationshipType": "many-to-one"
     }
   ],
+  "searchEngine": "no",
   "service": "serviceImpl"
 }

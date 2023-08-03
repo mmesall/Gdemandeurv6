@@ -1,12 +1,12 @@
 package mfpai.gouv.sn.web.rest;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 import mfpai.gouv.sn.domain.Demandeur;
 import mfpai.gouv.sn.repository.DemandeurRepository;
 import mfpai.gouv.sn.service.DemandeurService;
@@ -95,7 +95,7 @@ public class DemandeurResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        Demandeur result = demandeurService.save(demandeur);
+        Demandeur result = demandeurService.update(demandeur);
         return ResponseEntity
             .ok()
             .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, demandeur.getId().toString()))
@@ -147,8 +147,8 @@ public class DemandeurResource {
      */
     @GetMapping("/demandeurs")
     public ResponseEntity<List<Demandeur>> getAllDemandeurs(
-        @org.springdoc.api.annotations.ParameterObject Pageable pageable,
-        @RequestParam(required = false, defaultValue = "true") boolean eagerload
+        @org.springdoc.core.annotations.ParameterObject Pageable pageable,
+        @RequestParam(required = false, defaultValue = "false") boolean eagerload
     ) {
         log.debug("REST request to get a page of Demandeurs");
         Page<Demandeur> page;

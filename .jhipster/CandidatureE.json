@@ -1,8 +1,6 @@
 {
   "applications": "*",
   "changelogDate": "20230510150029",
-  "dto": "no",
-  "embedded": false,
   "entityTableName": "candidature_e",
   "fields": [
     {
@@ -25,20 +23,18 @@
     {
       "fieldName": "resultat",
       "fieldType": "Resultat",
-      "fieldValues": "SOUMIS,ACCORD,REJET"
+      "fieldValues": "SOUMIS,VALIDE,APPROUVE,REJETE"
     }
   ],
-  "fluentMethods": true,
-  "jpaMetamodelFiltering": false,
   "name": "CandidatureE",
   "pagination": "infinite-scroll",
-  "readOnly": false,
   "relationships": [
     {
       "otherEntityField": "niveauEtude",
       "otherEntityName": "eleve",
       "otherEntityRelationshipName": "candidatureE",
       "relationshipName": "eleve",
+      "relationshipSide": "right",
       "relationshipType": "many-to-one"
     },
     {
@@ -46,6 +42,7 @@
       "otherEntityName": "etudiant",
       "otherEntityRelationshipName": "candidatureE",
       "relationshipName": "etudiant",
+      "relationshipSide": "right",
       "relationshipType": "many-to-one"
     },
     {
@@ -53,6 +50,7 @@
       "otherEntityName": "formationInitiale",
       "otherEntityRelationshipName": "candidatureE",
       "relationshipName": "formationInitiale",
+      "relationshipSide": "right",
       "relationshipType": "many-to-one"
     },
     {
@@ -60,8 +58,10 @@
       "otherEntityName": "etablissement",
       "otherEntityRelationshipName": "candidatureE",
       "relationshipName": "etablissement",
+      "relationshipSide": "right",
       "relationshipType": "many-to-one"
     }
   ],
+  "searchEngine": "no",
   "service": "serviceImpl"
 }

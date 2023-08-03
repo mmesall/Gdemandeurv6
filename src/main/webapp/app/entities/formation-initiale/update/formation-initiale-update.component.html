@@ -1,18 +1,26 @@
 <div class="d-flex justify-content-center">
   <div class="col-8">
     <form name="editForm" role="form" novalidate (ngSubmit)="save()" [formGroup]="editForm">
-      <h2 id="jhi-formation-initiale-heading" data-cy="FormationInitialeCreateUpdateHeading">Create or edit a Formation Initiale</h2>
+      <h2
+        id="jhi-formation-initiale-heading"
+        data-cy="FormationInitialeCreateUpdateHeading"
+        jhiTranslate="jhipsterProjectBaseJwtApp.formationInitiale.home.createOrEditLabel"
+      >
+        Créer ou éditer un Formation Initiale
+      </h2>
 
       <div>
         <jhi-alert-error></jhi-alert-error>
 
-        <div class="row mb-3" [hidden]="editForm.get('id')!.value == null">
-          <label class="form-label" for="field_id">ID</label>
+        <div class="mb-3" *ngIf="editForm.controls.id.value !== null">
+          <label class="form-label" jhiTranslate="global.field.id" for="field_id">ID</label>
           <input type="number" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
         </div>
 
-        <div class="row mb-3">
-          <label class="form-label" for="field_nomFormationI">Nom Formation I</label>
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="jhipsterProjectBaseJwtApp.formationInitiale.nomFormationI" for="field_nomFormationI"
+            >Nom Formation I</label
+          >
           <input
             type="text"
             class="form-control"
@@ -23,21 +31,25 @@
           />
         </div>
 
-        <div class="row mb-3">
-          <label class="form-label" for="field_duree">Duree</label>
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="jhipsterProjectBaseJwtApp.formationInitiale.duree" for="field_duree">Duree</label>
           <input type="text" class="form-control" name="duree" id="field_duree" data-cy="duree" formControlName="duree" />
         </div>
 
-        <div class="row mb-3">
-          <label class="form-label" for="field_admission">Admission</label>
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="jhipsterProjectBaseJwtApp.formationInitiale.admission" for="field_admission"
+            >Admission</label
+          >
           <select class="form-control" name="admission" formControlName="admission" id="field_admission" data-cy="admission">
             <option [ngValue]="null"></option>
             <option *ngFor="let admission of admissionValues" [value]="admission">{{ admission }}</option>
           </select>
         </div>
 
-        <div class="row mb-3">
-          <label class="form-label" for="field_diplomeRequis">Diplome Requis</label>
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="jhipsterProjectBaseJwtApp.formationInitiale.diplomeRequis" for="field_diplomeRequis"
+            >Diplome Requis</label
+          >
           <select
             class="form-control"
             name="diplomeRequis"
@@ -50,29 +62,34 @@
           </select>
         </div>
 
-        <div class="row mb-3">
-          <label class="form-label" for="field_niveauEtude">Niveau Etude</label>
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="jhipsterProjectBaseJwtApp.formationInitiale.niveauEtude" for="field_niveauEtude"
+            >Niveau Etude</label
+          >
           <select class="form-control" name="niveauEtude" formControlName="niveauEtude" id="field_niveauEtude" data-cy="niveauEtude">
             <option [ngValue]="null"></option>
             <option *ngFor="let niveauEtude of niveauEtudeValues" [value]="niveauEtude">{{ niveauEtude }}</option>
           </select>
         </div>
 
-        <div class="row mb-3">
-          <label class="form-label" for="field_ficheFormation">Fiche Formation</label>
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="jhipsterProjectBaseJwtApp.formationInitiale.ficheFormation" for="field_ficheFormation"
+            >Fiche Formation</label
+          >
           <div>
             <div *ngIf="editForm.get('ficheFormation')!.value" class="form-text text-danger clearfix">
               <a
                 class="pull-start"
-                (click)="openFile(editForm.get('ficheFormation')!.value, editForm.get('ficheFormationContentType')!.value)"
-                >open</a
+                (click)="openFile(editForm.get('ficheFormation')!.value!, editForm.get('ficheFormationContentType')!.value!)"
+                jhiTranslate="entity.action.open"
+                >Ouvrir</a
               ><br />
               <span class="pull-start"
-                >{{ editForm.get('ficheFormationContentType')!.value }}, {{ byteSize(editForm.get('ficheFormation')!.value) }}</span
+                >{{ editForm.get('ficheFormationContentType')!.value }}, {{ byteSize(editForm.get('ficheFormation')!.value!) }}</span
               >
               <button
                 type="button"
-                (click)="editForm.patchValue({ ficheFormation: null }); editForm.patchValue({ ficheFormationContentType: null })"
+                (click)="editForm.patchValue({ ficheFormation: undefined, ficheFormationContentType: undefined })"
                 class="btn btn-secondary btn-xs pull-end"
               >
                 <fa-icon icon="times"></fa-icon>
@@ -97,40 +114,42 @@
           />
         </div>
 
-        <div class="row mb-3">
-          <label class="form-label" for="field_filiere">Filiere</label>
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="jhipsterProjectBaseJwtApp.formationInitiale.filiere" for="field_filiere">Filiere</label>
           <select class="form-control" name="filiere" formControlName="filiere" id="field_filiere" data-cy="filiere">
             <option [ngValue]="null"></option>
-            <option *ngFor="let nomFiliere of nomFiliereValues" [value]="nomFiliere">nomFiliere</option>
+            <option *ngFor="let nomFiliere of nomFiliereValues" [value]="nomFiliere">{{ nomFiliere }}</option>
           </select>
         </div>
 
-        <div class="row mb-3">
-          <label class="form-label" for="field_serie">Serie</label>
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="jhipsterProjectBaseJwtApp.formationInitiale.serie" for="field_serie">Serie</label>
           <select class="form-control" name="serie" formControlName="serie" id="field_serie" data-cy="serie">
             <option [ngValue]="null"></option>
-            <option *ngFor="let nomSerie of nomSerieValues" [value]="nomSerie">nomSerie</option>
+            <option *ngFor="let nomSerie of nomSerieValues" [value]="nomSerie">{{ nomSerie }}</option>
           </select>
         </div>
 
-        <div class="row mb-3">
-          <label class="form-label" for="field_cfp">Cfp</label>
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="jhipsterProjectBaseJwtApp.formationInitiale.cfp" for="field_cfp">Cfp</label>
           <select class="form-control" name="cfp" formControlName="cfp" id="field_cfp" data-cy="cfp">
             <option [ngValue]="null"></option>
-            <option *ngFor="let cFP of cFPValues" [value]="cFP">cFP</option>
+            <option *ngFor="let cFP of cFPValues" [value]="cFP">{{ cFP }}</option>
           </select>
         </div>
 
-        <div class="row mb-3">
-          <label class="form-label" for="field_lycee">Lycee</label>
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="jhipsterProjectBaseJwtApp.formationInitiale.lycee" for="field_lycee">Lycee</label>
           <select class="form-control" name="lycee" formControlName="lycee" id="field_lycee" data-cy="lycee">
             <option [ngValue]="null"></option>
-            <option *ngFor="let lYCEE of lYCEEValues" [value]="lYCEE">lYCEE</option>
+            <option *ngFor="let lYCEE of lYCEEValues" [value]="lYCEE">{{ lYCEE }}</option>
           </select>
         </div>
 
-        <div class="row mb-3">
-          <label class="form-label" for="field_nomConcours">Nom Concours</label>
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="jhipsterProjectBaseJwtApp.formationInitiale.nomConcours" for="field_nomConcours"
+            >Nom Concours</label
+          >
           <input
             type="text"
             class="form-control"
@@ -141,8 +160,10 @@
           />
         </div>
 
-        <div class="row mb-3">
-          <label class="form-label" for="field_dateOuverture">Date Ouverture</label>
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="jhipsterProjectBaseJwtApp.formationInitiale.dateOuverture" for="field_dateOuverture"
+            >Date Ouverture</label
+          >
           <div class="input-group">
             <input
               id="field_dateOuverture"
@@ -160,8 +181,10 @@
           </div>
         </div>
 
-        <div class="row mb-3">
-          <label class="form-label" for="field_dateCloture">Date Cloture</label>
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="jhipsterProjectBaseJwtApp.formationInitiale.dateCloture" for="field_dateCloture"
+            >Date Cloture</label
+          >
           <div class="input-group">
             <input
               id="field_dateCloture"
@@ -179,8 +202,10 @@
           </div>
         </div>
 
-        <div class="row mb-3">
-          <label class="form-label" for="field_dateConcours">Date Concours</label>
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="jhipsterProjectBaseJwtApp.formationInitiale.dateConcours" for="field_dateConcours"
+            >Date Concours</label
+          >
           <div class="input-group">
             <input
               id="field_dateConcours"
@@ -198,16 +223,20 @@
           </div>
         </div>
 
-        <div class="row mb-3">
-          <label class="form-label" for="field_nomDiplome">Nom Diplome</label>
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="jhipsterProjectBaseJwtApp.formationInitiale.nomDiplome" for="field_nomDiplome"
+            >Nom Diplome</label
+          >
           <select class="form-control" name="nomDiplome" formControlName="nomDiplome" id="field_nomDiplome" data-cy="nomDiplome">
             <option [ngValue]="null"></option>
-            <option *ngFor="let diplomeObtenu of diplomeObtenuValues" [value]="diplomeObtenu">diplomeObtenu</option>
+            <option *ngFor="let diplomeObtenu of diplomeObtenuValues" [value]="diplomeObtenu">{{ diplomeObtenu }}</option>
           </select>
         </div>
 
-        <div class="row mb-3">
-          <label class="form-label" for="field_nomDebouche">Nom Debouche</label>
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="jhipsterProjectBaseJwtApp.formationInitiale.nomDebouche" for="field_nomDebouche"
+            >Nom Debouche</label
+          >
           <input
             type="text"
             class="form-control"
@@ -218,23 +247,27 @@
           />
         </div>
 
-        <div class="row mb-3">
-          <label class="form-label" for="field_formation">Formation</label>
-          <select class="form-control" id="field_formation" data-cy="formation" name="formation" formControlName="formation">
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="jhipsterProjectBaseJwtApp.formationInitiale.formation" for="field_formation"
+            >Formation</label
+          >
+          <select
+            class="form-control"
+            id="field_formation"
+            data-cy="formation"
+            name="formation"
+            formControlName="formation"
+            [compareWith]="compareFormation"
+          >
             <option [ngValue]="null"></option>
-            <option
-              [ngValue]="formationOption.id === editForm.get('formation')!.value?.id ? editForm.get('formation')!.value : formationOption"
-              *ngFor="let formationOption of formationsCollection; trackBy: trackFormationById"
-            >
-              {{ formationOption.id }}
-            </option>
+            <option [ngValue]="formationOption" *ngFor="let formationOption of formationsCollection">{{ formationOption.id }}</option>
           </select>
         </div>
       </div>
 
       <div>
         <button type="button" id="cancel-save" data-cy="entityCreateCancelButton" class="btn btn-secondary" (click)="previousState()">
-          <fa-icon icon="ban"></fa-icon>&nbsp;<span>Cancel</span>
+          <fa-icon icon="ban"></fa-icon>&nbsp;<span jhiTranslate="entity.action.cancel">Annuler</span>
         </button>
 
         <button
@@ -244,7 +277,7 @@
           [disabled]="editForm.invalid || isSaving"
           class="btn btn-primary"
         >
-          <fa-icon icon="save"></fa-icon>&nbsp;<span>Save</span>
+          <fa-icon icon="save"></fa-icon>&nbsp;<span jhiTranslate="entity.action.save">Sauvegarder</span>
         </button>
       </div>
     </form>

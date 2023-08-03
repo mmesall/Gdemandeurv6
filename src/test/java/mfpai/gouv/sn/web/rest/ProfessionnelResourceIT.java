@@ -2,25 +2,34 @@ package mfpai.gouv.sn.web.rest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import jakarta.persistence.EntityManager;
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicLong;
-import javax.persistence.EntityManager;
 import mfpai.gouv.sn.IntegrationTest;
 import mfpai.gouv.sn.domain.Professionnel;
 import mfpai.gouv.sn.domain.enumeration.NomDepartement;
 import mfpai.gouv.sn.domain.enumeration.NomRegion;
 import mfpai.gouv.sn.domain.enumeration.Sexe;
 import mfpai.gouv.sn.repository.ProfessionnelRepository;
+import mfpai.gouv.sn.service.ProfessionnelService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
@@ -30,6 +39,7 @@ import org.springframework.transaction.annotation.Transactional;
  * Integration tests for the {@link ProfessionnelResource} REST controller.
  */
 @IntegrationTest
+@ExtendWith(MockitoExtension.class)
 @AutoConfigureMockMvc
 @WithMockUser
 class ProfessionnelResourceIT {
@@ -78,6 +88,12 @@ class ProfessionnelResourceIT {
 
     @Autowired
     private ProfessionnelRepository professionnelRepository;
+
+    @Mock
+    private ProfessionnelRepository professionnelRepositoryMock;
+
+    @Mock
+    private ProfessionnelService professionnelServiceMock;
 
     @Autowired
     private EntityManager em;
@@ -277,6 +293,23 @@ class ProfessionnelResourceIT {
             .andExpect(jsonPath("$.[*].cni").value(hasItem(DEFAULT_CNI.intValue())));
     }
 
+    @SuppressWarnings({ "unchecked" })
+    void getAllProfessionnelsWithEagerRelationshipsIsEnabled() throws Exception {
+        when(professionnelServiceMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
+
+        restProfessionnelMockMvc.perform(get(ENTITY_API_URL + "?eagerload=true")).andExpect(status().isOk());
+
+        verify(professionnelServiceMock, times(1)).findAllWithEagerRelationships(any());
+    }
+
+    @SuppressWarnings({ "unchecked" })
+    void getAllProfessionnelsWithEagerRelationshipsIsNotEnabled() throws Exception {
+        when(professionnelServiceMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
+
+        restProfessionnelMockMvc.perform(get(ENTITY_API_URL + "?eagerload=false")).andExpect(status().isOk());
+        verify(professionnelRepositoryMock, times(1)).findAll(any(Pageable.class));
+    }
+
     @Test
     @Transactional
     void getProfessionnel() throws Exception {
@@ -312,14 +345,14 @@ class ProfessionnelResourceIT {
 
     @Test
     @Transactional
-    void putNewProfessionnel() throws Exception {
+    void putExistingProfessionnel() throws Exception {
         // Initialize the database
         professionnelRepository.saveAndFlush(professionnel);
 
         int databaseSizeBeforeUpdate = professionnelRepository.findAll().size();
 
         // Update the professionnel
-        Professionnel updatedProfessionnel = professionnelRepository.findById(professionnel.getId()).get();
+        Professionnel updatedProfessionnel = professionnelRepository.findById(professionnel.getId()).orElseThrow();
         // Disconnect from session so that the updates on updatedProfessionnel are not directly saved in db
         em.detach(updatedProfessionnel);
         updatedProfessionnel
@@ -435,8 +468,9 @@ class ProfessionnelResourceIT {
             .nom(UPDATED_NOM)
             .sexe(UPDATED_SEXE)
             .telephone(UPDATED_TELEPHONE)
-            .departResidence(UPDATED_DEPART_RESIDENCE)
-            .cni(UPDATED_CNI);
+            .adressePhysique(UPDATED_ADRESSE_PHYSIQUE)
+            .regionResidence(UPDATED_REGION_RESIDENCE)
+            .departResidence(UPDATED_DEPART_RESIDENCE);
 
         restProfessionnelMockMvc
             .perform(
@@ -457,11 +491,11 @@ class ProfessionnelResourceIT {
         assertThat(testProfessionnel.getLieuNaiss()).isEqualTo(DEFAULT_LIEU_NAISS);
         assertThat(testProfessionnel.getSexe()).isEqualTo(UPDATED_SEXE);
         assertThat(testProfessionnel.getTelephone()).isEqualTo(UPDATED_TELEPHONE);
-        assertThat(testProfessionnel.getAdressePhysique()).isEqualTo(DEFAULT_ADRESSE_PHYSIQUE);
-        assertThat(testProfessionnel.getRegionResidence()).isEqualTo(DEFAULT_REGION_RESIDENCE);
+        assertThat(testProfessionnel.getAdressePhysique()).isEqualTo(UPDATED_ADRESSE_PHYSIQUE);
+        assertThat(testProfessionnel.getRegionResidence()).isEqualTo(UPDATED_REGION_RESIDENCE);
         assertThat(testProfessionnel.getDepartResidence()).isEqualTo(UPDATED_DEPART_RESIDENCE);
         assertThat(testProfessionnel.getEmail()).isEqualTo(DEFAULT_EMAIL);
-        assertThat(testProfessionnel.getCni()).isEqualTo(UPDATED_CNI);
+        assertThat(testProfessionnel.getCni()).isEqualTo(DEFAULT_CNI);
     }
 
     @Test

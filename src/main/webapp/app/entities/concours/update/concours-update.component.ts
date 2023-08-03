@@ -1,11 +1,14 @@
 import { Component, OnInit, ElementRef } from '@angular/core';
 import { HttpResponse } from '@angular/common/http';
-import { FormBuilder } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
 import { finalize, map } from 'rxjs/operators';
 
-import { IConcours, Concours } from '../concours.model';
+import SharedModule from 'app/shared/shared.module';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+
+import { ConcoursFormService, ConcoursFormGroup } from './concours-form.service';
+import { IConcours } from '../concours.model';
 import { ConcoursService } from '../service/concours.service';
 import { AlertError } from 'app/shared/alert/alert-error.model';
 import { EventManager, EventWithContent } from 'app/core/util/event-manager.service';
@@ -16,42 +19,39 @@ import { NomEtablissement } from 'app/entities/enumerations/nom-etablissement.mo
 import { NiveauEtude } from 'app/entities/enumerations/niveau-etude.model';
 
 @Component({
+  standalone: true,
   selector: 'jhi-concours-update',
   templateUrl: './concours-update.component.html',
+  imports: [SharedModule, FormsModule, ReactiveFormsModule],
 })
 export class ConcoursUpdateComponent implements OnInit {
   isSaving = false;
+  concours: IConcours | null = null;
   nomEtablissementValues = Object.keys(NomEtablissement);
   niveauEtudeValues = Object.keys(NiveauEtude);
 
   formationsCollection: IFormation[] = [];
 
-  editForm = this.fb.group({
-    id: [],
-    nomConcours: [],
-    nomEtablissement: [],
-    niveauEtude: [],
-    dateOuverture: [],
-    dateCloture: [],
-    dateConcours: [],
-    affiche: [],
-    afficheContentType: [],
-    formation: [],
-  });
+  editForm: ConcoursFormGroup = this.concoursFormService.createConcoursFormGroup();
 
   constructor(
     protected dataUtils: DataUtils,
     protected eventManager: EventManager,
     protected concoursService: ConcoursService,
+    protected concoursFormService: ConcoursFormService,
     protected formationService: FormationService,
     protected elementRef: ElementRef,
-    protected activatedRoute: ActivatedRoute,
-    protected fb: FormBuilder
+    protected activatedRoute: ActivatedRoute
   ) {}
+
+  compareFormation = (o1: IFormation | null, o2: IFormation | null): boolean => this.formationService.compareFormation(o1, o2);
 
   ngOnInit(): void {
     this.activatedRoute.data.subscribe(({ concours }) => {
-      this.updateForm(concours);
+      this.concours = concours;
+      if (concours) {
+        this.updateForm(concours);
+      }
 
       this.loadRelationshipsOptions();
     });
@@ -88,16 +88,12 @@ export class ConcoursUpdateComponent implements OnInit {
 
   save(): void {
     this.isSaving = true;
-    const concours = this.createFromForm();
-    if (concours.id !== undefined) {
+    const concours = this.concoursFormService.getConcours(this.editForm);
+    if (concours.id !== null) {
       this.subscribeToSaveResponse(this.concoursService.update(concours));
     } else {
       this.subscribeToSaveResponse(this.concoursService.create(concours));
     }
-  }
-
-  trackFormationById(index: number, item: IFormation): number {
-    return item.id!;
   }
 
   protected subscribeToSaveResponse(result: Observable<HttpResponse<IConcours>>): void {
@@ -120,20 +116,13 @@ export class ConcoursUpdateComponent implements OnInit {
   }
 
   protected updateForm(concours: IConcours): void {
-    this.editForm.patchValue({
-      id: concours.id,
-      nomConcours: concours.nomConcours,
-      nomEtablissement: concours.nomEtablissement,
-      niveauEtude: concours.niveauEtude,
-      dateOuverture: concours.dateOuverture,
-      dateCloture: concours.dateCloture,
-      dateConcours: concours.dateConcours,
-      affiche: concours.affiche,
-      afficheContentType: concours.afficheContentType,
-      formation: concours.formation,
-    });
+    this.concours = concours;
+    this.concoursFormService.resetForm(this.editForm, concours);
 
-    this.formationsCollection = this.formationService.addFormationToCollectionIfMissing(this.formationsCollection, concours.formation);
+    this.formationsCollection = this.formationService.addFormationToCollectionIfMissing<IFormation>(
+      this.formationsCollection,
+      concours.formation
+    );
   }
 
   protected loadRelationshipsOptions(): void {
@@ -142,25 +131,9 @@ export class ConcoursUpdateComponent implements OnInit {
       .pipe(map((res: HttpResponse<IFormation[]>) => res.body ?? []))
       .pipe(
         map((formations: IFormation[]) =>
-          this.formationService.addFormationToCollectionIfMissing(formations, this.editForm.get('formation')!.value)
+          this.formationService.addFormationToCollectionIfMissing<IFormation>(formations, this.concours?.formation)
         )
       )
       .subscribe((formations: IFormation[]) => (this.formationsCollection = formations));
-  }
-
-  protected createFromForm(): IConcours {
-    return {
-      ...new Concours(),
-      id: this.editForm.get(['id'])!.value,
-      nomConcours: this.editForm.get(['nomConcours'])!.value,
-      nomEtablissement: this.editForm.get(['nomEtablissement'])!.value,
-      niveauEtude: this.editForm.get(['niveauEtude'])!.value,
-      dateOuverture: this.editForm.get(['dateOuverture'])!.value,
-      dateCloture: this.editForm.get(['dateCloture'])!.value,
-      dateConcours: this.editForm.get(['dateConcours'])!.value,
-      afficheContentType: this.editForm.get(['afficheContentType'])!.value,
-      affiche: this.editForm.get(['affiche'])!.value,
-      formation: this.editForm.get(['formation'])!.value,
-    };
   }
 }

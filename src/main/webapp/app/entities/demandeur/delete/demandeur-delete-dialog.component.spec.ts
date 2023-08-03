@@ -18,8 +18,7 @@ describe('Demandeur Management Delete Component', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
-      declarations: [DemandeurDeleteDialogComponent],
+      imports: [HttpClientTestingModule, DemandeurDeleteDialogComponent],
       providers: [NgbActiveModal],
     })
       .overrideTemplate(DemandeurDeleteDialogComponent, '')

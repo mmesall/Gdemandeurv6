@@ -4,21 +4,21 @@
       <h2
         id="jhi-experience-heading"
         data-cy="ExperienceCreateUpdateHeading"
-        style="text-align: center; font-style: italic; font-weight: bold"
+        jhiTranslate="jhipsterProjectBaseJwtApp.experience.home.createOrEditLabel"
       >
-        Ajouter une nouvelle experience
+        Créer ou éditer un Experience
       </h2>
 
       <div>
         <jhi-alert-error></jhi-alert-error>
 
-        <div class="row mb-3" [hidden]="editForm.get('id')!.value == null">
-          <label class="form-label" for="field_id">ID</label>
+        <div class="mb-3" *ngIf="editForm.controls.id.value !== null">
+          <label class="form-label" jhiTranslate="global.field.id" for="field_id">ID</label>
           <input type="number" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
         </div>
 
-        <div class="row mb-3">
-          <label class="form-label" for="field_dateDebut">Date Debut</label>
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="jhipsterProjectBaseJwtApp.experience.dateDebut" for="field_dateDebut">Date Debut</label>
           <div class="input-group">
             <input
               id="field_dateDebut"
@@ -33,12 +33,18 @@
             <button type="button" class="btn btn-secondary" (click)="dateDebutDp.toggle()"><fa-icon icon="calendar-alt"></fa-icon></button>
           </div>
           <div *ngIf="editForm.get('dateDebut')!.invalid && (editForm.get('dateDebut')!.dirty || editForm.get('dateDebut')!.touched)">
-            <small class="form-text text-danger" *ngIf="editForm.get('dateDebut')?.errors?.required"> This field is required. </small>
+            <small
+              class="form-text text-danger"
+              *ngIf="editForm.get('dateDebut')?.errors?.required"
+              jhiTranslate="entity.validation.required"
+            >
+              Ce champ est obligatoire.
+            </small>
           </div>
         </div>
 
-        <div class="row mb-3">
-          <label class="form-label" for="field_dateFin">Date Fin</label>
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="jhipsterProjectBaseJwtApp.experience.dateFin" for="field_dateFin">Date Fin</label>
           <div class="input-group">
             <input
               id="field_dateFin"
@@ -53,12 +59,20 @@
             <button type="button" class="btn btn-secondary" (click)="dateFinDp.toggle()"><fa-icon icon="calendar-alt"></fa-icon></button>
           </div>
           <div *ngIf="editForm.get('dateFin')!.invalid && (editForm.get('dateFin')!.dirty || editForm.get('dateFin')!.touched)">
-            <small class="form-text text-danger" *ngIf="editForm.get('dateFin')?.errors?.required"> This field is required. </small>
+            <small
+              class="form-text text-danger"
+              *ngIf="editForm.get('dateFin')?.errors?.required"
+              jhiTranslate="entity.validation.required"
+            >
+              Ce champ est obligatoire.
+            </small>
           </div>
         </div>
 
-        <div class="row mb-3">
-          <label class="form-label" for="field_nomEntreprise">Nom Entreprise</label>
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="jhipsterProjectBaseJwtApp.experience.nomEntreprise" for="field_nomEntreprise"
+            >Nom Entreprise</label
+          >
           <input
             type="text"
             class="form-control"
@@ -72,12 +86,20 @@
               editForm.get('nomEntreprise')!.invalid && (editForm.get('nomEntreprise')!.dirty || editForm.get('nomEntreprise')!.touched)
             "
           >
-            <small class="form-text text-danger" *ngIf="editForm.get('nomEntreprise')?.errors?.required"> This field is required. </small>
+            <small
+              class="form-text text-danger"
+              *ngIf="editForm.get('nomEntreprise')?.errors?.required"
+              jhiTranslate="entity.validation.required"
+            >
+              Ce champ est obligatoire.
+            </small>
           </div>
         </div>
 
-        <div class="row mb-3">
-          <label class="form-label" for="field_posteOccupe">Poste Occupe</label>
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="jhipsterProjectBaseJwtApp.experience.posteOccupe" for="field_posteOccupe"
+            >Poste Occupe</label
+          >
           <input
             type="text"
             class="form-control"
@@ -87,72 +109,77 @@
             formControlName="posteOccupe"
           />
           <div *ngIf="editForm.get('posteOccupe')!.invalid && (editForm.get('posteOccupe')!.dirty || editForm.get('posteOccupe')!.touched)">
-            <small class="form-text text-danger" *ngIf="editForm.get('posteOccupe')?.errors?.required"> This field is required. </small>
+            <small
+              class="form-text text-danger"
+              *ngIf="editForm.get('posteOccupe')?.errors?.required"
+              jhiTranslate="entity.validation.required"
+            >
+              Ce champ est obligatoire.
+            </small>
           </div>
         </div>
 
-        <div class="row mb-3">
-          <label class="form-label" for="field_mission">Mission</label>
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="jhipsterProjectBaseJwtApp.experience.mission" for="field_mission">Mission</label>
           <textarea class="form-control" name="mission" id="field_mission" data-cy="mission" formControlName="mission"></textarea>
         </div>
 
-        <div *jhiHasAnyAuthority="'ROLE_ADMIN'" class="row mb-3">
-          <label class="form-label" for="field_eleve">Eleve</label>
-          <select class="form-control" id="field_eleve" data-cy="eleve" name="eleve" formControlName="eleve">
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="jhipsterProjectBaseJwtApp.experience.eleve" for="field_eleve">Eleve</label>
+          <select class="form-control" id="field_eleve" data-cy="eleve" name="eleve" formControlName="eleve" [compareWith]="compareEleve">
             <option [ngValue]="null"></option>
-            <option
-              [ngValue]="eleveOption.id === editForm.get('eleve')!.value?.id ? editForm.get('eleve')!.value : eleveOption"
-              *ngFor="let eleveOption of elevesSharedCollection; trackBy: trackEleveById"
-            >
-              {{ eleveOption.niveauEtude }}
-            </option>
+            <option [ngValue]="eleveOption" *ngFor="let eleveOption of elevesSharedCollection">{{ eleveOption.niveauEtude }}</option>
           </select>
         </div>
 
-        <div *jhiHasAnyAuthority="'ROLE_ADMIN'" class="row mb-3">
-          <label class="form-label" for="field_etudiant">Etudiant</label>
-          <select class="form-control" id="field_etudiant" data-cy="etudiant" name="etudiant" formControlName="etudiant">
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="jhipsterProjectBaseJwtApp.experience.etudiant" for="field_etudiant">Etudiant</label>
+          <select
+            class="form-control"
+            id="field_etudiant"
+            data-cy="etudiant"
+            name="etudiant"
+            formControlName="etudiant"
+            [compareWith]="compareEtudiant"
+          >
             <option [ngValue]="null"></option>
-            <option
-              [ngValue]="etudiantOption.id === editForm.get('etudiant')!.value?.id ? editForm.get('etudiant')!.value : etudiantOption"
-              *ngFor="let etudiantOption of etudiantsSharedCollection; trackBy: trackEtudiantById"
-            >
+            <option [ngValue]="etudiantOption" *ngFor="let etudiantOption of etudiantsSharedCollection">
               {{ etudiantOption.carteEtudiant }}
             </option>
           </select>
         </div>
 
-        <div *jhiHasAnyAuthority="'ROLE_ADMIN'" class="row mb-3">
-          <label class="form-label" for="field_professionnel">Professionnel</label>
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="jhipsterProjectBaseJwtApp.experience.professionnel" for="field_professionnel"
+            >Professionnel</label
+          >
           <select
             class="form-control"
             id="field_professionnel"
             data-cy="professionnel"
             name="professionnel"
             formControlName="professionnel"
+            [compareWith]="compareProfessionnel"
           >
             <option [ngValue]="null"></option>
-            <option
-              [ngValue]="
-                professionnelOption.id === editForm.get('professionnel')!.value?.id
-                  ? editForm.get('professionnel')!.value
-                  : professionnelOption
-              "
-              *ngFor="let professionnelOption of professionnelsSharedCollection; trackBy: trackProfessionnelById"
-            >
+            <option [ngValue]="professionnelOption" *ngFor="let professionnelOption of professionnelsSharedCollection">
               {{ professionnelOption.profession }}
             </option>
           </select>
         </div>
 
-        <div *jhiHasAnyAuthority="'ROLE_ADMIN'" class="row mb-3">
-          <label class="form-label" for="field_demandeur">Demandeur</label>
-          <select class="form-control" id="field_demandeur" data-cy="demandeur" name="demandeur" formControlName="demandeur">
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="jhipsterProjectBaseJwtApp.experience.demandeur" for="field_demandeur">Demandeur</label>
+          <select
+            class="form-control"
+            id="field_demandeur"
+            data-cy="demandeur"
+            name="demandeur"
+            formControlName="demandeur"
+            [compareWith]="compareDemandeur"
+          >
             <option [ngValue]="null"></option>
-            <option
-              [ngValue]="demandeurOption.id === editForm.get('demandeur')!.value?.id ? editForm.get('demandeur')!.value : demandeurOption"
-              *ngFor="let demandeurOption of demandeursSharedCollection; trackBy: trackDemandeurById"
-            >
+            <option [ngValue]="demandeurOption" *ngFor="let demandeurOption of demandeursSharedCollection">
               {{ demandeurOption.profil }}
             </option>
           </select>
@@ -161,7 +188,7 @@
 
       <div>
         <button type="button" id="cancel-save" data-cy="entityCreateCancelButton" class="btn btn-secondary" (click)="previousState()">
-          <fa-icon icon="ban"></fa-icon>&nbsp;<span>Annuler</span>
+          <fa-icon icon="ban"></fa-icon>&nbsp;<span jhiTranslate="entity.action.cancel">Annuler</span>
         </button>
 
         <button
@@ -171,7 +198,7 @@
           [disabled]="editForm.invalid || isSaving"
           class="btn btn-primary"
         >
-          <fa-icon icon="save"></fa-icon>&nbsp;<span>Sauvegarder</span>
+          <fa-icon icon="save"></fa-icon>&nbsp;<span jhiTranslate="entity.action.save">Sauvegarder</span>
         </button>
       </div>
     </form>

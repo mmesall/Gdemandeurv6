@@ -1,14 +1,28 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
+
 import { map } from 'rxjs/operators';
+
 import dayjs from 'dayjs/esm';
 
 import { isPresent } from 'app/core/util/operators';
 import { DATE_FORMAT } from 'app/config/input.constants';
 import { ApplicationConfigService } from 'app/core/config/application-config.service';
 import { createRequestOption } from 'app/core/request/request-util';
-import { IProfessionnel, getProfessionnelIdentifier } from '../professionnel.model';
+import { IProfessionnel, NewProfessionnel } from '../professionnel.model';
+
+export type PartialUpdateProfessionnel = Partial<IProfessionnel> & Pick<IProfessionnel, 'id'>;
+
+type RestOf<T extends IProfessionnel | NewProfessionnel> = Omit<T, 'dateNaiss'> & {
+  dateNaiss?: string | null;
+};
+
+export type RestProfessionnel = RestOf<IProfessionnel>;
+
+export type NewRestProfessionnel = RestOf<NewProfessionnel>;
+
+export type PartialUpdateRestProfessionnel = RestOf<PartialUpdateProfessionnel>;
 
 export type EntityResponseType = HttpResponse<IProfessionnel>;
 export type EntityArrayResponseType = HttpResponse<IProfessionnel[]>;
@@ -19,56 +33,64 @@ export class ProfessionnelService {
 
   constructor(protected http: HttpClient, protected applicationConfigService: ApplicationConfigService) {}
 
-  create(professionnel: IProfessionnel): Observable<EntityResponseType> {
+  create(professionnel: NewProfessionnel): Observable<EntityResponseType> {
     const copy = this.convertDateFromClient(professionnel);
     return this.http
-      .post<IProfessionnel>(this.resourceUrl, copy, { observe: 'response' })
-      .pipe(map((res: EntityResponseType) => this.convertDateFromServer(res)));
+      .post<RestProfessionnel>(this.resourceUrl, copy, { observe: 'response' })
+      .pipe(map(res => this.convertResponseFromServer(res)));
   }
 
   update(professionnel: IProfessionnel): Observable<EntityResponseType> {
     const copy = this.convertDateFromClient(professionnel);
     return this.http
-      .put<IProfessionnel>(`${this.resourceUrl}/${getProfessionnelIdentifier(professionnel) as number}`, copy, { observe: 'response' })
-      .pipe(map((res: EntityResponseType) => this.convertDateFromServer(res)));
+      .put<RestProfessionnel>(`${this.resourceUrl}/${this.getProfessionnelIdentifier(professionnel)}`, copy, { observe: 'response' })
+      .pipe(map(res => this.convertResponseFromServer(res)));
   }
 
-  partialUpdate(professionnel: IProfessionnel): Observable<EntityResponseType> {
+  partialUpdate(professionnel: PartialUpdateProfessionnel): Observable<EntityResponseType> {
     const copy = this.convertDateFromClient(professionnel);
     return this.http
-      .patch<IProfessionnel>(`${this.resourceUrl}/${getProfessionnelIdentifier(professionnel) as number}`, copy, { observe: 'response' })
-      .pipe(map((res: EntityResponseType) => this.convertDateFromServer(res)));
+      .patch<RestProfessionnel>(`${this.resourceUrl}/${this.getProfessionnelIdentifier(professionnel)}`, copy, { observe: 'response' })
+      .pipe(map(res => this.convertResponseFromServer(res)));
   }
 
   find(id: number): Observable<EntityResponseType> {
     return this.http
-      .get<IProfessionnel>(`${this.resourceUrl}/${id}`, { observe: 'response' })
-      .pipe(map((res: EntityResponseType) => this.convertDateFromServer(res)));
+      .get<RestProfessionnel>(`${this.resourceUrl}/${id}`, { observe: 'response' })
+      .pipe(map(res => this.convertResponseFromServer(res)));
   }
 
   query(req?: any): Observable<EntityArrayResponseType> {
     const options = createRequestOption(req);
     return this.http
-      .get<IProfessionnel[]>(this.resourceUrl, { params: options, observe: 'response' })
-      .pipe(map((res: EntityArrayResponseType) => this.convertDateArrayFromServer(res)));
+      .get<RestProfessionnel[]>(this.resourceUrl, { params: options, observe: 'response' })
+      .pipe(map(res => this.convertResponseArrayFromServer(res)));
   }
 
   delete(id: number): Observable<HttpResponse<{}>> {
     return this.http.delete(`${this.resourceUrl}/${id}`, { observe: 'response' });
   }
 
-  addProfessionnelToCollectionIfMissing(
-    professionnelCollection: IProfessionnel[],
-    ...professionnelsToCheck: (IProfessionnel | null | undefined)[]
-  ): IProfessionnel[] {
-    const professionnels: IProfessionnel[] = professionnelsToCheck.filter(isPresent);
+  getProfessionnelIdentifier(professionnel: Pick<IProfessionnel, 'id'>): number {
+    return professionnel.id;
+  }
+
+  compareProfessionnel(o1: Pick<IProfessionnel, 'id'> | null, o2: Pick<IProfessionnel, 'id'> | null): boolean {
+    return o1 && o2 ? this.getProfessionnelIdentifier(o1) === this.getProfessionnelIdentifier(o2) : o1 === o2;
+  }
+
+  addProfessionnelToCollectionIfMissing<Type extends Pick<IProfessionnel, 'id'>>(
+    professionnelCollection: Type[],
+    ...professionnelsToCheck: (Type | null | undefined)[]
+  ): Type[] {
+    const professionnels: Type[] = professionnelsToCheck.filter(isPresent);
     if (professionnels.length > 0) {
       const professionnelCollectionIdentifiers = professionnelCollection.map(
-        professionnelItem => getProfessionnelIdentifier(professionnelItem)!
+        professionnelItem => this.getProfessionnelIdentifier(professionnelItem)!
       );
       const professionnelsToAdd = professionnels.filter(professionnelItem => {
-        const professionnelIdentifier = getProfessionnelIdentifier(professionnelItem);
-        if (professionnelIdentifier == null || professionnelCollectionIdentifiers.includes(professionnelIdentifier)) {
+        const professionnelIdentifier = this.getProfessionnelIdentifier(professionnelItem);
+        if (professionnelCollectionIdentifiers.includes(professionnelIdentifier)) {
           return false;
         }
         professionnelCollectionIdentifiers.push(professionnelIdentifier);
@@ -79,25 +101,29 @@ export class ProfessionnelService {
     return professionnelCollection;
   }
 
-  protected convertDateFromClient(professionnel: IProfessionnel): IProfessionnel {
-    return Object.assign({}, professionnel, {
-      dateNaiss: professionnel.dateNaiss?.isValid() ? professionnel.dateNaiss.format(DATE_FORMAT) : undefined,
+  protected convertDateFromClient<T extends IProfessionnel | NewProfessionnel | PartialUpdateProfessionnel>(professionnel: T): RestOf<T> {
+    return {
+      ...professionnel,
+      dateNaiss: professionnel.dateNaiss?.format(DATE_FORMAT) ?? null,
+    };
+  }
+
+  protected convertDateFromServer(restProfessionnel: RestProfessionnel): IProfessionnel {
+    return {
+      ...restProfessionnel,
+      dateNaiss: restProfessionnel.dateNaiss ? dayjs(restProfessionnel.dateNaiss) : undefined,
+    };
+  }
+
+  protected convertResponseFromServer(res: HttpResponse<RestProfessionnel>): HttpResponse<IProfessionnel> {
+    return res.clone({
+      body: res.body ? this.convertDateFromServer(res.body) : null,
     });
   }
 
-  protected convertDateFromServer(res: EntityResponseType): EntityResponseType {
-    if (res.body) {
-      res.body.dateNaiss = res.body.dateNaiss ? dayjs(res.body.dateNaiss) : undefined;
-    }
-    return res;
-  }
-
-  protected convertDateArrayFromServer(res: EntityArrayResponseType): EntityArrayResponseType {
-    if (res.body) {
-      res.body.forEach((professionnel: IProfessionnel) => {
-        professionnel.dateNaiss = professionnel.dateNaiss ? dayjs(professionnel.dateNaiss) : undefined;
-      });
-    }
-    return res;
+  protected convertResponseArrayFromServer(res: HttpResponse<RestProfessionnel[]>): HttpResponse<IProfessionnel[]> {
+    return res.clone({
+      body: res.body ? res.body.map(item => this.convertDateFromServer(item)) : null,
+    });
   }
 }

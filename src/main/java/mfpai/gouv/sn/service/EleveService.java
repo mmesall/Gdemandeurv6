@@ -19,6 +19,14 @@ public interface EleveService {
     Eleve save(Eleve eleve);
 
     /**
+     * Updates a eleve.
+     *
+     * @param eleve the entity to update.
+     * @return the persisted entity.
+     */
+    Eleve update(Eleve eleve);
+
+    /**
      * Partially updates a eleve.
      *
      * @param eleve the entity to update partially.
@@ -33,6 +41,7 @@ public interface EleveService {
      * @return the list of entities.
      */
     Page<Eleve> findAll(Pageable pageable);
+
     /**
      * Get all the Eleve where Dossier is {@code null}.
      *

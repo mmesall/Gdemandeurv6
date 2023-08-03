@@ -1,12 +1,12 @@
 <div>
-  <h2 id="page-heading" data-cy="EtablissementHeading" style="text-align: center; font-style: italic; font-weight: bold">
-    <span>Etablissements de formations professinnelles et techniques</span>
+  <h2 id="page-heading" data-cy="EtablissementHeading">
+    <span jhiTranslate="jhipsterProjectBaseJwtApp.etablissement.home.title">Etablissements</span>
 
-    <div *jhiHasAnyAuthority="'ROLE_ADMIN'" class="d-flex justify-content-end">
-      <!-- <button class="btn btn-info me-2" (click)="reset()" [disabled]="isLoading">
+    <div class="d-flex justify-content-end">
+      <button class="btn btn-info me-2" (click)="load()" [disabled]="isLoading">
         <fa-icon icon="sync" [spin]="isLoading"></fa-icon>
-        <span>Refresh List</span>
-      </button> -->
+        <span jhiTranslate="jhipsterProjectBaseJwtApp.etablissement.home.refreshListLabel">Actualiser la liste</span>
+      </button>
 
       <button
         id="jh-create-entity"
@@ -15,7 +15,7 @@
         [routerLink]="['/etablissement/new']"
       >
         <fa-icon icon="plus"></fa-icon>
-        <span> Enregistrer un etablissement </span>
+        <span jhiTranslate="jhipsterProjectBaseJwtApp.etablissement.home.createLabel"> Créer un nouveau Etablissement </span>
       </button>
     </div>
   </h2>
@@ -25,40 +25,137 @@
   <jhi-alert></jhi-alert>
 
   <div class="alert alert-warning" id="no-result" *ngIf="etablissements?.length === 0">
-    <span>No etablissements found</span>
+    <span jhiTranslate="jhipsterProjectBaseJwtApp.etablissement.home.notFound">Aucun Etablissement trouvé</span>
   </div>
 
-  <div class="table-responsive" id="entities" *ngIf="etablissements && etablissements.length > 0">
+  <div class="table-responsive table-entities" id="entities" *ngIf="etablissements && etablissements.length > 0">
     <table class="table table-striped" aria-describedby="page-heading">
       <thead>
-        <tr jhiSort [(predicate)]="predicate" [(ascending)]="ascending" (sortChange)="reset()">
-          <th *jhiHasAnyAuthority="'ROLE_ADMIN'" scope="col" jhiSortBy="id"><span>ID</span> <fa-icon icon="sort"></fa-icon></th>
-          <th scope="col" jhiSortBy="nomEtablissement"><span>Nom Etablissement</span> <fa-icon icon="sort"></fa-icon></th>
-          <th scope="col" jhiSortBy="photo"><span>Photo</span> <fa-icon icon="sort"></fa-icon></th>
-          <th scope="col" jhiSortBy="region"><span>Region</span> <fa-icon icon="sort"></fa-icon></th>
-          <th scope="col" jhiSortBy="departement"><span>Departement</span> <fa-icon icon="sort"></fa-icon></th>
-          <th scope="col" jhiSortBy="email"><span>Email</span> <fa-icon icon="sort"></fa-icon></th>
-          <th scope="col" jhiSortBy="telephone"><span>Telephone</span> <fa-icon icon="sort"></fa-icon></th>
-          <th scope="col" jhiSortBy="typeEtablissement"><span>Type Etablissement</span> <fa-icon icon="sort"></fa-icon></th>
-          <th scope="col" jhiSortBy="statut"><span>Statut</span> <fa-icon icon="sort"></fa-icon></th>
-          <!-- <th scope="col" jhiSortBy="autreRegion"><span>Autre Region</span> <fa-icon icon="sort"></fa-icon></th> -->
-          <!-- <th scope="col" jhiSortBy="autreDepartement"><span>Autre Departement</span> <fa-icon icon="sort"></fa-icon></th> -->
-          <!-- <th scope="col" jhiSortBy="cfp"><span>Cfp</span> <fa-icon icon="sort"></fa-icon></th>
-          <th scope="col" jhiSortBy="lycee"><span>Lycee</span> <fa-icon icon="sort"></fa-icon></th>
-          <th scope="col" jhiSortBy="filiere"><span>Filiere</span> <fa-icon icon="sort"></fa-icon></th>
-          <th scope="col" jhiSortBy="serie"><span>Serie</span> <fa-icon icon="sort"></fa-icon></th>
-          <th scope="col" jhiSortBy="autreFiliere"><span>Autre Filiere</span> <fa-icon icon="sort"></fa-icon></th>
-          <th scope="col" jhiSortBy="autreSerie"><span>Autre Serie</span> <fa-icon icon="sort"></fa-icon></th>
-          <th scope="col" jhiSortBy="autreNomEtablissement"><span>Autre Nom Etablissement</span> <fa-icon icon="sort"></fa-icon></th> -->
+        <tr jhiSort [(predicate)]="predicate" [(ascending)]="ascending" (sortChange)="navigateToWithComponentValues()">
+          <th scope="col" jhiSortBy="id">
+            <div class="d-flex">
+              <span jhiTranslate="global.field.id">ID</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="nomEtablissement">
+            <div class="d-flex">
+              <span jhiTranslate="jhipsterProjectBaseJwtApp.etablissement.nomEtablissement">Nom Etablissement</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="photo">
+            <div class="d-flex">
+              <span jhiTranslate="jhipsterProjectBaseJwtApp.etablissement.photo">Photo</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="region">
+            <div class="d-flex">
+              <span jhiTranslate="jhipsterProjectBaseJwtApp.etablissement.region">Region</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="departement">
+            <div class="d-flex">
+              <span jhiTranslate="jhipsterProjectBaseJwtApp.etablissement.departement">Departement</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="email">
+            <div class="d-flex">
+              <span jhiTranslate="jhipsterProjectBaseJwtApp.etablissement.email">Email</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="telephone">
+            <div class="d-flex">
+              <span jhiTranslate="jhipsterProjectBaseJwtApp.etablissement.telephone">Telephone</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="typeEtablissement">
+            <div class="d-flex">
+              <span jhiTranslate="jhipsterProjectBaseJwtApp.etablissement.typeEtablissement">Type Etablissement</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="statut">
+            <div class="d-flex">
+              <span jhiTranslate="jhipsterProjectBaseJwtApp.etablissement.statut">Statut</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="autreRegion">
+            <div class="d-flex">
+              <span jhiTranslate="jhipsterProjectBaseJwtApp.etablissement.autreRegion">Autre Region</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="autreDepartement">
+            <div class="d-flex">
+              <span jhiTranslate="jhipsterProjectBaseJwtApp.etablissement.autreDepartement">Autre Departement</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="cfp">
+            <div class="d-flex">
+              <span jhiTranslate="jhipsterProjectBaseJwtApp.etablissement.cfp">Cfp</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="lycee">
+            <div class="d-flex">
+              <span jhiTranslate="jhipsterProjectBaseJwtApp.etablissement.lycee">Lycee</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="filiere">
+            <div class="d-flex">
+              <span jhiTranslate="jhipsterProjectBaseJwtApp.etablissement.filiere">Filiere</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="serie">
+            <div class="d-flex">
+              <span jhiTranslate="jhipsterProjectBaseJwtApp.etablissement.serie">Serie</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="autreFiliere">
+            <div class="d-flex">
+              <span jhiTranslate="jhipsterProjectBaseJwtApp.etablissement.autreFiliere">Autre Filiere</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="autreSerie">
+            <div class="d-flex">
+              <span jhiTranslate="jhipsterProjectBaseJwtApp.etablissement.autreSerie">Autre Serie</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="autreNomEtablissement">
+            <div class="d-flex">
+              <span jhiTranslate="jhipsterProjectBaseJwtApp.etablissement.autreNomEtablissement">Autre Nom Etablissement</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
           <th scope="col"></th>
         </tr>
       </thead>
-      <tbody infinite-scroll (scrolled)="loadPage(page + 1)" [infiniteScrollDisabled]="page >= links['last']" [infiniteScrollDistance]="0">
+      <tbody
+        infinite-scroll
+        (scrolled)="loadPage(page + 1)"
+        [infiniteScrollDisabled]="page - 1 >= links['last']"
+        [infiniteScrollDistance]="0"
+      >
         <tr *ngFor="let etablissement of etablissements; trackBy: trackId" data-cy="entityTable">
-          <td *jhiHasAnyAuthority="'ROLE_ADMIN'">
+          <td>
             <a [routerLink]="['/etablissement', etablissement.id, 'view']">{{ etablissement.id }}</a>
           </td>
-          <td>{{ etablissement.nomEtablissement }}</td>
+          <td jhiTranslate="{{ 'jhipsterProjectBaseJwtApp.NomEtablissement.' + etablissement.nomEtablissement }}">
+            {{ etablissement.nomEtablissement }}
+          </td>
           <td>
             <a *ngIf="etablissement.photo" (click)="openFile(etablissement.photo, etablissement.photoContentType)">
               <img
@@ -69,21 +166,25 @@
             </a>
             <span *ngIf="etablissement.photo">{{ etablissement.photoContentType }}, {{ byteSize(etablissement.photo) }}</span>
           </td>
-          <td>{{ etablissement.region }}</td>
-          <td>{{ etablissement.departement }}</td>
+          <td jhiTranslate="{{ 'jhipsterProjectBaseJwtApp.NomRegion.' + etablissement.region }}">{{ etablissement.region }}</td>
+          <td jhiTranslate="{{ 'jhipsterProjectBaseJwtApp.NomDepartement.' + etablissement.departement }}">
+            {{ etablissement.departement }}
+          </td>
           <td>{{ etablissement.email }}</td>
           <td>{{ etablissement.telephone }}</td>
-          <td>{{ etablissement.typeEtablissement }}</td>
-          <td>{{ etablissement.statut }}</td>
-          <!-- <td>{{ etablissement.autreRegion }}</td> -->
-          <!-- <td>{{ etablissement.autreDepartement }}</td> -->
-          <!-- <td>{{ etablissement.cfp }}</td>
-          <td>{{ etablissement.lycee }}</td>
-          <td>{{ etablissement.filiere }}</td>
-          <td>{{ etablissement.serie }}</td>
+          <td jhiTranslate="{{ 'jhipsterProjectBaseJwtApp.TypeEtablissement.' + etablissement.typeEtablissement }}">
+            {{ etablissement.typeEtablissement }}
+          </td>
+          <td jhiTranslate="{{ 'jhipsterProjectBaseJwtApp.StatutEtab.' + etablissement.statut }}">{{ etablissement.statut }}</td>
+          <td>{{ etablissement.autreRegion }}</td>
+          <td>{{ etablissement.autreDepartement }}</td>
+          <td jhiTranslate="{{ 'jhipsterProjectBaseJwtApp.CFP.' + etablissement.cfp }}">{{ etablissement.cfp }}</td>
+          <td jhiTranslate="{{ 'jhipsterProjectBaseJwtApp.LYCEE.' + etablissement.lycee }}">{{ etablissement.lycee }}</td>
+          <td jhiTranslate="{{ 'jhipsterProjectBaseJwtApp.NomFiliere.' + etablissement.filiere }}">{{ etablissement.filiere }}</td>
+          <td jhiTranslate="{{ 'jhipsterProjectBaseJwtApp.NomSerie.' + etablissement.serie }}">{{ etablissement.serie }}</td>
           <td>{{ etablissement.autreFiliere }}</td>
           <td>{{ etablissement.autreSerie }}</td>
-          <td>{{ etablissement.autreNomEtablissement }}</td> -->
+          <td>{{ etablissement.autreNomEtablissement }}</td>
           <td class="text-end">
             <div class="btn-group">
               <button
@@ -93,29 +194,22 @@
                 data-cy="entityDetailsButton"
               >
                 <fa-icon icon="eye"></fa-icon>
-                <!-- <span class="d-none d-md-inline">View</span> -->
+                <span class="d-none d-md-inline" jhiTranslate="entity.action.view">Voir</span>
               </button>
 
               <button
-                *jhiHasAnyAuthority="'ROLE_ADMIN'"
                 type="submit"
                 [routerLink]="['/etablissement', etablissement.id, 'edit']"
                 class="btn btn-primary btn-sm"
                 data-cy="entityEditButton"
               >
                 <fa-icon icon="pencil-alt"></fa-icon>
-                <!-- <span class="d-none d-md-inline">Edit</span> -->
+                <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Editer</span>
               </button>
 
-              <button
-                *jhiHasAnyAuthority="'ROLE_ADMIN'"
-                type="submit"
-                (click)="delete(etablissement)"
-                class="btn btn-danger btn-sm"
-                data-cy="entityDeleteButton"
-              >
+              <button type="submit" (click)="delete(etablissement)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
                 <fa-icon icon="times"></fa-icon>
-                <!-- <span class="d-none d-md-inline">Delete</span> -->
+                <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Supprimer</span>
               </button>
             </div>
           </td>

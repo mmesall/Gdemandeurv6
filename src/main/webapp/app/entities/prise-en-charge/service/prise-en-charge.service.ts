@@ -5,7 +5,9 @@ import { Observable } from 'rxjs';
 import { isPresent } from 'app/core/util/operators';
 import { ApplicationConfigService } from 'app/core/config/application-config.service';
 import { createRequestOption } from 'app/core/request/request-util';
-import { IPriseEnCharge, getPriseEnChargeIdentifier } from '../prise-en-charge.model';
+import { IPriseEnCharge, NewPriseEnCharge } from '../prise-en-charge.model';
+
+export type PartialUpdatePriseEnCharge = Partial<IPriseEnCharge> & Pick<IPriseEnCharge, 'id'>;
 
 export type EntityResponseType = HttpResponse<IPriseEnCharge>;
 export type EntityArrayResponseType = HttpResponse<IPriseEnCharge[]>;
@@ -16,18 +18,18 @@ export class PriseEnChargeService {
 
   constructor(protected http: HttpClient, protected applicationConfigService: ApplicationConfigService) {}
 
-  create(priseEnCharge: IPriseEnCharge): Observable<EntityResponseType> {
+  create(priseEnCharge: NewPriseEnCharge): Observable<EntityResponseType> {
     return this.http.post<IPriseEnCharge>(this.resourceUrl, priseEnCharge, { observe: 'response' });
   }
 
   update(priseEnCharge: IPriseEnCharge): Observable<EntityResponseType> {
-    return this.http.put<IPriseEnCharge>(`${this.resourceUrl}/${getPriseEnChargeIdentifier(priseEnCharge) as number}`, priseEnCharge, {
+    return this.http.put<IPriseEnCharge>(`${this.resourceUrl}/${this.getPriseEnChargeIdentifier(priseEnCharge)}`, priseEnCharge, {
       observe: 'response',
     });
   }
 
-  partialUpdate(priseEnCharge: IPriseEnCharge): Observable<EntityResponseType> {
-    return this.http.patch<IPriseEnCharge>(`${this.resourceUrl}/${getPriseEnChargeIdentifier(priseEnCharge) as number}`, priseEnCharge, {
+  partialUpdate(priseEnCharge: PartialUpdatePriseEnCharge): Observable<EntityResponseType> {
+    return this.http.patch<IPriseEnCharge>(`${this.resourceUrl}/${this.getPriseEnChargeIdentifier(priseEnCharge)}`, priseEnCharge, {
       observe: 'response',
     });
   }
@@ -45,18 +47,26 @@ export class PriseEnChargeService {
     return this.http.delete(`${this.resourceUrl}/${id}`, { observe: 'response' });
   }
 
-  addPriseEnChargeToCollectionIfMissing(
-    priseEnChargeCollection: IPriseEnCharge[],
-    ...priseEnChargesToCheck: (IPriseEnCharge | null | undefined)[]
-  ): IPriseEnCharge[] {
-    const priseEnCharges: IPriseEnCharge[] = priseEnChargesToCheck.filter(isPresent);
+  getPriseEnChargeIdentifier(priseEnCharge: Pick<IPriseEnCharge, 'id'>): number {
+    return priseEnCharge.id;
+  }
+
+  comparePriseEnCharge(o1: Pick<IPriseEnCharge, 'id'> | null, o2: Pick<IPriseEnCharge, 'id'> | null): boolean {
+    return o1 && o2 ? this.getPriseEnChargeIdentifier(o1) === this.getPriseEnChargeIdentifier(o2) : o1 === o2;
+  }
+
+  addPriseEnChargeToCollectionIfMissing<Type extends Pick<IPriseEnCharge, 'id'>>(
+    priseEnChargeCollection: Type[],
+    ...priseEnChargesToCheck: (Type | null | undefined)[]
+  ): Type[] {
+    const priseEnCharges: Type[] = priseEnChargesToCheck.filter(isPresent);
     if (priseEnCharges.length > 0) {
       const priseEnChargeCollectionIdentifiers = priseEnChargeCollection.map(
-        priseEnChargeItem => getPriseEnChargeIdentifier(priseEnChargeItem)!
+        priseEnChargeItem => this.getPriseEnChargeIdentifier(priseEnChargeItem)!
       );
       const priseEnChargesToAdd = priseEnCharges.filter(priseEnChargeItem => {
-        const priseEnChargeIdentifier = getPriseEnChargeIdentifier(priseEnChargeItem);
-        if (priseEnChargeIdentifier == null || priseEnChargeCollectionIdentifiers.includes(priseEnChargeIdentifier)) {
+        const priseEnChargeIdentifier = this.getPriseEnChargeIdentifier(priseEnChargeItem);
+        if (priseEnChargeCollectionIdentifiers.includes(priseEnChargeIdentifier)) {
           return false;
         }
         priseEnChargeCollectionIdentifiers.push(priseEnChargeIdentifier);

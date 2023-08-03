@@ -1,23 +1,21 @@
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { Component, Input } from '@angular/core';
+import { ActivatedRoute, RouterModule } from '@angular/router';
 
+import SharedModule from 'app/shared/shared.module';
+import { DurationPipe, FormatMediumDatetimePipe, FormatMediumDatePipe } from 'app/shared/date';
 import { IDossier } from '../dossier.model';
 import { DataUtils } from 'app/core/util/data-util.service';
 
 @Component({
+  standalone: true,
   selector: 'jhi-dossier-detail',
   templateUrl: './dossier-detail.component.html',
+  imports: [SharedModule, RouterModule, DurationPipe, FormatMediumDatetimePipe, FormatMediumDatePipe],
 })
-export class DossierDetailComponent implements OnInit {
-  dossier: IDossier | null = null;
+export class DossierDetailComponent {
+  @Input() dossier: IDossier | null = null;
 
   constructor(protected dataUtils: DataUtils, protected activatedRoute: ActivatedRoute) {}
-
-  ngOnInit(): void {
-    this.activatedRoute.data.subscribe(({ dossier }) => {
-      this.dossier = dossier;
-    });
-  }
 
   byteSize(base64String: string): string {
     return this.dataUtils.byteSize(base64String);

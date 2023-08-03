@@ -1,12 +1,12 @@
 package mfpai.gouv.sn.web.rest;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 import mfpai.gouv.sn.domain.Diplome;
 import mfpai.gouv.sn.repository.DiplomeRepository;
 import mfpai.gouv.sn.service.DiplomeService;
@@ -95,7 +95,7 @@ public class DiplomeResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        Diplome result = diplomeService.save(diplome);
+        Diplome result = diplomeService.update(diplome);
         return ResponseEntity
             .ok()
             .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, diplome.getId().toString()))
@@ -147,8 +147,8 @@ public class DiplomeResource {
      */
     @GetMapping("/diplomes")
     public ResponseEntity<List<Diplome>> getAllDiplomes(
-        @org.springdoc.api.annotations.ParameterObject Pageable pageable,
-        @RequestParam(required = false, defaultValue = "true") boolean eagerload
+        @org.springdoc.core.annotations.ParameterObject Pageable pageable,
+        @RequestParam(required = false, defaultValue = "false") boolean eagerload
     ) {
         log.debug("REST request to get a page of Diplomes");
         Page<Diplome> page;

@@ -53,8 +53,6 @@ describe('RegisterComponent', () => {
       tick();
 
       expect(service.save).toHaveBeenCalledWith({
-        firstName: '',
-        lastName: '',
         email: '',
         password: 'password',
         login: '',

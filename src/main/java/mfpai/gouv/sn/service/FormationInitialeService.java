@@ -18,6 +18,14 @@ public interface FormationInitialeService {
     FormationInitiale save(FormationInitiale formationInitiale);
 
     /**
+     * Updates a formationInitiale.
+     *
+     * @param formationInitiale the entity to update.
+     * @return the persisted entity.
+     */
+    FormationInitiale update(FormationInitiale formationInitiale);
+
+    /**
      * Partially updates a formationInitiale.
      *
      * @param formationInitiale the entity to update partially.

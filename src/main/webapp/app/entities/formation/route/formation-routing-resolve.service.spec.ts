@@ -1,21 +1,20 @@
 import { TestBed } from '@angular/core/testing';
 import { HttpResponse } from '@angular/common/http';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { ActivatedRouteSnapshot, ActivatedRoute, Router, convertToParamMap } from '@angular/router';
+import { ActivatedRouteSnapshot, ActivatedRoute, Router, convertToParamMap, RouterStateSnapshot } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
 
-import { IFormation, Formation } from '../formation.model';
+import { IFormation } from '../formation.model';
 import { FormationService } from '../service/formation.service';
 
-import { FormationRoutingResolveService } from './formation-routing-resolve.service';
+import formationResolve from './formation-routing-resolve.service';
 
 describe('Formation routing resolve service', () => {
   let mockRouter: Router;
   let mockActivatedRouteSnapshot: ActivatedRouteSnapshot;
-  let routingResolveService: FormationRoutingResolveService;
   let service: FormationService;
-  let resultFormation: IFormation | undefined;
+  let resultFormation: IFormation | null | undefined;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -34,7 +33,6 @@ describe('Formation routing resolve service', () => {
     mockRouter = TestBed.inject(Router);
     jest.spyOn(mockRouter, 'navigate').mockImplementation(() => Promise.resolve(true));
     mockActivatedRouteSnapshot = TestBed.inject(ActivatedRoute).snapshot;
-    routingResolveService = TestBed.inject(FormationRoutingResolveService);
     service = TestBed.inject(FormationService);
     resultFormation = undefined;
   });
@@ -46,8 +44,12 @@ describe('Formation routing resolve service', () => {
       mockActivatedRouteSnapshot.params = { id: 123 };
 
       // WHEN
-      routingResolveService.resolve(mockActivatedRouteSnapshot).subscribe(result => {
-        resultFormation = result;
+      TestBed.runInInjectionContext(() => {
+        formationResolve(mockActivatedRouteSnapshot).subscribe({
+          next(result) {
+            resultFormation = result;
+          },
+        });
       });
 
       // THEN
@@ -55,29 +57,37 @@ describe('Formation routing resolve service', () => {
       expect(resultFormation).toEqual({ id: 123 });
     });
 
-    it('should return new IFormation if id is not provided', () => {
+    it('should return null if id is not provided', () => {
       // GIVEN
       service.find = jest.fn();
       mockActivatedRouteSnapshot.params = {};
 
       // WHEN
-      routingResolveService.resolve(mockActivatedRouteSnapshot).subscribe(result => {
-        resultFormation = result;
+      TestBed.runInInjectionContext(() => {
+        formationResolve(mockActivatedRouteSnapshot).subscribe({
+          next(result) {
+            resultFormation = result;
+          },
+        });
       });
 
       // THEN
       expect(service.find).not.toBeCalled();
-      expect(resultFormation).toEqual(new Formation());
+      expect(resultFormation).toEqual(null);
     });
 
     it('should route to 404 page if data not found in server', () => {
       // GIVEN
-      jest.spyOn(service, 'find').mockReturnValue(of(new HttpResponse({ body: null as unknown as Formation })));
+      jest.spyOn(service, 'find').mockReturnValue(of(new HttpResponse<IFormation>({ body: null })));
       mockActivatedRouteSnapshot.params = { id: 123 };
 
       // WHEN
-      routingResolveService.resolve(mockActivatedRouteSnapshot).subscribe(result => {
-        resultFormation = result;
+      TestBed.runInInjectionContext(() => {
+        formationResolve(mockActivatedRouteSnapshot).subscribe({
+          next(result) {
+            resultFormation = result;
+          },
+        });
       });
 
       // THEN

@@ -1,8 +1,6 @@
 {
   "applications": "*",
   "changelogDate": "20230328104856",
-  "dto": "no",
-  "embedded": false,
   "entityTableName": "demandeur",
   "fields": [
     {
@@ -41,64 +39,63 @@
       "fieldValues": "ELEVE,ETUDIANT,PROFESSIONNEL"
     }
   ],
-  "fluentMethods": true,
-  "jpaMetamodelFiltering": false,
   "name": "Demandeur",
   "pagination": "infinite-scroll",
-  "readOnly": false,
   "relationships": [
     {
       "otherEntityField": "login",
       "otherEntityName": "user",
-      "otherEntityRelationshipName": "demandeur",
-      "ownerSide": true,
       "relationshipName": "user",
+      "relationshipSide": "left",
       "relationshipType": "one-to-one"
     },
     {
       "otherEntityField": "numDossier",
       "otherEntityName": "dossier",
       "otherEntityRelationshipName": "demandeur",
-      "ownerSide": true,
       "relationshipName": "dossier",
+      "relationshipSide": "left",
       "relationshipType": "one-to-one"
     },
     {
       "otherEntityField": "cni",
       "otherEntityName": "eleve",
       "otherEntityRelationshipName": "demandeur",
-      "ownerSide": true,
       "relationshipName": "eleve",
+      "relationshipSide": "left",
       "relationshipType": "one-to-one"
     },
     {
       "otherEntityField": "cni",
       "otherEntityName": "etudiant",
       "otherEntityRelationshipName": "demandeur",
-      "ownerSide": true,
       "relationshipName": "etudiant",
+      "relationshipSide": "left",
       "relationshipType": "one-to-one"
     },
     {
       "otherEntityField": "cni",
       "otherEntityName": "professionnel",
       "otherEntityRelationshipName": "demandeur",
-      "ownerSide": true,
       "relationshipName": "professionnel",
+      "relationshipSide": "left",
       "relationshipType": "one-to-one"
     },
     {
       "otherEntityName": "diplome",
       "otherEntityRelationshipName": "demandeur",
       "relationshipName": "diplome",
+      "relationshipSide": "left",
       "relationshipType": "one-to-many"
     },
     {
       "otherEntityName": "experience",
       "otherEntityRelationshipName": "demandeur",
       "relationshipName": "experience",
+      "relationshipSide": "left",
       "relationshipType": "one-to-many"
     }
   ],
+  "searchEngine": "no",
   "service": "serviceImpl"
 }

@@ -1,22 +1,20 @@
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { Component, Input } from '@angular/core';
+import { ActivatedRoute, RouterModule } from '@angular/router';
 
+import SharedModule from 'app/shared/shared.module';
+import { DurationPipe, FormatMediumDatetimePipe, FormatMediumDatePipe } from 'app/shared/date';
 import { IAgent } from '../agent.model';
 
 @Component({
+  standalone: true,
   selector: 'jhi-agent-detail',
   templateUrl: './agent-detail.component.html',
+  imports: [SharedModule, RouterModule, DurationPipe, FormatMediumDatetimePipe, FormatMediumDatePipe],
 })
-export class AgentDetailComponent implements OnInit {
-  agent: IAgent | null = null;
+export class AgentDetailComponent {
+  @Input() agent: IAgent | null = null;
 
   constructor(protected activatedRoute: ActivatedRoute) {}
-
-  ngOnInit(): void {
-    this.activatedRoute.data.subscribe(({ agent }) => {
-      this.agent = agent;
-    });
-  }
 
   previousState(): void {
     window.history.back();

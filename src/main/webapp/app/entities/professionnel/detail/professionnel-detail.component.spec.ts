@@ -1,36 +1,38 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ActivatedRoute } from '@angular/router';
+import { TestBed } from '@angular/core/testing';
+import { provideRouter, withComponentInputBinding } from '@angular/router';
+import { RouterTestingHarness, RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
 
 import { ProfessionnelDetailComponent } from './professionnel-detail.component';
 
 describe('Professionnel Management Detail Component', () => {
-  let comp: ProfessionnelDetailComponent;
-  let fixture: ComponentFixture<ProfessionnelDetailComponent>;
-
-  beforeEach(() => {
-    TestBed.configureTestingModule({
-      declarations: [ProfessionnelDetailComponent],
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [ProfessionnelDetailComponent, RouterTestingModule.withRoutes([], { bindToComponentInputs: true })],
       providers: [
-        {
-          provide: ActivatedRoute,
-          useValue: { data: of({ professionnel: { id: 123 } }) },
-        },
+        provideRouter(
+          [
+            {
+              path: '**',
+              component: ProfessionnelDetailComponent,
+              resolve: { professionnel: () => of({ id: 123 }) },
+            },
+          ],
+          withComponentInputBinding()
+        ),
       ],
     })
       .overrideTemplate(ProfessionnelDetailComponent, '')
       .compileComponents();
-    fixture = TestBed.createComponent(ProfessionnelDetailComponent);
-    comp = fixture.componentInstance;
   });
 
   describe('OnInit', () => {
-    it('Should load professionnel on init', () => {
-      // WHEN
-      comp.ngOnInit();
+    it('Should load professionnel on init', async () => {
+      const harness = await RouterTestingHarness.create();
+      const instance = await harness.navigateByUrl('/', ProfessionnelDetailComponent);
 
       // THEN
-      expect(comp.professionnel).toEqual(expect.objectContaining({ id: 123 }));
+      expect(instance.professionnel).toEqual(expect.objectContaining({ id: 123 }));
     });
   });
 });

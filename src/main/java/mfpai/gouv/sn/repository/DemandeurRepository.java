@@ -10,7 +10,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 /**
- * Spring Data SQL repository for the Demandeur entity.
+ * Spring Data JPA repository for the Demandeur entity.
  */
 @Repository
 public interface DemandeurRepository extends JpaRepository<Demandeur, Long> {
@@ -27,13 +27,13 @@ public interface DemandeurRepository extends JpaRepository<Demandeur, Long> {
     }
 
     @Query(
-        value = "select distinct demandeur from Demandeur demandeur left join fetch demandeur.user left join fetch demandeur.dossier left join fetch demandeur.eleve left join fetch demandeur.etudiant left join fetch demandeur.professionnel",
-        countQuery = "select count(distinct demandeur) from Demandeur demandeur"
+        value = "select demandeur from Demandeur demandeur left join fetch demandeur.user left join fetch demandeur.dossier left join fetch demandeur.eleve left join fetch demandeur.etudiant left join fetch demandeur.professionnel",
+        countQuery = "select count(demandeur) from Demandeur demandeur"
     )
     Page<Demandeur> findAllWithToOneRelationships(Pageable pageable);
 
     @Query(
-        "select distinct demandeur from Demandeur demandeur left join fetch demandeur.user left join fetch demandeur.dossier left join fetch demandeur.eleve left join fetch demandeur.etudiant left join fetch demandeur.professionnel"
+        "select demandeur from Demandeur demandeur left join fetch demandeur.user left join fetch demandeur.dossier left join fetch demandeur.eleve left join fetch demandeur.etudiant left join fetch demandeur.professionnel"
     )
     List<Demandeur> findAllWithToOneRelationships();
 

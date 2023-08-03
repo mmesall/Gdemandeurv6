@@ -19,6 +19,14 @@ public interface ProfessionnelService {
     Professionnel save(Professionnel professionnel);
 
     /**
+     * Updates a professionnel.
+     *
+     * @param professionnel the entity to update.
+     * @return the persisted entity.
+     */
+    Professionnel update(Professionnel professionnel);
+
+    /**
      * Partially updates a professionnel.
      *
      * @param professionnel the entity to update partially.
@@ -33,6 +41,7 @@ public interface ProfessionnelService {
      * @return the list of entities.
      */
     Page<Professionnel> findAll(Pageable pageable);
+
     /**
      * Get all the Professionnel where Dossier is {@code null}.
      *

@@ -1,8 +1,6 @@
 {
   "applications": "*",
   "changelogDate": "20230328104849",
-  "dto": "no",
-  "embedded": false,
   "entityTableName": "concours",
   "fields": [
     {
@@ -37,20 +35,17 @@
       "fieldTypeBlobContent": "image"
     }
   ],
-  "fluentMethods": true,
-  "jpaMetamodelFiltering": false,
   "name": "Concours",
   "pagination": "infinite-scroll",
-  "readOnly": false,
   "relationships": [
     {
       "otherEntityField": "nomFormation",
       "otherEntityName": "formation",
-      "otherEntityRelationshipName": "concours",
-      "ownerSide": true,
       "relationshipName": "formation",
+      "relationshipSide": "left",
       "relationshipType": "one-to-one"
     }
   ],
+  "searchEngine": "no",
   "service": "serviceImpl"
 }

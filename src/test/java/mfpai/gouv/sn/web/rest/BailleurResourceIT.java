@@ -5,10 +5,10 @@ import static org.hamcrest.Matchers.hasItem;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import jakarta.persistence.EntityManager;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicLong;
-import javax.persistence.EntityManager;
 import mfpai.gouv.sn.IntegrationTest;
 import mfpai.gouv.sn.domain.Bailleur;
 import mfpai.gouv.sn.repository.BailleurRepository;
@@ -200,14 +200,14 @@ class BailleurResourceIT {
 
     @Test
     @Transactional
-    void putNewBailleur() throws Exception {
+    void putExistingBailleur() throws Exception {
         // Initialize the database
         bailleurRepository.saveAndFlush(bailleur);
 
         int databaseSizeBeforeUpdate = bailleurRepository.findAll().size();
 
         // Update the bailleur
-        Bailleur updatedBailleur = bailleurRepository.findById(bailleur.getId()).get();
+        Bailleur updatedBailleur = bailleurRepository.findById(bailleur.getId()).orElseThrow();
         // Disconnect from session so that the updates on updatedBailleur are not directly saved in db
         em.detach(updatedBailleur);
         updatedBailleur

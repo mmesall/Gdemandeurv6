@@ -10,7 +10,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 /**
- * Spring Data SQL repository for the Professionnel entity.
+ * Spring Data JPA repository for the Professionnel entity.
  */
 @Repository
 public interface ProfessionnelRepository extends JpaRepository<Professionnel, Long> {
@@ -27,12 +27,12 @@ public interface ProfessionnelRepository extends JpaRepository<Professionnel, Lo
     }
 
     @Query(
-        value = "select distinct professionnel from Professionnel professionnel left join fetch professionnel.user",
-        countQuery = "select count(distinct professionnel) from Professionnel professionnel"
+        value = "select professionnel from Professionnel professionnel left join fetch professionnel.user",
+        countQuery = "select count(professionnel) from Professionnel professionnel"
     )
     Page<Professionnel> findAllWithToOneRelationships(Pageable pageable);
 
-    @Query("select distinct professionnel from Professionnel professionnel left join fetch professionnel.user")
+    @Query("select professionnel from Professionnel professionnel left join fetch professionnel.user")
     List<Professionnel> findAllWithToOneRelationships();
 
     @Query("select professionnel from Professionnel professionnel left join fetch professionnel.user where professionnel.id =:id")

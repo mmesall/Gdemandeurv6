@@ -5,6 +5,7 @@ package mfpai.gouv.sn.domain.enumeration;
  */
 public enum Resultat {
     SOUMIS,
-    ACCORD,
-    REJET,
+    VALIDE,
+    APPROUVE,
+    REJETE,
 }

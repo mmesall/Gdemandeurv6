@@ -33,6 +33,12 @@ public class AgentServiceImpl implements AgentService {
     }
 
     @Override
+    public Agent update(Agent agent) {
+        log.debug("Request to update Agent : {}", agent);
+        return agentRepository.save(agent);
+    }
+
+    @Override
     public Optional<Agent> partialUpdate(Agent agent) {
         log.debug("Request to partially update Agent : {}", agent);
 

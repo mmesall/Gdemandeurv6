@@ -8,11 +8,10 @@ import { RegisterService } from './register.service';
 @Component({
   selector: 'jhi-register',
   templateUrl: './register.component.html',
-  styleUrls: ['./register.component.scss'],
 })
 export class RegisterComponent implements AfterViewInit {
-  @ViewChild('firstName', { static: false })
-  firstName?: ElementRef;
+  @ViewChild('login', { static: false })
+  login?: ElementRef;
 
   doNotMatch = false;
   error = false;
@@ -21,8 +20,6 @@ export class RegisterComponent implements AfterViewInit {
   success = false;
 
   registerForm = this.fb.group({
-    firstName: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(50)]],
-    lastName: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(50)]],
     login: [
       '',
       [
@@ -35,16 +32,13 @@ export class RegisterComponent implements AfterViewInit {
     email: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(254), Validators.email]],
     password: ['', [Validators.required, Validators.minLength(4), Validators.maxLength(50)]],
     confirmPassword: ['', [Validators.required, Validators.minLength(4), Validators.maxLength(50)]],
-    // dateNaiss: ['', [Validators.required]],
-    // lieuNaiss: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(50)]],
-    // regionNaiss: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(50)]],
   });
 
   constructor(private registerService: RegisterService, private fb: FormBuilder) {}
 
   ngAfterViewInit(): void {
-    if (this.firstName) {
-      this.firstName.nativeElement.focus();
+    if (this.login) {
+      this.login.nativeElement.focus();
     }
   }
 
@@ -58,15 +52,10 @@ export class RegisterComponent implements AfterViewInit {
     if (password !== this.registerForm.get(['confirmPassword'])!.value) {
       this.doNotMatch = true;
     } else {
-      const firstName = this.registerForm.get(['firstName'])!.value;
-      const lastName = this.registerForm.get(['lastName'])!.value;
       const login = this.registerForm.get(['login'])!.value;
       const email = this.registerForm.get(['email'])!.value;
-      // const dateNaiss = this.registerForm.get(['dateNaiss'])!.value;
-      // const lieuNaiss = this.registerForm.get(['lieuNaiss'])!.value;
-      // const regionNaiss = this.registerForm.get(['regionNaiss'])!.value;
       this.registerService
-        .save({ firstName, lastName, login, email, password, langKey: 'en' })
+        .save({ login, email, password, langKey: 'en' })
         .subscribe({ next: () => (this.success = true), error: response => this.processError(response) });
     }
   }

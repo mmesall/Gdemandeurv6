@@ -18,6 +18,14 @@ public interface CandidatureEService {
     CandidatureE save(CandidatureE candidatureE);
 
     /**
+     * Updates a candidatureE.
+     *
+     * @param candidatureE the entity to update.
+     * @return the persisted entity.
+     */
+    CandidatureE update(CandidatureE candidatureE);
+
+    /**
      * Partially updates a candidatureE.
      *
      * @param candidatureE the entity to update partially.

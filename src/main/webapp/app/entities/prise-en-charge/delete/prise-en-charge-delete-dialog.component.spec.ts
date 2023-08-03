@@ -18,8 +18,7 @@ describe('PriseEnCharge Management Delete Component', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
-      declarations: [PriseEnChargeDeleteDialogComponent],
+      imports: [HttpClientTestingModule, PriseEnChargeDeleteDialogComponent],
       providers: [NgbActiveModal],
     })
       .overrideTemplate(PriseEnChargeDeleteDialogComponent, '')

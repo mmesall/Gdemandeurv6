@@ -33,6 +33,12 @@ public class FormationInitialeServiceImpl implements FormationInitialeService {
     }
 
     @Override
+    public FormationInitiale update(FormationInitiale formationInitiale) {
+        log.debug("Request to update FormationInitiale : {}", formationInitiale);
+        return formationInitialeRepository.save(formationInitiale);
+    }
+
+    @Override
     public Optional<FormationInitiale> partialUpdate(FormationInitiale formationInitiale) {
         log.debug("Request to partially update FormationInitiale : {}", formationInitiale);
 

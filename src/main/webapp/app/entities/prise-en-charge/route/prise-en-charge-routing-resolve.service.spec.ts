@@ -1,21 +1,20 @@
 import { TestBed } from '@angular/core/testing';
 import { HttpResponse } from '@angular/common/http';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { ActivatedRouteSnapshot, ActivatedRoute, Router, convertToParamMap } from '@angular/router';
+import { ActivatedRouteSnapshot, ActivatedRoute, Router, convertToParamMap, RouterStateSnapshot } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
 
-import { IPriseEnCharge, PriseEnCharge } from '../prise-en-charge.model';
+import { IPriseEnCharge } from '../prise-en-charge.model';
 import { PriseEnChargeService } from '../service/prise-en-charge.service';
 
-import { PriseEnChargeRoutingResolveService } from './prise-en-charge-routing-resolve.service';
+import priseEnChargeResolve from './prise-en-charge-routing-resolve.service';
 
 describe('PriseEnCharge routing resolve service', () => {
   let mockRouter: Router;
   let mockActivatedRouteSnapshot: ActivatedRouteSnapshot;
-  let routingResolveService: PriseEnChargeRoutingResolveService;
   let service: PriseEnChargeService;
-  let resultPriseEnCharge: IPriseEnCharge | undefined;
+  let resultPriseEnCharge: IPriseEnCharge | null | undefined;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -34,7 +33,6 @@ describe('PriseEnCharge routing resolve service', () => {
     mockRouter = TestBed.inject(Router);
     jest.spyOn(mockRouter, 'navigate').mockImplementation(() => Promise.resolve(true));
     mockActivatedRouteSnapshot = TestBed.inject(ActivatedRoute).snapshot;
-    routingResolveService = TestBed.inject(PriseEnChargeRoutingResolveService);
     service = TestBed.inject(PriseEnChargeService);
     resultPriseEnCharge = undefined;
   });
@@ -46,8 +44,12 @@ describe('PriseEnCharge routing resolve service', () => {
       mockActivatedRouteSnapshot.params = { id: 123 };
 
       // WHEN
-      routingResolveService.resolve(mockActivatedRouteSnapshot).subscribe(result => {
-        resultPriseEnCharge = result;
+      TestBed.runInInjectionContext(() => {
+        priseEnChargeResolve(mockActivatedRouteSnapshot).subscribe({
+          next(result) {
+            resultPriseEnCharge = result;
+          },
+        });
       });
 
       // THEN
@@ -55,29 +57,37 @@ describe('PriseEnCharge routing resolve service', () => {
       expect(resultPriseEnCharge).toEqual({ id: 123 });
     });
 
-    it('should return new IPriseEnCharge if id is not provided', () => {
+    it('should return null if id is not provided', () => {
       // GIVEN
       service.find = jest.fn();
       mockActivatedRouteSnapshot.params = {};
 
       // WHEN
-      routingResolveService.resolve(mockActivatedRouteSnapshot).subscribe(result => {
-        resultPriseEnCharge = result;
+      TestBed.runInInjectionContext(() => {
+        priseEnChargeResolve(mockActivatedRouteSnapshot).subscribe({
+          next(result) {
+            resultPriseEnCharge = result;
+          },
+        });
       });
 
       // THEN
       expect(service.find).not.toBeCalled();
-      expect(resultPriseEnCharge).toEqual(new PriseEnCharge());
+      expect(resultPriseEnCharge).toEqual(null);
     });
 
     it('should route to 404 page if data not found in server', () => {
       // GIVEN
-      jest.spyOn(service, 'find').mockReturnValue(of(new HttpResponse({ body: null as unknown as PriseEnCharge })));
+      jest.spyOn(service, 'find').mockReturnValue(of(new HttpResponse<IPriseEnCharge>({ body: null })));
       mockActivatedRouteSnapshot.params = { id: 123 };
 
       // WHEN
-      routingResolveService.resolve(mockActivatedRouteSnapshot).subscribe(result => {
-        resultPriseEnCharge = result;
+      TestBed.runInInjectionContext(() => {
+        priseEnChargeResolve(mockActivatedRouteSnapshot).subscribe({
+          next(result) {
+            resultPriseEnCharge = result;
+          },
+        });
       });
 
       // THEN

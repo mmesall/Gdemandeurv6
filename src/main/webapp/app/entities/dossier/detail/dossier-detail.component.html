@@ -1,7 +1,7 @@
 <div class="d-flex justify-content-center">
   <div class="col-8">
     <div *ngIf="dossier">
-      <h2 data-cy="dossierDetailsHeading"><span>Dossier</span></h2>
+      <h2 data-cy="dossierDetailsHeading"><span jhiTranslate="jhipsterProjectBaseJwtApp.dossier.detail.title">Dossier</span></h2>
 
       <hr />
 
@@ -10,135 +10,191 @@
       <jhi-alert></jhi-alert>
 
       <dl class="row-md jh-entity-details">
-        <dt><span>ID</span></dt>
+        <dt><span jhiTranslate="global.field.id">ID</span></dt>
         <dd>
           <span>{{ dossier.id }}</span>
         </dd>
-        <dt><span>Num Dossier</span></dt>
+        <dt><span jhiTranslate="jhipsterProjectBaseJwtApp.dossier.numDossier">Num Dossier</span></dt>
         <dd>
           <span>{{ dossier.numDossier }}</span>
         </dd>
-        <dt><span>Date Naiss</span></dt>
-        <dd>
-          <span>{{ dossier.dateNaiss | formatMediumDate }}</span>
-        </dd>
-        <dt><span>Prenom</span></dt>
+        <dt><span jhiTranslate="jhipsterProjectBaseJwtApp.dossier.prenom">Prenom</span></dt>
         <dd>
           <span>{{ dossier.prenom }}</span>
         </dd>
-        <dt><span>Nom</span></dt>
+        <dt><span jhiTranslate="jhipsterProjectBaseJwtApp.dossier.nom">Nom</span></dt>
         <dd>
           <span>{{ dossier.nom }}</span>
         </dd>
-        <dt><span>Nom Utilisateur</span></dt>
+        <dt><span jhiTranslate="jhipsterProjectBaseJwtApp.dossier.nomUtilisateur">Nom Utilisateur</span></dt>
         <dd>
           <span>{{ dossier.nomUtilisateur }}</span>
         </dd>
-        <dt><span>Region Naiss</span></dt>
+        <dt><span jhiTranslate="jhipsterProjectBaseJwtApp.dossier.dateNaiss">Date Naiss</span></dt>
         <dd>
-          <span>{{ dossier.regionNaiss }}</span>
+          <span>{{ dossier.dateNaiss | formatMediumDate }}</span>
         </dd>
-        <dt><span>Departement Naiss</span></dt>
-        <dd>
-          <span>{{ dossier.departementNaiss }}</span>
-        </dd>
-        <dt><span>Lieu Naiss</span></dt>
+        <dt><span jhiTranslate="jhipsterProjectBaseJwtApp.dossier.lieuNaiss">Lieu Naiss</span></dt>
         <dd>
           <span>{{ dossier.lieuNaiss }}</span>
         </dd>
-        <dt><span>Type Piece</span></dt>
+        <dt><span jhiTranslate="jhipsterProjectBaseJwtApp.dossier.regionNaiss">Region Naiss</span></dt>
         <dd>
-          <span>{{ dossier.typePiece }}</span>
+          <span jhiTranslate="{{ 'jhipsterProjectBaseJwtApp.NomRegion.' + dossier.regionNaiss }}">{{ dossier.regionNaiss }}</span>
         </dd>
-        <dt><span>Numero Piece</span></dt>
+        <dt><span jhiTranslate="jhipsterProjectBaseJwtApp.dossier.departementNaiss">Departement Naiss</span></dt>
+        <dd>
+          <span jhiTranslate="{{ 'jhipsterProjectBaseJwtApp.NomDepartement.' + dossier.departementNaiss }}">{{
+            dossier.departementNaiss
+          }}</span>
+        </dd>
+        <dt><span jhiTranslate="jhipsterProjectBaseJwtApp.dossier.typePiece">Type Piece</span></dt>
+        <dd>
+          <span jhiTranslate="{{ 'jhipsterProjectBaseJwtApp.TypePiece.' + dossier.typePiece }}">{{ dossier.typePiece }}</span>
+        </dd>
+        <dt><span jhiTranslate="jhipsterProjectBaseJwtApp.dossier.numeroPiece">Numero Piece</span></dt>
         <dd>
           <span>{{ dossier.numeroPiece }}</span>
         </dd>
-        <dt><span>Sexe</span></dt>
+        <dt><span jhiTranslate="jhipsterProjectBaseJwtApp.dossier.sexe">Sexe</span></dt>
         <dd>
-          <span>{{ dossier.sexe }}</span>
+          <span jhiTranslate="{{ 'jhipsterProjectBaseJwtApp.Sexe.' + dossier.sexe }}">{{ dossier.sexe }}</span>
         </dd>
-        <dt><span>Region Residence</span></dt>
+        <dt><span jhiTranslate="jhipsterProjectBaseJwtApp.dossier.regionResidence">Region Residence</span></dt>
         <dd>
-          <span>{{ dossier.regionResidence }}</span>
+          <span jhiTranslate="{{ 'jhipsterProjectBaseJwtApp.NomRegion.' + dossier.regionResidence }}">{{ dossier.regionResidence }}</span>
         </dd>
-        <dt><span>Dep Residence</span></dt>
+        <dt><span jhiTranslate="jhipsterProjectBaseJwtApp.dossier.depResidence">Dep Residence</span></dt>
         <dd>
-          <span>{{ dossier.depResidence }}</span>
+          <span jhiTranslate="{{ 'jhipsterProjectBaseJwtApp.NomDepartement.' + dossier.depResidence }}">{{ dossier.depResidence }}</span>
         </dd>
-        <dt><span>Adresse Residence</span></dt>
+        <dt><span jhiTranslate="jhipsterProjectBaseJwtApp.dossier.adresseResidence">Adresse Residence</span></dt>
         <dd>
           <span>{{ dossier.adresseResidence }}</span>
         </dd>
-        <dt><span>Telephone 1</span></dt>
+        <dt><span jhiTranslate="jhipsterProjectBaseJwtApp.dossier.telephone1">Telephone 1</span></dt>
         <dd>
           <span>{{ dossier.telephone1 }}</span>
         </dd>
-        <dt><span>Telephone 2</span></dt>
+        <dt><span jhiTranslate="jhipsterProjectBaseJwtApp.dossier.telephone2">Telephone 2</span></dt>
         <dd>
           <span>{{ dossier.telephone2 }}</span>
         </dd>
-        <dt><span>Email</span></dt>
+        <dt><span jhiTranslate="jhipsterProjectBaseJwtApp.dossier.email">Email</span></dt>
         <dd>
           <span>{{ dossier.email }}</span>
         </dd>
-        <dt><span>Niveau Formation</span></dt>
+        <dt><span jhiTranslate="jhipsterProjectBaseJwtApp.dossier.niveauFormation">Niveau Formation</span></dt>
         <dd>
-          <span>{{ dossier.niveauFormation }}</span>
+          <span jhiTranslate="{{ 'jhipsterProjectBaseJwtApp.NiveauEtude.' + dossier.niveauFormation }}">{{ dossier.niveauFormation }}</span>
         </dd>
-        <dt><span>Specialite 1</span></dt>
+        <dt><span jhiTranslate="jhipsterProjectBaseJwtApp.dossier.specialite">Specialite</span></dt>
         <dd>
-          <span>{{ dossier.specialite1 }}</span>
+          <span jhiTranslate="{{ 'jhipsterProjectBaseJwtApp.NomFiliere.' + dossier.specialite }}">{{ dossier.specialite }}</span>
         </dd>
-        <dt><span>Specialite 2</span></dt>
+        <dt><span jhiTranslate="jhipsterProjectBaseJwtApp.dossier.intituleDiplome">Intitule Diplome</span></dt>
         <dd>
-          <span>{{ dossier.specialite2 }}</span>
+          <span>{{ dossier.intituleDiplome }}</span>
         </dd>
-        <dt><span>Diplome Requis</span></dt>
+        <dt><span jhiTranslate="jhipsterProjectBaseJwtApp.dossier.diplome">Diplome</span></dt>
         <dd>
-          <span>{{ dossier.diplomeRequis }}</span>
+          <div *ngIf="dossier.diplome">
+            <a (click)="openFile(dossier.diplome, dossier.diplomeContentType)" jhiTranslate="entity.action.open">Ouvrir</a>
+            {{ dossier.diplomeContentType }}, {{ byteSize(dossier.diplome) }}
+          </div>
         </dd>
-        <dt><span>Cv</span></dt>
+        <dt><span jhiTranslate="jhipsterProjectBaseJwtApp.dossier.anneeObtention">Annee Obtention</span></dt>
+        <dd>
+          <span>{{ dossier.anneeObtention | formatMediumDate }}</span>
+        </dd>
+        <dt><span jhiTranslate="jhipsterProjectBaseJwtApp.dossier.lieuObtention">Lieu Obtention</span></dt>
+        <dd>
+          <span>{{ dossier.lieuObtention }}</span>
+        </dd>
+        <dt><span jhiTranslate="jhipsterProjectBaseJwtApp.dossier.cv">Cv</span></dt>
         <dd>
           <div *ngIf="dossier.cv">
-            <a (click)="openFile(dossier.cv, dossier.cvContentType)">open</a>
+            <a (click)="openFile(dossier.cv, dossier.cvContentType)" jhiTranslate="entity.action.open">Ouvrir</a>
             {{ dossier.cvContentType }}, {{ byteSize(dossier.cv) }}
           </div>
         </dd>
-        <dt><span>Lettre Motivation</span></dt>
+        <dt><span jhiTranslate="jhipsterProjectBaseJwtApp.dossier.lettreMotivation">Lettre Motivation</span></dt>
         <dd>
-          <span>{{ dossier.lettreMotivation }}</span>
+          <div *ngIf="dossier.lettreMotivation">
+            <a (click)="openFile(dossier.lettreMotivation, dossier.lettreMotivationContentType)" jhiTranslate="entity.action.open"
+              >Ouvrir</a
+            >
+            {{ dossier.lettreMotivationContentType }}, {{ byteSize(dossier.lettreMotivation) }}
+          </div>
         </dd>
-        <dt><span>Profession</span></dt>
+        <dt><span jhiTranslate="jhipsterProjectBaseJwtApp.dossier.profession">Profession</span></dt>
         <dd>
           <span>{{ dossier.profession }}</span>
         </dd>
-        <dt><span>Eleve</span></dt>
+        <dt><span jhiTranslate="jhipsterProjectBaseJwtApp.dossier.autreSpecialite">Autre Specialite</span></dt>
+        <dd>
+          <span>{{ dossier.autreSpecialite }}</span>
+        </dd>
+        <dt><span jhiTranslate="jhipsterProjectBaseJwtApp.dossier.nomCompetence">Nom Competence</span></dt>
+        <dd>
+          <span>{{ dossier.nomCompetence }}</span>
+        </dd>
+        <dt><span jhiTranslate="jhipsterProjectBaseJwtApp.dossier.niveauCompetence">Niveau Competence</span></dt>
+        <dd>
+          <span jhiTranslate="{{ 'jhipsterProjectBaseJwtApp.NIVEAUCOMP.' + dossier.niveauCompetence }}">{{
+            dossier.niveauCompetence
+          }}</span>
+        </dd>
+        <dt><span jhiTranslate="jhipsterProjectBaseJwtApp.dossier.intituleExperience">Intitule Experience</span></dt>
+        <dd>
+          <span>{{ dossier.intituleExperience }}</span>
+        </dd>
+        <dt><span jhiTranslate="jhipsterProjectBaseJwtApp.dossier.posteOccupe">Poste Occupe</span></dt>
+        <dd>
+          <span>{{ dossier.posteOccupe }}</span>
+        </dd>
+        <dt><span jhiTranslate="jhipsterProjectBaseJwtApp.dossier.dateDebut">Date Debut</span></dt>
+        <dd>
+          <span>{{ dossier.dateDebut | formatMediumDate }}</span>
+        </dd>
+        <dt><span jhiTranslate="jhipsterProjectBaseJwtApp.dossier.dateFin">Date Fin</span></dt>
+        <dd>
+          <span>{{ dossier.dateFin | formatMediumDate }}</span>
+        </dd>
+        <dt><span jhiTranslate="jhipsterProjectBaseJwtApp.dossier.nomEntreprise">Nom Entreprise</span></dt>
+        <dd>
+          <span>{{ dossier.nomEntreprise }}</span>
+        </dd>
+        <dt><span jhiTranslate="jhipsterProjectBaseJwtApp.dossier.mission">Mission</span></dt>
+        <dd>
+          <span>{{ dossier.mission }}</span>
+        </dd>
+        <dt><span jhiTranslate="jhipsterProjectBaseJwtApp.dossier.eleve">Eleve</span></dt>
         <dd>
           <div *ngIf="dossier.eleve">
-            <a [routerLink]="['/eleve', dossier.eleve?.id, 'view']">{{ dossier.eleve?.niveauEtude }}</a>
+            <a [routerLink]="['/eleve', dossier.eleve.id, 'view']">{{ dossier.eleve.niveauEtude }}</a>
           </div>
         </dd>
-        <dt><span>Etudiant</span></dt>
+        <dt><span jhiTranslate="jhipsterProjectBaseJwtApp.dossier.etudiant">Etudiant</span></dt>
         <dd>
           <div *ngIf="dossier.etudiant">
-            <a [routerLink]="['/etudiant', dossier.etudiant?.id, 'view']">{{ dossier.etudiant?.carteEtudiant }}</a>
+            <a [routerLink]="['/etudiant', dossier.etudiant.id, 'view']">{{ dossier.etudiant.carteEtudiant }}</a>
           </div>
         </dd>
-        <dt><span>Professionnel</span></dt>
+        <dt><span jhiTranslate="jhipsterProjectBaseJwtApp.dossier.professionnel">Professionnel</span></dt>
         <dd>
           <div *ngIf="dossier.professionnel">
-            <a [routerLink]="['/professionnel', dossier.professionnel?.id, 'view']">{{ dossier.professionnel?.profession }}</a>
+            <a [routerLink]="['/professionnel', dossier.professionnel.id, 'view']">{{ dossier.professionnel.profession }}</a>
           </div>
         </dd>
       </dl>
 
       <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
-        <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span>Back</span>
+        <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Retour</span>
       </button>
 
       <button type="button" [routerLink]="['/dossier', dossier.id, 'edit']" class="btn btn-primary">
-        <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span>Edit</span>
+        <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Editer</span>
       </button>
     </div>
   </div>

@@ -3,7 +3,7 @@
     xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
     xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.6.xsd
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
                         http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
 
     <!--
@@ -17,7 +17,7 @@
             <column name="nom_etablissement" type="varchar(255)">
                 <constraints nullable="true" unique="true" uniqueConstraintName="ux_etablissement__nom_etablissement" />
             </column>
-            <column name="photo" type="longblob">
+            <column name="photo" type="${blobType}">
                 <constraints nullable="true" />
             </column>
             <column name="photo_content_type" type="varchar(255)">

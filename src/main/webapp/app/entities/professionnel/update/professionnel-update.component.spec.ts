@@ -6,8 +6,9 @@ import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of, Subject, from } from 'rxjs';
 
+import { ProfessionnelFormService } from './professionnel-form.service';
 import { ProfessionnelService } from '../service/professionnel.service';
-import { IProfessionnel, Professionnel } from '../professionnel.model';
+import { IProfessionnel } from '../professionnel.model';
 
 import { IUser } from 'app/entities/user/user.model';
 import { UserService } from 'app/entities/user/user.service';
@@ -18,13 +19,13 @@ describe('Professionnel Management Update Component', () => {
   let comp: ProfessionnelUpdateComponent;
   let fixture: ComponentFixture<ProfessionnelUpdateComponent>;
   let activatedRoute: ActivatedRoute;
+  let professionnelFormService: ProfessionnelFormService;
   let professionnelService: ProfessionnelService;
   let userService: UserService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule, RouterTestingModule.withRoutes([])],
-      declarations: [ProfessionnelUpdateComponent],
+      imports: [HttpClientTestingModule, RouterTestingModule.withRoutes([]), ProfessionnelUpdateComponent],
       providers: [
         FormBuilder,
         {
@@ -40,6 +41,7 @@ describe('Professionnel Management Update Component', () => {
 
     fixture = TestBed.createComponent(ProfessionnelUpdateComponent);
     activatedRoute = TestBed.inject(ActivatedRoute);
+    professionnelFormService = TestBed.inject(ProfessionnelFormService);
     professionnelService = TestBed.inject(ProfessionnelService);
     userService = TestBed.inject(UserService);
 
@@ -49,10 +51,10 @@ describe('Professionnel Management Update Component', () => {
   describe('ngOnInit', () => {
     it('Should call User query and add missing value', () => {
       const professionnel: IProfessionnel = { id: 456 };
-      const user: IUser = { id: 4643 };
+      const user: IUser = { id: 24509 };
       professionnel.user = user;
 
-      const userCollection: IUser[] = [{ id: 85394 }];
+      const userCollection: IUser[] = [{ id: 6015 }];
       jest.spyOn(userService, 'query').mockReturnValue(of(new HttpResponse({ body: userCollection })));
       const additionalUsers = [user];
       const expectedCollection: IUser[] = [...additionalUsers, ...userCollection];
@@ -62,28 +64,32 @@ describe('Professionnel Management Update Component', () => {
       comp.ngOnInit();
 
       expect(userService.query).toHaveBeenCalled();
-      expect(userService.addUserToCollectionIfMissing).toHaveBeenCalledWith(userCollection, ...additionalUsers);
+      expect(userService.addUserToCollectionIfMissing).toHaveBeenCalledWith(
+        userCollection,
+        ...additionalUsers.map(expect.objectContaining)
+      );
       expect(comp.usersSharedCollection).toEqual(expectedCollection);
     });
 
     it('Should update editForm', () => {
       const professionnel: IProfessionnel = { id: 456 };
-      const user: IUser = { id: 74854 };
+      const user: IUser = { id: 32278 };
       professionnel.user = user;
 
       activatedRoute.data = of({ professionnel });
       comp.ngOnInit();
 
-      expect(comp.editForm.value).toEqual(expect.objectContaining(professionnel));
       expect(comp.usersSharedCollection).toContain(user);
+      expect(comp.professionnel).toEqual(professionnel);
     });
   });
 
   describe('save', () => {
     it('Should call update service on save for existing entity', () => {
       // GIVEN
-      const saveSubject = new Subject<HttpResponse<Professionnel>>();
+      const saveSubject = new Subject<HttpResponse<IProfessionnel>>();
       const professionnel = { id: 123 };
+      jest.spyOn(professionnelFormService, 'getProfessionnel').mockReturnValue(professionnel);
       jest.spyOn(professionnelService, 'update').mockReturnValue(saveSubject);
       jest.spyOn(comp, 'previousState');
       activatedRoute.data = of({ professionnel });
@@ -96,18 +102,20 @@ describe('Professionnel Management Update Component', () => {
       saveSubject.complete();
 
       // THEN
+      expect(professionnelFormService.getProfessionnel).toHaveBeenCalled();
       expect(comp.previousState).toHaveBeenCalled();
-      expect(professionnelService.update).toHaveBeenCalledWith(professionnel);
+      expect(professionnelService.update).toHaveBeenCalledWith(expect.objectContaining(professionnel));
       expect(comp.isSaving).toEqual(false);
     });
 
     it('Should call create service on save for new entity', () => {
       // GIVEN
-      const saveSubject = new Subject<HttpResponse<Professionnel>>();
-      const professionnel = new Professionnel();
+      const saveSubject = new Subject<HttpResponse<IProfessionnel>>();
+      const professionnel = { id: 123 };
+      jest.spyOn(professionnelFormService, 'getProfessionnel').mockReturnValue({ id: null });
       jest.spyOn(professionnelService, 'create').mockReturnValue(saveSubject);
       jest.spyOn(comp, 'previousState');
-      activatedRoute.data = of({ professionnel });
+      activatedRoute.data = of({ professionnel: null });
       comp.ngOnInit();
 
       // WHEN
@@ -117,14 +125,15 @@ describe('Professionnel Management Update Component', () => {
       saveSubject.complete();
 
       // THEN
-      expect(professionnelService.create).toHaveBeenCalledWith(professionnel);
+      expect(professionnelFormService.getProfessionnel).toHaveBeenCalled();
+      expect(professionnelService.create).toHaveBeenCalled();
       expect(comp.isSaving).toEqual(false);
       expect(comp.previousState).toHaveBeenCalled();
     });
 
     it('Should set isSaving to false on error', () => {
       // GIVEN
-      const saveSubject = new Subject<HttpResponse<Professionnel>>();
+      const saveSubject = new Subject<HttpResponse<IProfessionnel>>();
       const professionnel = { id: 123 };
       jest.spyOn(professionnelService, 'update').mockReturnValue(saveSubject);
       jest.spyOn(comp, 'previousState');
@@ -137,18 +146,20 @@ describe('Professionnel Management Update Component', () => {
       saveSubject.error('This is an error!');
 
       // THEN
-      expect(professionnelService.update).toHaveBeenCalledWith(professionnel);
+      expect(professionnelService.update).toHaveBeenCalled();
       expect(comp.isSaving).toEqual(false);
       expect(comp.previousState).not.toHaveBeenCalled();
     });
   });
 
-  describe('Tracking relationships identifiers', () => {
-    describe('trackUserById', () => {
-      it('Should return tracked User primary key', () => {
+  describe('Compare relationships', () => {
+    describe('compareUser', () => {
+      it('Should forward to userService', () => {
         const entity = { id: 123 };
-        const trackResult = comp.trackUserById(0, entity);
-        expect(trackResult).toEqual(entity.id);
+        const entity2 = { id: 456 };
+        jest.spyOn(userService, 'compareUser');
+        comp.compareUser(entity, entity2);
+        expect(userService.compareUser).toHaveBeenCalledWith(entity, entity2);
       });
     });
   });

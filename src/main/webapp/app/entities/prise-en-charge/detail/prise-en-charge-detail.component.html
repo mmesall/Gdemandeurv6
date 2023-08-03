@@ -1,7 +1,9 @@
 <div class="d-flex justify-content-center">
   <div class="col-8">
     <div *ngIf="priseEnCharge">
-      <h2 data-cy="priseEnChargeDetailsHeading"><span>Prise En Charge</span></h2>
+      <h2 data-cy="priseEnChargeDetailsHeading">
+        <span jhiTranslate="jhipsterProjectBaseJwtApp.priseEnCharge.detail.title">Prise En Charge</span>
+      </h2>
 
       <hr />
 
@@ -10,38 +12,38 @@
       <jhi-alert></jhi-alert>
 
       <dl class="row-md jh-entity-details">
-        <dt><span>ID</span></dt>
+        <dt><span jhiTranslate="global.field.id">ID</span></dt>
         <dd>
           <span>{{ priseEnCharge.id }}</span>
         </dd>
-        <dt><span>Libelle</span></dt>
+        <dt><span jhiTranslate="jhipsterProjectBaseJwtApp.priseEnCharge.libelle">Libelle</span></dt>
         <dd>
           <span>{{ priseEnCharge.libelle }}</span>
         </dd>
-        <dt><span>Montant PC</span></dt>
+        <dt><span jhiTranslate="jhipsterProjectBaseJwtApp.priseEnCharge.montantPC">Montant PC</span></dt>
         <dd>
           <span>{{ priseEnCharge.montantPC }}</span>
         </dd>
-        <dt><span>Formation</span></dt>
+        <dt><span jhiTranslate="jhipsterProjectBaseJwtApp.priseEnCharge.formation">Formation</span></dt>
         <dd>
           <div *ngIf="priseEnCharge.formation">
-            <a [routerLink]="['/formation', priseEnCharge.formation?.id, 'view']">{{ priseEnCharge.formation?.id }}</a>
+            <a [routerLink]="['/formation', priseEnCharge.formation.id, 'view']">{{ priseEnCharge.formation.id }}</a>
           </div>
         </dd>
-        <dt><span>Bailleur</span></dt>
+        <dt><span jhiTranslate="jhipsterProjectBaseJwtApp.priseEnCharge.bailleur">Bailleur</span></dt>
         <dd>
           <div *ngIf="priseEnCharge.bailleur">
-            <a [routerLink]="['/bailleur', priseEnCharge.bailleur?.id, 'view']">{{ priseEnCharge.bailleur?.nomBailleur }}</a>
+            <a [routerLink]="['/bailleur', priseEnCharge.bailleur.id, 'view']">{{ priseEnCharge.bailleur.nomBailleur }}</a>
           </div>
         </dd>
       </dl>
 
       <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
-        <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span>Back</span>
+        <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Retour</span>
       </button>
 
       <button type="button" [routerLink]="['/prise-en-charge', priseEnCharge.id, 'edit']" class="btn btn-primary">
-        <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span>Edit</span>
+        <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Editer</span>
       </button>
     </div>
   </div>

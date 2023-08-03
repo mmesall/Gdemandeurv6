@@ -1,11 +1,11 @@
 package mfpai.gouv.sn.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
-import javax.persistence.*;
-import javax.validation.constraints.*;
 import mfpai.gouv.sn.domain.enumeration.CFP;
 import mfpai.gouv.sn.domain.enumeration.LYCEE;
 import mfpai.gouv.sn.domain.enumeration.NomDepartement;
@@ -24,6 +24,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Entity
 @Table(name = "etablissement")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+@SuppressWarnings("common-java:DuplicatedBlocks")
 public class Etablissement implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -100,19 +101,22 @@ public class Etablissement implements Serializable {
     @Column(name = "autre_nom_etablissement")
     private String autreNomEtablissement;
 
-    @OneToMany(mappedBy = "etablissement")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "etablissement")
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     @JsonIgnoreProperties(value = { "eleve", "etudiant", "formationInitiale", "etablissement" }, allowSetters = true)
     private Set<CandidatureE> candidatureES = new HashSet<>();
 
-    @OneToMany(mappedBy = "etablissement")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "etablissement")
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     @JsonIgnoreProperties(value = { "professionnel", "formationContinue", "etablissement" }, allowSetters = true)
     private Set<CandidatureP> candidaturePS = new HashSet<>();
 
-    @ManyToMany(mappedBy = "etablissements")
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "etablissements")
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-    @JsonIgnoreProperties(value = { "etablissements", "priseEnCharge" }, allowSetters = true)
+    @JsonIgnoreProperties(
+        value = { "etablissements", "priseEnCharge", "formationInitiale", "formationContinue", "concours" },
+        allowSetters = true
+    )
     private Set<Formation> formations = new HashSet<>();
 
     // jhipster-needle-entity-add-field - JHipster will add fields here

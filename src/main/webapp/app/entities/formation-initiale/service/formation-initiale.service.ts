@@ -1,14 +1,30 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
+
 import { map } from 'rxjs/operators';
+
 import dayjs from 'dayjs/esm';
 
 import { isPresent } from 'app/core/util/operators';
 import { DATE_FORMAT } from 'app/config/input.constants';
 import { ApplicationConfigService } from 'app/core/config/application-config.service';
 import { createRequestOption } from 'app/core/request/request-util';
-import { IFormationInitiale, getFormationInitialeIdentifier } from '../formation-initiale.model';
+import { IFormationInitiale, NewFormationInitiale } from '../formation-initiale.model';
+
+export type PartialUpdateFormationInitiale = Partial<IFormationInitiale> & Pick<IFormationInitiale, 'id'>;
+
+type RestOf<T extends IFormationInitiale | NewFormationInitiale> = Omit<T, 'dateOuverture' | 'dateCloture' | 'dateConcours'> & {
+  dateOuverture?: string | null;
+  dateCloture?: string | null;
+  dateConcours?: string | null;
+};
+
+export type RestFormationInitiale = RestOf<IFormationInitiale>;
+
+export type NewRestFormationInitiale = RestOf<NewFormationInitiale>;
+
+export type PartialUpdateRestFormationInitiale = RestOf<PartialUpdateFormationInitiale>;
 
 export type EntityResponseType = HttpResponse<IFormationInitiale>;
 export type EntityArrayResponseType = HttpResponse<IFormationInitiale[]>;
@@ -19,60 +35,68 @@ export class FormationInitialeService {
 
   constructor(protected http: HttpClient, protected applicationConfigService: ApplicationConfigService) {}
 
-  create(formationInitiale: IFormationInitiale): Observable<EntityResponseType> {
+  create(formationInitiale: NewFormationInitiale): Observable<EntityResponseType> {
     const copy = this.convertDateFromClient(formationInitiale);
     return this.http
-      .post<IFormationInitiale>(this.resourceUrl, copy, { observe: 'response' })
-      .pipe(map((res: EntityResponseType) => this.convertDateFromServer(res)));
+      .post<RestFormationInitiale>(this.resourceUrl, copy, { observe: 'response' })
+      .pipe(map(res => this.convertResponseFromServer(res)));
   }
 
   update(formationInitiale: IFormationInitiale): Observable<EntityResponseType> {
     const copy = this.convertDateFromClient(formationInitiale);
     return this.http
-      .put<IFormationInitiale>(`${this.resourceUrl}/${getFormationInitialeIdentifier(formationInitiale) as number}`, copy, {
+      .put<RestFormationInitiale>(`${this.resourceUrl}/${this.getFormationInitialeIdentifier(formationInitiale)}`, copy, {
         observe: 'response',
       })
-      .pipe(map((res: EntityResponseType) => this.convertDateFromServer(res)));
+      .pipe(map(res => this.convertResponseFromServer(res)));
   }
 
-  partialUpdate(formationInitiale: IFormationInitiale): Observable<EntityResponseType> {
+  partialUpdate(formationInitiale: PartialUpdateFormationInitiale): Observable<EntityResponseType> {
     const copy = this.convertDateFromClient(formationInitiale);
     return this.http
-      .patch<IFormationInitiale>(`${this.resourceUrl}/${getFormationInitialeIdentifier(formationInitiale) as number}`, copy, {
+      .patch<RestFormationInitiale>(`${this.resourceUrl}/${this.getFormationInitialeIdentifier(formationInitiale)}`, copy, {
         observe: 'response',
       })
-      .pipe(map((res: EntityResponseType) => this.convertDateFromServer(res)));
+      .pipe(map(res => this.convertResponseFromServer(res)));
   }
 
   find(id: number): Observable<EntityResponseType> {
     return this.http
-      .get<IFormationInitiale>(`${this.resourceUrl}/${id}`, { observe: 'response' })
-      .pipe(map((res: EntityResponseType) => this.convertDateFromServer(res)));
+      .get<RestFormationInitiale>(`${this.resourceUrl}/${id}`, { observe: 'response' })
+      .pipe(map(res => this.convertResponseFromServer(res)));
   }
 
   query(req?: any): Observable<EntityArrayResponseType> {
     const options = createRequestOption(req);
     return this.http
-      .get<IFormationInitiale[]>(this.resourceUrl, { params: options, observe: 'response' })
-      .pipe(map((res: EntityArrayResponseType) => this.convertDateArrayFromServer(res)));
+      .get<RestFormationInitiale[]>(this.resourceUrl, { params: options, observe: 'response' })
+      .pipe(map(res => this.convertResponseArrayFromServer(res)));
   }
 
   delete(id: number): Observable<HttpResponse<{}>> {
     return this.http.delete(`${this.resourceUrl}/${id}`, { observe: 'response' });
   }
 
-  addFormationInitialeToCollectionIfMissing(
-    formationInitialeCollection: IFormationInitiale[],
-    ...formationInitialesToCheck: (IFormationInitiale | null | undefined)[]
-  ): IFormationInitiale[] {
-    const formationInitiales: IFormationInitiale[] = formationInitialesToCheck.filter(isPresent);
+  getFormationInitialeIdentifier(formationInitiale: Pick<IFormationInitiale, 'id'>): number {
+    return formationInitiale.id;
+  }
+
+  compareFormationInitiale(o1: Pick<IFormationInitiale, 'id'> | null, o2: Pick<IFormationInitiale, 'id'> | null): boolean {
+    return o1 && o2 ? this.getFormationInitialeIdentifier(o1) === this.getFormationInitialeIdentifier(o2) : o1 === o2;
+  }
+
+  addFormationInitialeToCollectionIfMissing<Type extends Pick<IFormationInitiale, 'id'>>(
+    formationInitialeCollection: Type[],
+    ...formationInitialesToCheck: (Type | null | undefined)[]
+  ): Type[] {
+    const formationInitiales: Type[] = formationInitialesToCheck.filter(isPresent);
     if (formationInitiales.length > 0) {
       const formationInitialeCollectionIdentifiers = formationInitialeCollection.map(
-        formationInitialeItem => getFormationInitialeIdentifier(formationInitialeItem)!
+        formationInitialeItem => this.getFormationInitialeIdentifier(formationInitialeItem)!
       );
       const formationInitialesToAdd = formationInitiales.filter(formationInitialeItem => {
-        const formationInitialeIdentifier = getFormationInitialeIdentifier(formationInitialeItem);
-        if (formationInitialeIdentifier == null || formationInitialeCollectionIdentifiers.includes(formationInitialeIdentifier)) {
+        const formationInitialeIdentifier = this.getFormationInitialeIdentifier(formationInitialeItem);
+        if (formationInitialeCollectionIdentifiers.includes(formationInitialeIdentifier)) {
           return false;
         }
         formationInitialeCollectionIdentifiers.push(formationInitialeIdentifier);
@@ -83,31 +107,35 @@ export class FormationInitialeService {
     return formationInitialeCollection;
   }
 
-  protected convertDateFromClient(formationInitiale: IFormationInitiale): IFormationInitiale {
-    return Object.assign({}, formationInitiale, {
-      dateOuverture: formationInitiale.dateOuverture?.isValid() ? formationInitiale.dateOuverture.format(DATE_FORMAT) : undefined,
-      dateCloture: formationInitiale.dateCloture?.isValid() ? formationInitiale.dateCloture.format(DATE_FORMAT) : undefined,
-      dateConcours: formationInitiale.dateConcours?.isValid() ? formationInitiale.dateConcours.format(DATE_FORMAT) : undefined,
+  protected convertDateFromClient<T extends IFormationInitiale | NewFormationInitiale | PartialUpdateFormationInitiale>(
+    formationInitiale: T
+  ): RestOf<T> {
+    return {
+      ...formationInitiale,
+      dateOuverture: formationInitiale.dateOuverture?.format(DATE_FORMAT) ?? null,
+      dateCloture: formationInitiale.dateCloture?.format(DATE_FORMAT) ?? null,
+      dateConcours: formationInitiale.dateConcours?.format(DATE_FORMAT) ?? null,
+    };
+  }
+
+  protected convertDateFromServer(restFormationInitiale: RestFormationInitiale): IFormationInitiale {
+    return {
+      ...restFormationInitiale,
+      dateOuverture: restFormationInitiale.dateOuverture ? dayjs(restFormationInitiale.dateOuverture) : undefined,
+      dateCloture: restFormationInitiale.dateCloture ? dayjs(restFormationInitiale.dateCloture) : undefined,
+      dateConcours: restFormationInitiale.dateConcours ? dayjs(restFormationInitiale.dateConcours) : undefined,
+    };
+  }
+
+  protected convertResponseFromServer(res: HttpResponse<RestFormationInitiale>): HttpResponse<IFormationInitiale> {
+    return res.clone({
+      body: res.body ? this.convertDateFromServer(res.body) : null,
     });
   }
 
-  protected convertDateFromServer(res: EntityResponseType): EntityResponseType {
-    if (res.body) {
-      res.body.dateOuverture = res.body.dateOuverture ? dayjs(res.body.dateOuverture) : undefined;
-      res.body.dateCloture = res.body.dateCloture ? dayjs(res.body.dateCloture) : undefined;
-      res.body.dateConcours = res.body.dateConcours ? dayjs(res.body.dateConcours) : undefined;
-    }
-    return res;
-  }
-
-  protected convertDateArrayFromServer(res: EntityArrayResponseType): EntityArrayResponseType {
-    if (res.body) {
-      res.body.forEach((formationInitiale: IFormationInitiale) => {
-        formationInitiale.dateOuverture = formationInitiale.dateOuverture ? dayjs(formationInitiale.dateOuverture) : undefined;
-        formationInitiale.dateCloture = formationInitiale.dateCloture ? dayjs(formationInitiale.dateCloture) : undefined;
-        formationInitiale.dateConcours = formationInitiale.dateConcours ? dayjs(formationInitiale.dateConcours) : undefined;
-      });
-    }
-    return res;
+  protected convertResponseArrayFromServer(res: HttpResponse<RestFormationInitiale[]>): HttpResponse<IFormationInitiale[]> {
+    return res.clone({
+      body: res.body ? res.body.map(item => this.convertDateFromServer(item)) : null,
+    });
   }
 }

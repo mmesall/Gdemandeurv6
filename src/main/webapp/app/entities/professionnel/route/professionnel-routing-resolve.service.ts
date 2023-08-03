@@ -1,30 +1,29 @@
-import { Injectable } from '@angular/core';
+import { inject } from '@angular/core';
 import { HttpResponse } from '@angular/common/http';
-import { Resolve, ActivatedRouteSnapshot, Router } from '@angular/router';
-import { Observable, of, EMPTY } from 'rxjs';
+import { ActivatedRouteSnapshot, Router } from '@angular/router';
+import { of, EMPTY, Observable } from 'rxjs';
 import { mergeMap } from 'rxjs/operators';
 
-import { IProfessionnel, Professionnel } from '../professionnel.model';
+import { IProfessionnel } from '../professionnel.model';
 import { ProfessionnelService } from '../service/professionnel.service';
 
-@Injectable({ providedIn: 'root' })
-export class ProfessionnelRoutingResolveService implements Resolve<IProfessionnel> {
-  constructor(protected service: ProfessionnelService, protected router: Router) {}
-
-  resolve(route: ActivatedRouteSnapshot): Observable<IProfessionnel> | Observable<never> {
-    const id = route.params['id'];
-    if (id) {
-      return this.service.find(id).pipe(
-        mergeMap((professionnel: HttpResponse<Professionnel>) => {
+export const professionnelResolve = (route: ActivatedRouteSnapshot): Observable<null | IProfessionnel> => {
+  const id = route.params['id'];
+  if (id) {
+    return inject(ProfessionnelService)
+      .find(id)
+      .pipe(
+        mergeMap((professionnel: HttpResponse<IProfessionnel>) => {
           if (professionnel.body) {
             return of(professionnel.body);
           } else {
-            this.router.navigate(['404']);
+            inject(Router).navigate(['404']);
             return EMPTY;
           }
         })
       );
-    }
-    return of(new Professionnel());
   }
-}
+  return of(null);
+};
+
+export default professionnelResolve;

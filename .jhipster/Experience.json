@@ -1,8 +1,6 @@
 {
   "applications": "*",
   "changelogDate": "20230328104854",
-  "dto": "no",
-  "embedded": false,
   "entityTableName": "experience",
   "fields": [
     {
@@ -31,17 +29,15 @@
       "fieldTypeBlobContent": "text"
     }
   ],
-  "fluentMethods": true,
-  "jpaMetamodelFiltering": false,
   "name": "Experience",
   "pagination": "infinite-scroll",
-  "readOnly": false,
   "relationships": [
     {
       "otherEntityField": "niveauEtude",
       "otherEntityName": "eleve",
       "otherEntityRelationshipName": "experience",
       "relationshipName": "eleve",
+      "relationshipSide": "right",
       "relationshipType": "many-to-one"
     },
     {
@@ -49,6 +45,7 @@
       "otherEntityName": "etudiant",
       "otherEntityRelationshipName": "experience",
       "relationshipName": "etudiant",
+      "relationshipSide": "right",
       "relationshipType": "many-to-one"
     },
     {
@@ -56,6 +53,7 @@
       "otherEntityName": "professionnel",
       "otherEntityRelationshipName": "experience",
       "relationshipName": "professionnel",
+      "relationshipSide": "right",
       "relationshipType": "many-to-one"
     },
     {
@@ -63,8 +61,10 @@
       "otherEntityName": "demandeur",
       "otherEntityRelationshipName": "experience",
       "relationshipName": "demandeur",
+      "relationshipSide": "right",
       "relationshipType": "many-to-one"
     }
   ],
+  "searchEngine": "no",
   "service": "serviceImpl"
 }

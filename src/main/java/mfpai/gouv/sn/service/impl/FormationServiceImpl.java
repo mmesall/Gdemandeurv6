@@ -36,6 +36,12 @@ public class FormationServiceImpl implements FormationService {
     }
 
     @Override
+    public Formation update(Formation formation) {
+        log.debug("Request to update Formation : {}", formation);
+        return formationRepository.save(formation);
+    }
+
+    @Override
     public Optional<Formation> partialUpdate(Formation formation) {
         log.debug("Request to partially update Formation : {}", formation);
 
@@ -96,7 +102,46 @@ public class FormationServiceImpl implements FormationService {
         return StreamSupport
             .stream(formationRepository.findAll().spliterator(), false)
             .filter(formation -> formation.getPriseEnCharge() == null)
-            .collect(Collectors.toList());
+            .toList();
+    }
+
+    /**
+     *  Get all the formations where FormationInitiale is {@code null}.
+     *  @return the list of entities.
+     */
+    @Transactional(readOnly = true)
+    public List<Formation> findAllWhereFormationInitialeIsNull() {
+        log.debug("Request to get all formations where FormationInitiale is null");
+        return StreamSupport
+            .stream(formationRepository.findAll().spliterator(), false)
+            .filter(formation -> formation.getFormationInitiale() == null)
+            .toList();
+    }
+
+    /**
+     *  Get all the formations where FormationContinue is {@code null}.
+     *  @return the list of entities.
+     */
+    @Transactional(readOnly = true)
+    public List<Formation> findAllWhereFormationContinueIsNull() {
+        log.debug("Request to get all formations where FormationContinue is null");
+        return StreamSupport
+            .stream(formationRepository.findAll().spliterator(), false)
+            .filter(formation -> formation.getFormationContinue() == null)
+            .toList();
+    }
+
+    /**
+     *  Get all the formations where Concours is {@code null}.
+     *  @return the list of entities.
+     */
+    @Transactional(readOnly = true)
+    public List<Formation> findAllWhereConcoursIsNull() {
+        log.debug("Request to get all formations where Concours is null");
+        return StreamSupport
+            .stream(formationRepository.findAll().spliterator(), false)
+            .filter(formation -> formation.getConcours() == null)
+            .toList();
     }
 
     @Override

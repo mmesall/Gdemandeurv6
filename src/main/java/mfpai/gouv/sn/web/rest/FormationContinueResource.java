@@ -97,7 +97,7 @@ public class FormationContinueResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        FormationContinue result = formationContinueService.save(formationContinue);
+        FormationContinue result = formationContinueService.update(formationContinue);
         return ResponseEntity
             .ok()
             .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, formationContinue.getId().toString()))
@@ -148,7 +148,7 @@ public class FormationContinueResource {
      */
     @GetMapping("/formation-continues")
     public ResponseEntity<List<FormationContinue>> getAllFormationContinues(
-        @org.springdoc.api.annotations.ParameterObject Pageable pageable
+        @org.springdoc.core.annotations.ParameterObject Pageable pageable
     ) {
         log.debug("REST request to get a page of FormationContinues");
         Page<FormationContinue> page = formationContinueService.findAll(pageable);

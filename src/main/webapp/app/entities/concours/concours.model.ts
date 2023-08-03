@@ -4,33 +4,16 @@ import { NomEtablissement } from 'app/entities/enumerations/nom-etablissement.mo
 import { NiveauEtude } from 'app/entities/enumerations/niveau-etude.model';
 
 export interface IConcours {
-  id?: number;
+  id: number;
   nomConcours?: string | null;
-  nomEtablissement?: NomEtablissement | null;
-  niveauEtude?: NiveauEtude | null;
+  nomEtablissement?: keyof typeof NomEtablissement | null;
+  niveauEtude?: keyof typeof NiveauEtude | null;
   dateOuverture?: dayjs.Dayjs | null;
   dateCloture?: dayjs.Dayjs | null;
   dateConcours?: dayjs.Dayjs | null;
-  afficheContentType?: string | null;
   affiche?: string | null;
-  formation?: IFormation | null;
+  afficheContentType?: string | null;
+  formation?: Pick<IFormation, 'id' | 'nomFormation'> | null;
 }
 
-export class Concours implements IConcours {
-  constructor(
-    public id?: number,
-    public nomConcours?: string | null,
-    public nomEtablissement?: NomEtablissement | null,
-    public niveauEtude?: NiveauEtude | null,
-    public dateOuverture?: dayjs.Dayjs | null,
-    public dateCloture?: dayjs.Dayjs | null,
-    public dateConcours?: dayjs.Dayjs | null,
-    public afficheContentType?: string | null,
-    public affiche?: string | null,
-    public formation?: IFormation | null
-  ) {}
-}
-
-export function getConcoursIdentifier(concours: IConcours): number | undefined {
-  return concours.id;
-}
+export type NewConcours = Omit<IConcours, 'id'> & { id: null };

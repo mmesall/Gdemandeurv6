@@ -1,8 +1,6 @@
 {
   "applications": "*",
   "changelogDate": "20230328104850",
-  "dto": "no",
-  "embedded": false,
   "entityTableName": "prise_en_charge",
   "fields": [
     {
@@ -14,17 +12,14 @@
       "fieldType": "Double"
     }
   ],
-  "fluentMethods": true,
-  "jpaMetamodelFiltering": false,
   "name": "PriseEnCharge",
   "pagination": "infinite-scroll",
-  "readOnly": false,
   "relationships": [
     {
       "otherEntityName": "formation",
       "otherEntityRelationshipName": "priseEnCharge",
-      "ownerSide": true,
       "relationshipName": "formation",
+      "relationshipSide": "left",
       "relationshipType": "one-to-one"
     },
     {
@@ -32,8 +27,10 @@
       "otherEntityName": "bailleur",
       "otherEntityRelationshipName": "priseEnCharge",
       "relationshipName": "bailleur",
+      "relationshipSide": "right",
       "relationshipType": "many-to-one"
     }
   ],
+  "searchEngine": "no",
   "service": "serviceImpl"
 }

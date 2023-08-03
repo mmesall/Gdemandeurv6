@@ -93,7 +93,7 @@ public class PriseEnChargeResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        PriseEnCharge result = priseEnChargeService.save(priseEnCharge);
+        PriseEnCharge result = priseEnChargeService.update(priseEnCharge);
         return ResponseEntity
             .ok()
             .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, priseEnCharge.getId().toString()))
@@ -145,8 +145,8 @@ public class PriseEnChargeResource {
      */
     @GetMapping("/prise-en-charges")
     public ResponseEntity<List<PriseEnCharge>> getAllPriseEnCharges(
-        @org.springdoc.api.annotations.ParameterObject Pageable pageable,
-        @RequestParam(required = false, defaultValue = "true") boolean eagerload
+        @org.springdoc.core.annotations.ParameterObject Pageable pageable,
+        @RequestParam(required = false, defaultValue = "false") boolean eagerload
     ) {
         log.debug("REST request to get a page of PriseEnCharges");
         Page<PriseEnCharge> page;

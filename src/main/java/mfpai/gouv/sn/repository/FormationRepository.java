@@ -10,7 +10,10 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 /**
- * Spring Data SQL repository for the Formation entity.
+ * Spring Data JPA repository for the Formation entity.
+ *
+ * When extending this class, extend FormationRepositoryWithBagRelationships too.
+ * For more information refer to https://github.com/jhipster/generator-jhipster/issues/17990.
  */
 @Repository
 public interface FormationRepository extends FormationRepositoryWithBagRelationships, JpaRepository<Formation, Long> {

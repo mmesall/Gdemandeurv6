@@ -1,23 +1,21 @@
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { Component, Input } from '@angular/core';
+import { ActivatedRoute, RouterModule } from '@angular/router';
 
+import SharedModule from 'app/shared/shared.module';
+import { DurationPipe, FormatMediumDatetimePipe, FormatMediumDatePipe } from 'app/shared/date';
 import { IEtablissement } from '../etablissement.model';
 import { DataUtils } from 'app/core/util/data-util.service';
 
 @Component({
+  standalone: true,
   selector: 'jhi-etablissement-detail',
   templateUrl: './etablissement-detail.component.html',
+  imports: [SharedModule, RouterModule, DurationPipe, FormatMediumDatetimePipe, FormatMediumDatePipe],
 })
-export class EtablissementDetailComponent implements OnInit {
-  etablissement: IEtablissement | null = null;
+export class EtablissementDetailComponent {
+  @Input() etablissement: IEtablissement | null = null;
 
   constructor(protected dataUtils: DataUtils, protected activatedRoute: ActivatedRoute) {}
-
-  ngOnInit(): void {
-    this.activatedRoute.data.subscribe(({ etablissement }) => {
-      this.etablissement = etablissement;
-    });
-  }
 
   byteSize(base64String: string): string {
     return this.dataUtils.byteSize(base64String);

@@ -2,20 +2,29 @@ package mfpai.gouv.sn.web.rest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import jakarta.persistence.EntityManager;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicLong;
-import javax.persistence.EntityManager;
 import mfpai.gouv.sn.IntegrationTest;
 import mfpai.gouv.sn.domain.PriseEnCharge;
 import mfpai.gouv.sn.repository.PriseEnChargeRepository;
+import mfpai.gouv.sn.service.PriseEnChargeService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
@@ -25,6 +34,7 @@ import org.springframework.transaction.annotation.Transactional;
  * Integration tests for the {@link PriseEnChargeResource} REST controller.
  */
 @IntegrationTest
+@ExtendWith(MockitoExtension.class)
 @AutoConfigureMockMvc
 @WithMockUser
 class PriseEnChargeResourceIT {
@@ -43,6 +53,12 @@ class PriseEnChargeResourceIT {
 
     @Autowired
     private PriseEnChargeRepository priseEnChargeRepository;
+
+    @Mock
+    private PriseEnChargeRepository priseEnChargeRepositoryMock;
+
+    @Mock
+    private PriseEnChargeService priseEnChargeServiceMock;
 
     @Autowired
     private EntityManager em;
@@ -130,6 +146,23 @@ class PriseEnChargeResourceIT {
             .andExpect(jsonPath("$.[*].montantPC").value(hasItem(DEFAULT_MONTANT_PC.doubleValue())));
     }
 
+    @SuppressWarnings({ "unchecked" })
+    void getAllPriseEnChargesWithEagerRelationshipsIsEnabled() throws Exception {
+        when(priseEnChargeServiceMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
+
+        restPriseEnChargeMockMvc.perform(get(ENTITY_API_URL + "?eagerload=true")).andExpect(status().isOk());
+
+        verify(priseEnChargeServiceMock, times(1)).findAllWithEagerRelationships(any());
+    }
+
+    @SuppressWarnings({ "unchecked" })
+    void getAllPriseEnChargesWithEagerRelationshipsIsNotEnabled() throws Exception {
+        when(priseEnChargeServiceMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
+
+        restPriseEnChargeMockMvc.perform(get(ENTITY_API_URL + "?eagerload=false")).andExpect(status().isOk());
+        verify(priseEnChargeRepositoryMock, times(1)).findAll(any(Pageable.class));
+    }
+
     @Test
     @Transactional
     void getPriseEnCharge() throws Exception {
@@ -155,14 +188,14 @@ class PriseEnChargeResourceIT {
 
     @Test
     @Transactional
-    void putNewPriseEnCharge() throws Exception {
+    void putExistingPriseEnCharge() throws Exception {
         // Initialize the database
         priseEnChargeRepository.saveAndFlush(priseEnCharge);
 
         int databaseSizeBeforeUpdate = priseEnChargeRepository.findAll().size();
 
         // Update the priseEnCharge
-        PriseEnCharge updatedPriseEnCharge = priseEnChargeRepository.findById(priseEnCharge.getId()).get();
+        PriseEnCharge updatedPriseEnCharge = priseEnChargeRepository.findById(priseEnCharge.getId()).orElseThrow();
         // Disconnect from session so that the updates on updatedPriseEnCharge are not directly saved in db
         em.detach(updatedPriseEnCharge);
         updatedPriseEnCharge.libelle(UPDATED_LIBELLE).montantPC(UPDATED_MONTANT_PC);
@@ -251,7 +284,7 @@ class PriseEnChargeResourceIT {
         PriseEnCharge partialUpdatedPriseEnCharge = new PriseEnCharge();
         partialUpdatedPriseEnCharge.setId(priseEnCharge.getId());
 
-        partialUpdatedPriseEnCharge.libelle(UPDATED_LIBELLE).montantPC(UPDATED_MONTANT_PC);
+        partialUpdatedPriseEnCharge.montantPC(UPDATED_MONTANT_PC);
 
         restPriseEnChargeMockMvc
             .perform(
@@ -265,7 +298,7 @@ class PriseEnChargeResourceIT {
         List<PriseEnCharge> priseEnChargeList = priseEnChargeRepository.findAll();
         assertThat(priseEnChargeList).hasSize(databaseSizeBeforeUpdate);
         PriseEnCharge testPriseEnCharge = priseEnChargeList.get(priseEnChargeList.size() - 1);
-        assertThat(testPriseEnCharge.getLibelle()).isEqualTo(UPDATED_LIBELLE);
+        assertThat(testPriseEnCharge.getLibelle()).isEqualTo(DEFAULT_LIBELLE);
         assertThat(testPriseEnCharge.getMontantPC()).isEqualTo(UPDATED_MONTANT_PC);
     }
 

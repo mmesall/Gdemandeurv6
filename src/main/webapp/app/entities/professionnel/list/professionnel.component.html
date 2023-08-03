@@ -1,11 +1,11 @@
 <div>
   <h2 id="page-heading" data-cy="ProfessionnelHeading">
-    <span>Professionnels</span>
+    <span jhiTranslate="jhipsterProjectBaseJwtApp.professionnel.home.title">Professionnels</span>
 
     <div class="d-flex justify-content-end">
-      <button class="btn btn-info me-2" (click)="reset()" [disabled]="isLoading">
+      <button class="btn btn-info me-2" (click)="load()" [disabled]="isLoading">
         <fa-icon icon="sync" [spin]="isLoading"></fa-icon>
-        <span>Refresh List</span>
+        <span jhiTranslate="jhipsterProjectBaseJwtApp.professionnel.home.refreshListLabel">Actualiser la liste</span>
       </button>
 
       <button
@@ -15,7 +15,7 @@
         [routerLink]="['/professionnel/new']"
       >
         <fa-icon icon="plus"></fa-icon>
-        <span> Create a new Professionnel </span>
+        <span jhiTranslate="jhipsterProjectBaseJwtApp.professionnel.home.createLabel"> Créer un nouveau Professionnel </span>
       </button>
     </div>
   </h2>
@@ -25,31 +25,106 @@
   <jhi-alert></jhi-alert>
 
   <div class="alert alert-warning" id="no-result" *ngIf="professionnels?.length === 0">
-    <span>No professionnels found</span>
+    <span jhiTranslate="jhipsterProjectBaseJwtApp.professionnel.home.notFound">Aucun Professionnel trouvé</span>
   </div>
 
-  <div class="table-responsive" id="entities" *ngIf="professionnels && professionnels.length > 0">
+  <div class="table-responsive table-entities" id="entities" *ngIf="professionnels && professionnels.length > 0">
     <table class="table table-striped" aria-describedby="page-heading">
       <thead>
-        <tr jhiSort [(predicate)]="predicate" [(ascending)]="ascending" (sortChange)="reset()">
-          <th scope="col" jhiSortBy="id"><span>ID</span> <fa-icon icon="sort"></fa-icon></th>
-          <th scope="col" jhiSortBy="profession"><span>Profession</span> <fa-icon icon="sort"></fa-icon></th>
-          <th scope="col" jhiSortBy="nom"><span>Nom</span> <fa-icon icon="sort"></fa-icon></th>
-          <th scope="col" jhiSortBy="prenom"><span>Prenom</span> <fa-icon icon="sort"></fa-icon></th>
-          <th scope="col" jhiSortBy="dateNaiss"><span>Date Naiss</span> <fa-icon icon="sort"></fa-icon></th>
-          <th scope="col" jhiSortBy="lieuNaiss"><span>Lieu Naiss</span> <fa-icon icon="sort"></fa-icon></th>
-          <th scope="col" jhiSortBy="sexe"><span>Sexe</span> <fa-icon icon="sort"></fa-icon></th>
-          <th scope="col" jhiSortBy="telephone"><span>Telephone</span> <fa-icon icon="sort"></fa-icon></th>
-          <th scope="col" jhiSortBy="adressePhysique"><span>Adresse Physique</span> <fa-icon icon="sort"></fa-icon></th>
-          <th scope="col" jhiSortBy="regionResidence"><span>Region Residence</span> <fa-icon icon="sort"></fa-icon></th>
-          <th scope="col" jhiSortBy="departResidence"><span>Depart Residence</span> <fa-icon icon="sort"></fa-icon></th>
-          <th scope="col" jhiSortBy="email"><span>Email</span> <fa-icon icon="sort"></fa-icon></th>
-          <th scope="col" jhiSortBy="cni"><span>Cni</span> <fa-icon icon="sort"></fa-icon></th>
-          <th scope="col" jhiSortBy="user.login"><span>User</span> <fa-icon icon="sort"></fa-icon></th>
+        <tr jhiSort [(predicate)]="predicate" [(ascending)]="ascending" (sortChange)="navigateToWithComponentValues()">
+          <th scope="col" jhiSortBy="id">
+            <div class="d-flex">
+              <span jhiTranslate="global.field.id">ID</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="profession">
+            <div class="d-flex">
+              <span jhiTranslate="jhipsterProjectBaseJwtApp.professionnel.profession">Profession</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="nom">
+            <div class="d-flex">
+              <span jhiTranslate="jhipsterProjectBaseJwtApp.professionnel.nom">Nom</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="prenom">
+            <div class="d-flex">
+              <span jhiTranslate="jhipsterProjectBaseJwtApp.professionnel.prenom">Prenom</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="dateNaiss">
+            <div class="d-flex">
+              <span jhiTranslate="jhipsterProjectBaseJwtApp.professionnel.dateNaiss">Date Naiss</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="lieuNaiss">
+            <div class="d-flex">
+              <span jhiTranslate="jhipsterProjectBaseJwtApp.professionnel.lieuNaiss">Lieu Naiss</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="sexe">
+            <div class="d-flex">
+              <span jhiTranslate="jhipsterProjectBaseJwtApp.professionnel.sexe">Sexe</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="telephone">
+            <div class="d-flex">
+              <span jhiTranslate="jhipsterProjectBaseJwtApp.professionnel.telephone">Telephone</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="adressePhysique">
+            <div class="d-flex">
+              <span jhiTranslate="jhipsterProjectBaseJwtApp.professionnel.adressePhysique">Adresse Physique</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="regionResidence">
+            <div class="d-flex">
+              <span jhiTranslate="jhipsterProjectBaseJwtApp.professionnel.regionResidence">Region Residence</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="departResidence">
+            <div class="d-flex">
+              <span jhiTranslate="jhipsterProjectBaseJwtApp.professionnel.departResidence">Depart Residence</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="email">
+            <div class="d-flex">
+              <span jhiTranslate="jhipsterProjectBaseJwtApp.professionnel.email">Email</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="cni">
+            <div class="d-flex">
+              <span jhiTranslate="jhipsterProjectBaseJwtApp.professionnel.cni">Cni</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="user.login">
+            <div class="d-flex">
+              <span jhiTranslate="jhipsterProjectBaseJwtApp.professionnel.user">User</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
           <th scope="col"></th>
         </tr>
       </thead>
-      <tbody infinite-scroll (scrolled)="loadPage(page + 1)" [infiniteScrollDisabled]="page >= links['last']" [infiniteScrollDistance]="0">
+      <tbody
+        infinite-scroll
+        (scrolled)="loadPage(page + 1)"
+        [infiniteScrollDisabled]="page - 1 >= links['last']"
+        [infiniteScrollDistance]="0"
+      >
         <tr *ngFor="let professionnel of professionnels; trackBy: trackId" data-cy="entityTable">
           <td>
             <a [routerLink]="['/professionnel', professionnel.id, 'view']">{{ professionnel.id }}</a>
@@ -59,11 +134,15 @@
           <td>{{ professionnel.prenom }}</td>
           <td>{{ professionnel.dateNaiss | formatMediumDate }}</td>
           <td>{{ professionnel.lieuNaiss }}</td>
-          <td>{{ professionnel.sexe }}</td>
+          <td jhiTranslate="{{ 'jhipsterProjectBaseJwtApp.Sexe.' + professionnel.sexe }}">{{ professionnel.sexe }}</td>
           <td>{{ professionnel.telephone }}</td>
           <td>{{ professionnel.adressePhysique }}</td>
-          <td>{{ professionnel.regionResidence }}</td>
-          <td>{{ professionnel.departResidence }}</td>
+          <td jhiTranslate="{{ 'jhipsterProjectBaseJwtApp.NomRegion.' + professionnel.regionResidence }}">
+            {{ professionnel.regionResidence }}
+          </td>
+          <td jhiTranslate="{{ 'jhipsterProjectBaseJwtApp.NomDepartement.' + professionnel.departResidence }}">
+            {{ professionnel.departResidence }}
+          </td>
           <td>{{ professionnel.email }}</td>
           <td>{{ professionnel.cni }}</td>
           <td>
@@ -78,7 +157,7 @@
                 data-cy="entityDetailsButton"
               >
                 <fa-icon icon="eye"></fa-icon>
-                <span class="d-none d-md-inline">View</span>
+                <span class="d-none d-md-inline" jhiTranslate="entity.action.view">Voir</span>
               </button>
 
               <button
@@ -88,12 +167,12 @@
                 data-cy="entityEditButton"
               >
                 <fa-icon icon="pencil-alt"></fa-icon>
-                <span class="d-none d-md-inline">Edit</span>
+                <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Editer</span>
               </button>
 
               <button type="submit" (click)="delete(professionnel)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
                 <fa-icon icon="times"></fa-icon>
-                <span class="d-none d-md-inline">Delete</span>
+                <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Supprimer</span>
               </button>
             </div>
           </td>

@@ -1,59 +1,24 @@
 import dayjs from 'dayjs/esm';
 import { IUser } from 'app/entities/user/user.model';
-import { IDiplome } from 'app/entities/diplome/diplome.model';
-import { IExperience } from 'app/entities/experience/experience.model';
-import { ICandidatureE } from 'app/entities/candidature-e/candidature-e.model';
-import { IDossier } from 'app/entities/dossier/dossier.model';
-import { IDemandeur } from 'app/entities/demandeur/demandeur.model';
 import { Sexe } from 'app/entities/enumerations/sexe.model';
 import { NomRegion } from 'app/entities/enumerations/nom-region.model';
 import { NomDepartement } from 'app/entities/enumerations/nom-departement.model';
 import { NiveauEtude } from 'app/entities/enumerations/niveau-etude.model';
 
 export interface IEleve {
-  id?: number;
-  nom?: string;
-  prenom?: string;
+  id: number;
+  nom?: string | null;
+  prenom?: string | null;
   dateNaiss?: dayjs.Dayjs | null;
   lieuNaiss?: string | null;
-  sexe?: Sexe | null;
+  sexe?: keyof typeof Sexe | null;
   telephone?: number | null;
   adressePhysique?: string | null;
-  regionResidence?: NomRegion | null;
-  departResidence?: NomDepartement | null;
-  niveauEtude?: NiveauEtude;
+  regionResidence?: keyof typeof NomRegion | null;
+  departResidence?: keyof typeof NomDepartement | null;
+  niveauEtude?: keyof typeof NiveauEtude | null;
   cni?: number | null;
-  user?: IUser | null;
-  diplomes?: IDiplome[] | null;
-  experiences?: IExperience[] | null;
-  candidatureES?: ICandidatureE[] | null;
-  dossier?: IDossier | null;
-  demandeur?: IDemandeur | null;
+  user?: Pick<IUser, 'id' | 'login'> | null;
 }
 
-export class Eleve implements IEleve {
-  constructor(
-    public id?: number,
-    public nom?: string,
-    public prenom?: string,
-    public dateNaiss?: dayjs.Dayjs | null,
-    public lieuNaiss?: string | null,
-    public sexe?: Sexe | null,
-    public telephone?: number | null,
-    public adressePhysique?: string | null,
-    public regionResidence?: NomRegion | null,
-    public departResidence?: NomDepartement | null,
-    public niveauEtude?: NiveauEtude,
-    public cni?: number | null,
-    public user?: IUser | null,
-    public diplomes?: IDiplome[] | null,
-    public experiences?: IExperience[] | null,
-    public candidatureES?: ICandidatureE[] | null,
-    public dossier?: IDossier | null,
-    public demandeur?: IDemandeur | null
-  ) {}
-}
-
-export function getEleveIdentifier(eleve: IEleve): number | undefined {
-  return eleve.id;
-}
+export type NewEleve = Omit<IEleve, 'id'> & { id: null };

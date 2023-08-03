@@ -1,7 +1,9 @@
 <div class="d-flex justify-content-center">
   <div class="col-8">
     <div *ngIf="formationContinue">
-      <h2 data-cy="formationContinueDetailsHeading"><span>Formation Continue</span></h2>
+      <h2 data-cy="formationContinueDetailsHeading">
+        <span jhiTranslate="jhipsterProjectBaseJwtApp.formationContinue.detail.title">Formation Continue</span>
+      </h2>
 
       <hr />
 
@@ -10,97 +12,109 @@
       <jhi-alert></jhi-alert>
 
       <dl class="row-md jh-entity-details">
-        <dt><span>ID</span></dt>
+        <dt><span jhiTranslate="global.field.id">ID</span></dt>
         <dd>
           <span>{{ formationContinue.id }}</span>
         </dd>
-        <dt><span>Nom Formation C</span></dt>
+        <dt><span jhiTranslate="jhipsterProjectBaseJwtApp.formationContinue.nomFormationC">Nom Formation C</span></dt>
         <dd>
           <span>{{ formationContinue.nomFormationC }}</span>
         </dd>
-        <dt><span>Duree</span></dt>
+        <dt><span jhiTranslate="jhipsterProjectBaseJwtApp.formationContinue.duree">Duree</span></dt>
         <dd>
           <span>{{ formationContinue.duree }}</span>
         </dd>
-        <dt><span>Admission</span></dt>
+        <dt><span jhiTranslate="jhipsterProjectBaseJwtApp.formationContinue.admission">Admission</span></dt>
         <dd>
-          <span>{{ formationContinue.admission }}</span>
+          <span jhiTranslate="{{ 'jhipsterProjectBaseJwtApp.Admission.' + formationContinue.admission }}">{{
+            formationContinue.admission
+          }}</span>
         </dd>
-        <dt><span>Diplome Requis</span></dt>
+        <dt><span jhiTranslate="jhipsterProjectBaseJwtApp.formationContinue.diplomeRequis">Diplome Requis</span></dt>
         <dd>
-          <span>{{ formationContinue.diplomeRequis }}</span>
+          <span jhiTranslate="{{ 'jhipsterProjectBaseJwtApp.DiplomeRequis.' + formationContinue.diplomeRequis }}">{{
+            formationContinue.diplomeRequis
+          }}</span>
         </dd>
-        <dt><span>Niveau Etude</span></dt>
+        <dt><span jhiTranslate="jhipsterProjectBaseJwtApp.formationContinue.niveauEtude">Niveau Etude</span></dt>
         <dd>
-          <span>{{ formationContinue.niveauEtude }}</span>
+          <span jhiTranslate="{{ 'jhipsterProjectBaseJwtApp.NiveauEtude.' + formationContinue.niveauEtude }}">{{
+            formationContinue.niveauEtude
+          }}</span>
         </dd>
-        <dt><span>Filiere</span></dt>
+        <dt><span jhiTranslate="jhipsterProjectBaseJwtApp.formationContinue.filiere">Filiere</span></dt>
         <dd>
-          <span>{{ formationContinue.filiere }}</span>
+          <span jhiTranslate="{{ 'jhipsterProjectBaseJwtApp.NomFiliere.' + formationContinue.filiere }}">{{
+            formationContinue.filiere
+          }}</span>
         </dd>
-        <dt><span>Serie</span></dt>
+        <dt><span jhiTranslate="jhipsterProjectBaseJwtApp.formationContinue.serie">Serie</span></dt>
         <dd>
-          <span>{{ formationContinue.serie }}</span>
+          <span jhiTranslate="{{ 'jhipsterProjectBaseJwtApp.NomSerie.' + formationContinue.serie }}">{{ formationContinue.serie }}</span>
         </dd>
-        <dt><span>Cfp</span></dt>
+        <dt><span jhiTranslate="jhipsterProjectBaseJwtApp.formationContinue.cfp">Cfp</span></dt>
         <dd>
-          <span>{{ formationContinue.cfp }}</span>
+          <span jhiTranslate="{{ 'jhipsterProjectBaseJwtApp.CFP.' + formationContinue.cfp }}">{{ formationContinue.cfp }}</span>
         </dd>
-        <dt><span>Lycee</span></dt>
+        <dt><span jhiTranslate="jhipsterProjectBaseJwtApp.formationContinue.lycee">Lycee</span></dt>
         <dd>
-          <span>{{ formationContinue.lycee }}</span>
+          <span jhiTranslate="{{ 'jhipsterProjectBaseJwtApp.LYCEE.' + formationContinue.lycee }}">{{ formationContinue.lycee }}</span>
         </dd>
-        <dt><span>Fiche Formation</span></dt>
+        <dt><span jhiTranslate="jhipsterProjectBaseJwtApp.formationContinue.ficheFormation">Fiche Formation</span></dt>
         <dd>
           <div *ngIf="formationContinue.ficheFormation">
-            <a (click)="openFile(formationContinue.ficheFormation, formationContinue.ficheFormationContentType)">open</a>
+            <a
+              (click)="openFile(formationContinue.ficheFormation, formationContinue.ficheFormationContentType)"
+              jhiTranslate="entity.action.open"
+              >Ouvrir</a
+            >
             {{ formationContinue.ficheFormationContentType }}, {{ byteSize(formationContinue.ficheFormation) }}
           </div>
         </dd>
-        <dt><span>Libelle PC</span></dt>
+        <dt><span jhiTranslate="jhipsterProjectBaseJwtApp.formationContinue.libellePC">Libelle PC</span></dt>
         <dd>
           <span>{{ formationContinue.libellePC }}</span>
         </dd>
-        <dt><span>Montant Prise En Charge</span></dt>
+        <dt><span jhiTranslate="jhipsterProjectBaseJwtApp.formationContinue.montantPriseEnCharge">Montant Prise En Charge</span></dt>
         <dd>
           <span>{{ formationContinue.montantPriseEnCharge }}</span>
         </dd>
-        <dt><span>Cout Formation</span></dt>
+        <dt><span jhiTranslate="jhipsterProjectBaseJwtApp.formationContinue.coutFormation">Cout Formation</span></dt>
         <dd>
           <span>{{ formationContinue.coutFormation }}</span>
         </dd>
-        <dt><span>Detail PC</span></dt>
+        <dt><span jhiTranslate="jhipsterProjectBaseJwtApp.formationContinue.detailPC">Detail PC</span></dt>
         <dd>
           <span>{{ formationContinue.detailPC }}</span>
         </dd>
-        <dt><span>Nom Diplome</span></dt>
+        <dt><span jhiTranslate="jhipsterProjectBaseJwtApp.formationContinue.nomDiplome">Nom Diplome</span></dt>
         <dd>
-          <span>{{ formationContinue.nomDiplome }}</span>
+          <span jhiTranslate="{{ 'jhipsterProjectBaseJwtApp.DiplomeObtenu.' + formationContinue.nomDiplome }}">{{
+            formationContinue.nomDiplome
+          }}</span>
         </dd>
-        <dt><span>Autre Diplome</span></dt>
+        <dt><span jhiTranslate="jhipsterProjectBaseJwtApp.formationContinue.autreDiplome">Autre Diplome</span></dt>
         <dd>
           <span>{{ formationContinue.autreDiplome }}</span>
         </dd>
-        <dt><span>Nom Debouche</span></dt>
+        <dt><span jhiTranslate="jhipsterProjectBaseJwtApp.formationContinue.nomDebouche">Nom Debouche</span></dt>
         <dd>
           <span>{{ formationContinue.nomDebouche }}</span>
         </dd>
-        <dt><span>Formation</span></dt>
+        <dt><span jhiTranslate="jhipsterProjectBaseJwtApp.formationContinue.formation">Formation</span></dt>
         <dd>
           <div *ngIf="formationContinue.formation">
-            <a [routerLink]="['/formation', formationContinue.formation?.nomFormation, 'view']">{{
-              formationContinue.formation?.nomFormation
-            }}</a>
+            <a [routerLink]="['/formation', formationContinue.formation.id, 'view']">{{ formationContinue.formation.id }}</a>
           </div>
         </dd>
       </dl>
 
       <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
-        <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span>Back</span>
+        <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Retour</span>
       </button>
 
       <button type="button" [routerLink]="['/formation-continue', formationContinue.id, 'edit']" class="btn btn-primary">
-        <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span>Edit</span>
+        <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Editer</span>
       </button>
     </div>
   </div>

@@ -1,11 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpResponse } from '@angular/common/http';
-import { FormBuilder } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
 import { finalize, map } from 'rxjs/operators';
 
-import { IFormationInitiale, FormationInitiale } from '../formation-initiale.model';
+import SharedModule from 'app/shared/shared.module';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+
+import { FormationInitialeFormService, FormationInitialeFormGroup } from './formation-initiale-form.service';
+import { IFormationInitiale } from '../formation-initiale.model';
 import { FormationInitialeService } from '../service/formation-initiale.service';
 import { AlertError } from 'app/shared/alert/alert-error.model';
 import { EventManager, EventWithContent } from 'app/core/util/event-manager.service';
@@ -22,11 +25,14 @@ import { LYCEE } from 'app/entities/enumerations/lycee.model';
 import { DiplomeObtenu } from 'app/entities/enumerations/diplome-obtenu.model';
 
 @Component({
+  standalone: true,
   selector: 'jhi-formation-initiale-update',
   templateUrl: './formation-initiale-update.component.html',
+  imports: [SharedModule, FormsModule, ReactiveFormsModule],
 })
 export class FormationInitialeUpdateComponent implements OnInit {
   isSaving = false;
+  formationInitiale: IFormationInitiale | null = null;
   admissionValues = Object.keys(Admission);
   diplomeRequisValues = Object.keys(DiplomeRequis);
   niveauEtudeValues = Object.keys(NiveauEtude);
@@ -38,40 +44,25 @@ export class FormationInitialeUpdateComponent implements OnInit {
 
   formationsCollection: IFormation[] = [];
 
-  editForm = this.fb.group({
-    id: [],
-    nomFormationI: [],
-    duree: [],
-    admission: [],
-    diplomeRequis: [],
-    niveauEtude: [],
-    ficheFormation: [],
-    ficheFormationContentType: [],
-    filiere: [],
-    serie: [],
-    cfp: [],
-    lycee: [],
-    nomConcours: [],
-    dateOuverture: [],
-    dateCloture: [],
-    dateConcours: [],
-    nomDiplome: [],
-    nomDebouche: [],
-    formation: [],
-  });
+  editForm: FormationInitialeFormGroup = this.formationInitialeFormService.createFormationInitialeFormGroup();
 
   constructor(
     protected dataUtils: DataUtils,
     protected eventManager: EventManager,
     protected formationInitialeService: FormationInitialeService,
+    protected formationInitialeFormService: FormationInitialeFormService,
     protected formationService: FormationService,
-    protected activatedRoute: ActivatedRoute,
-    protected fb: FormBuilder
+    protected activatedRoute: ActivatedRoute
   ) {}
+
+  compareFormation = (o1: IFormation | null, o2: IFormation | null): boolean => this.formationService.compareFormation(o1, o2);
 
   ngOnInit(): void {
     this.activatedRoute.data.subscribe(({ formationInitiale }) => {
-      this.updateForm(formationInitiale);
+      this.formationInitiale = formationInitiale;
+      if (formationInitiale) {
+        this.updateForm(formationInitiale);
+      }
 
       this.loadRelationshipsOptions();
     });
@@ -98,16 +89,12 @@ export class FormationInitialeUpdateComponent implements OnInit {
 
   save(): void {
     this.isSaving = true;
-    const formationInitiale = this.createFromForm();
-    if (formationInitiale.id !== undefined) {
+    const formationInitiale = this.formationInitialeFormService.getFormationInitiale(this.editForm);
+    if (formationInitiale.id !== null) {
       this.subscribeToSaveResponse(this.formationInitialeService.update(formationInitiale));
     } else {
       this.subscribeToSaveResponse(this.formationInitialeService.create(formationInitiale));
     }
-  }
-
-  trackFormationById(index: number, item: IFormation): number {
-    return item.id!;
   }
 
   protected subscribeToSaveResponse(result: Observable<HttpResponse<IFormationInitiale>>): void {
@@ -130,29 +117,10 @@ export class FormationInitialeUpdateComponent implements OnInit {
   }
 
   protected updateForm(formationInitiale: IFormationInitiale): void {
-    this.editForm.patchValue({
-      id: formationInitiale.id,
-      nomFormationI: formationInitiale.nomFormationI,
-      duree: formationInitiale.duree,
-      admission: formationInitiale.admission,
-      diplomeRequis: formationInitiale.diplomeRequis,
-      niveauEtude: formationInitiale.niveauEtude,
-      ficheFormation: formationInitiale.ficheFormation,
-      ficheFormationContentType: formationInitiale.ficheFormationContentType,
-      filiere: formationInitiale.filiere,
-      serie: formationInitiale.serie,
-      cfp: formationInitiale.cfp,
-      lycee: formationInitiale.lycee,
-      nomConcours: formationInitiale.nomConcours,
-      dateOuverture: formationInitiale.dateOuverture,
-      dateCloture: formationInitiale.dateCloture,
-      dateConcours: formationInitiale.dateConcours,
-      nomDiplome: formationInitiale.nomDiplome,
-      nomDebouche: formationInitiale.nomDebouche,
-      formation: formationInitiale.formation,
-    });
+    this.formationInitiale = formationInitiale;
+    this.formationInitialeFormService.resetForm(this.editForm, formationInitiale);
 
-    this.formationsCollection = this.formationService.addFormationToCollectionIfMissing(
+    this.formationsCollection = this.formationService.addFormationToCollectionIfMissing<IFormation>(
       this.formationsCollection,
       formationInitiale.formation
     );
@@ -164,34 +132,9 @@ export class FormationInitialeUpdateComponent implements OnInit {
       .pipe(map((res: HttpResponse<IFormation[]>) => res.body ?? []))
       .pipe(
         map((formations: IFormation[]) =>
-          this.formationService.addFormationToCollectionIfMissing(formations, this.editForm.get('formation')!.value)
+          this.formationService.addFormationToCollectionIfMissing<IFormation>(formations, this.formationInitiale?.formation)
         )
       )
       .subscribe((formations: IFormation[]) => (this.formationsCollection = formations));
-  }
-
-  protected createFromForm(): IFormationInitiale {
-    return {
-      ...new FormationInitiale(),
-      id: this.editForm.get(['id'])!.value,
-      nomFormationI: this.editForm.get(['nomFormationI'])!.value,
-      duree: this.editForm.get(['duree'])!.value,
-      admission: this.editForm.get(['admission'])!.value,
-      diplomeRequis: this.editForm.get(['diplomeRequis'])!.value,
-      niveauEtude: this.editForm.get(['niveauEtude'])!.value,
-      ficheFormationContentType: this.editForm.get(['ficheFormationContentType'])!.value,
-      ficheFormation: this.editForm.get(['ficheFormation'])!.value,
-      filiere: this.editForm.get(['filiere'])!.value,
-      serie: this.editForm.get(['serie'])!.value,
-      cfp: this.editForm.get(['cfp'])!.value,
-      lycee: this.editForm.get(['lycee'])!.value,
-      nomConcours: this.editForm.get(['nomConcours'])!.value,
-      dateOuverture: this.editForm.get(['dateOuverture'])!.value,
-      dateCloture: this.editForm.get(['dateCloture'])!.value,
-      dateConcours: this.editForm.get(['dateConcours'])!.value,
-      nomDiplome: this.editForm.get(['nomDiplome'])!.value,
-      nomDebouche: this.editForm.get(['nomDebouche'])!.value,
-      formation: this.editForm.get(['formation'])!.value,
-    };
   }
 }

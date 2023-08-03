@@ -1,11 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpResponse } from '@angular/common/http';
-import { FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
 import { finalize, map } from 'rxjs/operators';
 
-import { IAgent, Agent } from '../agent.model';
+import SharedModule from 'app/shared/shared.module';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+
+import { AgentFormService, AgentFormGroup } from './agent-form.service';
+import { IAgent } from '../agent.model';
 import { AgentService } from '../service/agent.service';
 import { IUser } from 'app/entities/user/user.model';
 import { UserService } from 'app/entities/user/user.service';
@@ -14,41 +17,40 @@ import { ServiceMFPAIService } from 'app/entities/service-mfpai/service/service-
 import { Sexe } from 'app/entities/enumerations/sexe.model';
 
 @Component({
+  standalone: true,
   selector: 'jhi-agent-update',
   templateUrl: './agent-update.component.html',
+  imports: [SharedModule, FormsModule, ReactiveFormsModule],
 })
 export class AgentUpdateComponent implements OnInit {
   isSaving = false;
+  agent: IAgent | null = null;
   sexeValues = Object.keys(Sexe);
 
   usersSharedCollection: IUser[] = [];
   serviceMFPAISCollection: IServiceMFPAI[] = [];
 
-  editForm = this.fb.group({
-    id: [],
-    matricule: [null, [Validators.required]],
-    nomAgent: [],
-    prenom: [],
-    dateNaiss: [],
-    lieuNaiss: [],
-    sexe: [],
-    telephone: [],
-    email: [null, []],
-    user: [],
-    serviceMFPAI: [],
-  });
+  editForm: AgentFormGroup = this.agentFormService.createAgentFormGroup();
 
   constructor(
     protected agentService: AgentService,
+    protected agentFormService: AgentFormService,
     protected userService: UserService,
     protected serviceMFPAIService: ServiceMFPAIService,
-    protected activatedRoute: ActivatedRoute,
-    protected fb: FormBuilder
+    protected activatedRoute: ActivatedRoute
   ) {}
+
+  compareUser = (o1: IUser | null, o2: IUser | null): boolean => this.userService.compareUser(o1, o2);
+
+  compareServiceMFPAI = (o1: IServiceMFPAI | null, o2: IServiceMFPAI | null): boolean =>
+    this.serviceMFPAIService.compareServiceMFPAI(o1, o2);
 
   ngOnInit(): void {
     this.activatedRoute.data.subscribe(({ agent }) => {
-      this.updateForm(agent);
+      this.agent = agent;
+      if (agent) {
+        this.updateForm(agent);
+      }
 
       this.loadRelationshipsOptions();
     });
@@ -60,20 +62,12 @@ export class AgentUpdateComponent implements OnInit {
 
   save(): void {
     this.isSaving = true;
-    const agent = this.createFromForm();
-    if (agent.id !== undefined) {
+    const agent = this.agentFormService.getAgent(this.editForm);
+    if (agent.id !== null) {
       this.subscribeToSaveResponse(this.agentService.update(agent));
     } else {
       this.subscribeToSaveResponse(this.agentService.create(agent));
     }
-  }
-
-  trackUserById(index: number, item: IUser): number {
-    return item.id!;
-  }
-
-  trackServiceMFPAIById(index: number, item: IServiceMFPAI): number {
-    return item.id!;
   }
 
   protected subscribeToSaveResponse(result: Observable<HttpResponse<IAgent>>): void {
@@ -96,22 +90,11 @@ export class AgentUpdateComponent implements OnInit {
   }
 
   protected updateForm(agent: IAgent): void {
-    this.editForm.patchValue({
-      id: agent.id,
-      matricule: agent.matricule,
-      nomAgent: agent.nomAgent,
-      prenom: agent.prenom,
-      dateNaiss: agent.dateNaiss,
-      lieuNaiss: agent.lieuNaiss,
-      sexe: agent.sexe,
-      telephone: agent.telephone,
-      email: agent.email,
-      user: agent.user,
-      serviceMFPAI: agent.serviceMFPAI,
-    });
+    this.agent = agent;
+    this.agentFormService.resetForm(this.editForm, agent);
 
-    this.usersSharedCollection = this.userService.addUserToCollectionIfMissing(this.usersSharedCollection, agent.user);
-    this.serviceMFPAISCollection = this.serviceMFPAIService.addServiceMFPAIToCollectionIfMissing(
+    this.usersSharedCollection = this.userService.addUserToCollectionIfMissing<IUser>(this.usersSharedCollection, agent.user);
+    this.serviceMFPAISCollection = this.serviceMFPAIService.addServiceMFPAIToCollectionIfMissing<IServiceMFPAI>(
       this.serviceMFPAISCollection,
       agent.serviceMFPAI
     );
@@ -121,7 +104,7 @@ export class AgentUpdateComponent implements OnInit {
     this.userService
       .query()
       .pipe(map((res: HttpResponse<IUser[]>) => res.body ?? []))
-      .pipe(map((users: IUser[]) => this.userService.addUserToCollectionIfMissing(users, this.editForm.get('user')!.value)))
+      .pipe(map((users: IUser[]) => this.userService.addUserToCollectionIfMissing<IUser>(users, this.agent?.user)))
       .subscribe((users: IUser[]) => (this.usersSharedCollection = users));
 
     this.serviceMFPAIService
@@ -129,26 +112,9 @@ export class AgentUpdateComponent implements OnInit {
       .pipe(map((res: HttpResponse<IServiceMFPAI[]>) => res.body ?? []))
       .pipe(
         map((serviceMFPAIS: IServiceMFPAI[]) =>
-          this.serviceMFPAIService.addServiceMFPAIToCollectionIfMissing(serviceMFPAIS, this.editForm.get('serviceMFPAI')!.value)
+          this.serviceMFPAIService.addServiceMFPAIToCollectionIfMissing<IServiceMFPAI>(serviceMFPAIS, this.agent?.serviceMFPAI)
         )
       )
       .subscribe((serviceMFPAIS: IServiceMFPAI[]) => (this.serviceMFPAISCollection = serviceMFPAIS));
-  }
-
-  protected createFromForm(): IAgent {
-    return {
-      ...new Agent(),
-      id: this.editForm.get(['id'])!.value,
-      matricule: this.editForm.get(['matricule'])!.value,
-      nomAgent: this.editForm.get(['nomAgent'])!.value,
-      prenom: this.editForm.get(['prenom'])!.value,
-      dateNaiss: this.editForm.get(['dateNaiss'])!.value,
-      lieuNaiss: this.editForm.get(['lieuNaiss'])!.value,
-      sexe: this.editForm.get(['sexe'])!.value,
-      telephone: this.editForm.get(['telephone'])!.value,
-      email: this.editForm.get(['email'])!.value,
-      user: this.editForm.get(['user'])!.value,
-      serviceMFPAI: this.editForm.get(['serviceMFPAI'])!.value,
-    };
   }
 }

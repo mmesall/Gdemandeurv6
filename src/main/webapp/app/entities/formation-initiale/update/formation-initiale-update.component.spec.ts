@@ -6,8 +6,9 @@ import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of, Subject, from } from 'rxjs';
 
+import { FormationInitialeFormService } from './formation-initiale-form.service';
 import { FormationInitialeService } from '../service/formation-initiale.service';
-import { IFormationInitiale, FormationInitiale } from '../formation-initiale.model';
+import { IFormationInitiale } from '../formation-initiale.model';
 import { IFormation } from 'app/entities/formation/formation.model';
 import { FormationService } from 'app/entities/formation/service/formation.service';
 
@@ -17,13 +18,13 @@ describe('FormationInitiale Management Update Component', () => {
   let comp: FormationInitialeUpdateComponent;
   let fixture: ComponentFixture<FormationInitialeUpdateComponent>;
   let activatedRoute: ActivatedRoute;
+  let formationInitialeFormService: FormationInitialeFormService;
   let formationInitialeService: FormationInitialeService;
   let formationService: FormationService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule, RouterTestingModule.withRoutes([])],
-      declarations: [FormationInitialeUpdateComponent],
+      imports: [HttpClientTestingModule, RouterTestingModule.withRoutes([]), FormationInitialeUpdateComponent],
       providers: [
         FormBuilder,
         {
@@ -39,6 +40,7 @@ describe('FormationInitiale Management Update Component', () => {
 
     fixture = TestBed.createComponent(FormationInitialeUpdateComponent);
     activatedRoute = TestBed.inject(ActivatedRoute);
+    formationInitialeFormService = TestBed.inject(FormationInitialeFormService);
     formationInitialeService = TestBed.inject(FormationInitialeService);
     formationService = TestBed.inject(FormationService);
 
@@ -48,10 +50,10 @@ describe('FormationInitiale Management Update Component', () => {
   describe('ngOnInit', () => {
     it('Should call formation query and add missing value', () => {
       const formationInitiale: IFormationInitiale = { id: 456 };
-      const formation: IFormation = { id: 6856 };
+      const formation: IFormation = { id: 24764 };
       formationInitiale.formation = formation;
 
-      const formationCollection: IFormation[] = [{ id: 20980 }];
+      const formationCollection: IFormation[] = [{ id: 24156 }];
       jest.spyOn(formationService, 'query').mockReturnValue(of(new HttpResponse({ body: formationCollection })));
       const expectedCollection: IFormation[] = [formation, ...formationCollection];
       jest.spyOn(formationService, 'addFormationToCollectionIfMissing').mockReturnValue(expectedCollection);
@@ -66,22 +68,23 @@ describe('FormationInitiale Management Update Component', () => {
 
     it('Should update editForm', () => {
       const formationInitiale: IFormationInitiale = { id: 456 };
-      const formation: IFormation = { id: 39158 };
+      const formation: IFormation = { id: 31073 };
       formationInitiale.formation = formation;
 
       activatedRoute.data = of({ formationInitiale });
       comp.ngOnInit();
 
-      expect(comp.editForm.value).toEqual(expect.objectContaining(formationInitiale));
       expect(comp.formationsCollection).toContain(formation);
+      expect(comp.formationInitiale).toEqual(formationInitiale);
     });
   });
 
   describe('save', () => {
     it('Should call update service on save for existing entity', () => {
       // GIVEN
-      const saveSubject = new Subject<HttpResponse<FormationInitiale>>();
+      const saveSubject = new Subject<HttpResponse<IFormationInitiale>>();
       const formationInitiale = { id: 123 };
+      jest.spyOn(formationInitialeFormService, 'getFormationInitiale').mockReturnValue(formationInitiale);
       jest.spyOn(formationInitialeService, 'update').mockReturnValue(saveSubject);
       jest.spyOn(comp, 'previousState');
       activatedRoute.data = of({ formationInitiale });
@@ -94,18 +97,20 @@ describe('FormationInitiale Management Update Component', () => {
       saveSubject.complete();
 
       // THEN
+      expect(formationInitialeFormService.getFormationInitiale).toHaveBeenCalled();
       expect(comp.previousState).toHaveBeenCalled();
-      expect(formationInitialeService.update).toHaveBeenCalledWith(formationInitiale);
+      expect(formationInitialeService.update).toHaveBeenCalledWith(expect.objectContaining(formationInitiale));
       expect(comp.isSaving).toEqual(false);
     });
 
     it('Should call create service on save for new entity', () => {
       // GIVEN
-      const saveSubject = new Subject<HttpResponse<FormationInitiale>>();
-      const formationInitiale = new FormationInitiale();
+      const saveSubject = new Subject<HttpResponse<IFormationInitiale>>();
+      const formationInitiale = { id: 123 };
+      jest.spyOn(formationInitialeFormService, 'getFormationInitiale').mockReturnValue({ id: null });
       jest.spyOn(formationInitialeService, 'create').mockReturnValue(saveSubject);
       jest.spyOn(comp, 'previousState');
-      activatedRoute.data = of({ formationInitiale });
+      activatedRoute.data = of({ formationInitiale: null });
       comp.ngOnInit();
 
       // WHEN
@@ -115,14 +120,15 @@ describe('FormationInitiale Management Update Component', () => {
       saveSubject.complete();
 
       // THEN
-      expect(formationInitialeService.create).toHaveBeenCalledWith(formationInitiale);
+      expect(formationInitialeFormService.getFormationInitiale).toHaveBeenCalled();
+      expect(formationInitialeService.create).toHaveBeenCalled();
       expect(comp.isSaving).toEqual(false);
       expect(comp.previousState).toHaveBeenCalled();
     });
 
     it('Should set isSaving to false on error', () => {
       // GIVEN
-      const saveSubject = new Subject<HttpResponse<FormationInitiale>>();
+      const saveSubject = new Subject<HttpResponse<IFormationInitiale>>();
       const formationInitiale = { id: 123 };
       jest.spyOn(formationInitialeService, 'update').mockReturnValue(saveSubject);
       jest.spyOn(comp, 'previousState');
@@ -135,18 +141,20 @@ describe('FormationInitiale Management Update Component', () => {
       saveSubject.error('This is an error!');
 
       // THEN
-      expect(formationInitialeService.update).toHaveBeenCalledWith(formationInitiale);
+      expect(formationInitialeService.update).toHaveBeenCalled();
       expect(comp.isSaving).toEqual(false);
       expect(comp.previousState).not.toHaveBeenCalled();
     });
   });
 
-  describe('Tracking relationships identifiers', () => {
-    describe('trackFormationById', () => {
-      it('Should return tracked Formation primary key', () => {
+  describe('Compare relationships', () => {
+    describe('compareFormation', () => {
+      it('Should forward to formationService', () => {
         const entity = { id: 123 };
-        const trackResult = comp.trackFormationById(0, entity);
-        expect(trackResult).toEqual(entity.id);
+        const entity2 = { id: 456 };
+        jest.spyOn(formationService, 'compareFormation');
+        comp.compareFormation(entity, entity2);
+        expect(formationService.compareFormation).toHaveBeenCalledWith(entity, entity2);
       });
     });
   });

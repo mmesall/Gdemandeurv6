@@ -1,43 +1,156 @@
 <div>
-  <div class="espace">
-    <!-- <marquee behavior="scroll" class="bienvenu">
-      <p>Bienvenue sur la plateforme de gestion des demandeurs de formations professionnelles et techniques</p>
-    </marquee> -->
-  </div>
-  <div class="image"></div>
-  <div class="text">
-    <br />
-    <p>
-      Le jargon du monde de la formation peut être compliqué pour des non-initiés. Il est donc important de comprendre de quoi on vous parle
-      avant de choisir une formation
-    </p>
-    <br />
-  </div>
-  <div class="row">
-    <div class="col-sm-6 mb-3 mb-sm-0">
-      <div class="card">
-        <div class="card-body">
-          <h5 class="card-title">Formation initiale</h5>
-          <p class="card-text text">
-            La formation initiale désigne la formation sous statut étudiant. Elle permet d’acquérir, tout au long du cursus, les
-            connaissances, savoirs et compétences nécessaires à l’entrée dans la vie active. La durée est variable selon la formation
-            choisie : BTS, Bachelor... A la fin, l’étudiant se voit récompensé par l’obtention d’un diplôme.
-          </p>
-          <a routerLink="../formation-initiale" class="btn btn-primary">Choisir une formation</a>
-        </div>
-      </div>
+  <h2 id="page-heading" data-cy="FormationHeading">
+    <span jhiTranslate="jhipsterProjectBaseJwtApp.formation.home.title">Formations</span>
+
+    <div class="d-flex justify-content-end">
+      <button class="btn btn-info me-2" (click)="load()" [disabled]="isLoading">
+        <fa-icon icon="sync" [spin]="isLoading"></fa-icon>
+        <span jhiTranslate="jhipsterProjectBaseJwtApp.formation.home.refreshListLabel">Actualiser la liste</span>
+      </button>
+
+      <button
+        id="jh-create-entity"
+        data-cy="entityCreateButton"
+        class="btn btn-primary jh-create-entity create-formation"
+        [routerLink]="['/formation/new']"
+      >
+        <fa-icon icon="plus"></fa-icon>
+        <span jhiTranslate="jhipsterProjectBaseJwtApp.formation.home.createLabel"> Créer un nouveau Formation </span>
+      </button>
     </div>
-    <div class="col-sm-6">
-      <div class="card">
-        <div class="card-body">
-          <h5 class="card-title">Formation continue</h5>
-          <p class="card-text text">
-            La formation continue permet d’acquérir de nouvelles compétences tout au long de sa vie professionnelle dans le cadre d’un
-            maintien ou d’un retour à l’emploi. C’est une véritable opportunité pour les personnes déjà entrées dans la vie active.
-          </p>
-          <a routerLink="../formation-continue" class="btn btn-primary">Choisir une formation</a>
-        </div>
-      </div>
-    </div>
+  </h2>
+
+  <jhi-alert-error></jhi-alert-error>
+
+  <jhi-alert></jhi-alert>
+
+  <div class="alert alert-warning" id="no-result" *ngIf="formations?.length === 0">
+    <span jhiTranslate="jhipsterProjectBaseJwtApp.formation.home.notFound">Aucun Formation trouvé</span>
+  </div>
+
+  <div class="table-responsive table-entities" id="entities" *ngIf="formations && formations.length > 0">
+    <table class="table table-striped" aria-describedby="page-heading">
+      <thead>
+        <tr jhiSort [(predicate)]="predicate" [(ascending)]="ascending" (sortChange)="navigateToWithComponentValues()">
+          <th scope="col" jhiSortBy="id">
+            <div class="d-flex">
+              <span jhiTranslate="global.field.id">ID</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="nomFormation">
+            <div class="d-flex">
+              <span jhiTranslate="jhipsterProjectBaseJwtApp.formation.nomFormation">Nom Formation</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="imageFormation">
+            <div class="d-flex">
+              <span jhiTranslate="jhipsterProjectBaseJwtApp.formation.imageFormation">Image Formation</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="typeFormation">
+            <div class="d-flex">
+              <span jhiTranslate="jhipsterProjectBaseJwtApp.formation.typeFormation">Type Formation</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="duree">
+            <div class="d-flex">
+              <span jhiTranslate="jhipsterProjectBaseJwtApp.formation.duree">Duree</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="admission">
+            <div class="d-flex">
+              <span jhiTranslate="jhipsterProjectBaseJwtApp.formation.admission">Admission</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="diplomeRequis">
+            <div class="d-flex">
+              <span jhiTranslate="jhipsterProjectBaseJwtApp.formation.diplomeRequis">Diplome Requis</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="ficheFormation">
+            <div class="d-flex">
+              <span jhiTranslate="jhipsterProjectBaseJwtApp.formation.ficheFormation">Fiche Formation</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col"></th>
+        </tr>
+      </thead>
+      <tbody
+        infinite-scroll
+        (scrolled)="loadPage(page + 1)"
+        [infiniteScrollDisabled]="page - 1 >= links['last']"
+        [infiniteScrollDistance]="0"
+      >
+        <tr *ngFor="let formation of formations; trackBy: trackId" data-cy="entityTable">
+          <td>
+            <a [routerLink]="['/formation', formation.id, 'view']">{{ formation.id }}</a>
+          </td>
+          <td>{{ formation.nomFormation }}</td>
+          <td>
+            <a *ngIf="formation.imageFormation" (click)="openFile(formation.imageFormation, formation.imageFormationContentType)">
+              <img
+                [src]="'data:' + formation.imageFormationContentType + ';base64,' + formation.imageFormation"
+                style="max-height: 30px"
+                alt="formation image"
+              />
+            </a>
+            <span *ngIf="formation.imageFormation"
+              >{{ formation.imageFormationContentType }}, {{ byteSize(formation.imageFormation) }}</span
+            >
+          </td>
+          <td jhiTranslate="{{ 'jhipsterProjectBaseJwtApp.TypeFormation.' + formation.typeFormation }}">{{ formation.typeFormation }}</td>
+          <td>{{ formation.duree }}</td>
+          <td jhiTranslate="{{ 'jhipsterProjectBaseJwtApp.Admission.' + formation.admission }}">{{ formation.admission }}</td>
+          <td jhiTranslate="{{ 'jhipsterProjectBaseJwtApp.DiplomeRequis.' + formation.diplomeRequis }}">{{ formation.diplomeRequis }}</td>
+          <td>
+            <a
+              *ngIf="formation.ficheFormation"
+              (click)="openFile(formation.ficheFormation, formation.ficheFormationContentType)"
+              jhiTranslate="entity.action.open"
+              >Ouvrir</a
+            >
+            <span *ngIf="formation.ficheFormation"
+              >{{ formation.ficheFormationContentType }}, {{ byteSize(formation.ficheFormation) }}</span
+            >
+          </td>
+          <td class="text-end">
+            <div class="btn-group">
+              <button
+                type="submit"
+                [routerLink]="['/formation', formation.id, 'view']"
+                class="btn btn-info btn-sm"
+                data-cy="entityDetailsButton"
+              >
+                <fa-icon icon="eye"></fa-icon>
+                <span class="d-none d-md-inline" jhiTranslate="entity.action.view">Voir</span>
+              </button>
+
+              <button
+                type="submit"
+                [routerLink]="['/formation', formation.id, 'edit']"
+                class="btn btn-primary btn-sm"
+                data-cy="entityEditButton"
+              >
+                <fa-icon icon="pencil-alt"></fa-icon>
+                <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Editer</span>
+              </button>
+
+              <button type="submit" (click)="delete(formation)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
+                <fa-icon icon="times"></fa-icon>
+                <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Supprimer</span>
+              </button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 </div>

@@ -36,6 +36,12 @@ public class ProfessionnelServiceImpl implements ProfessionnelService {
     }
 
     @Override
+    public Professionnel update(Professionnel professionnel) {
+        log.debug("Request to update Professionnel : {}", professionnel);
+        return professionnelRepository.save(professionnel);
+    }
+
+    @Override
     public Optional<Professionnel> partialUpdate(Professionnel professionnel) {
         log.debug("Request to partially update Professionnel : {}", professionnel);
 
@@ -105,7 +111,7 @@ public class ProfessionnelServiceImpl implements ProfessionnelService {
         return StreamSupport
             .stream(professionnelRepository.findAll().spliterator(), false)
             .filter(professionnel -> professionnel.getDossier() == null)
-            .collect(Collectors.toList());
+            .toList();
     }
 
     /**
@@ -118,7 +124,7 @@ public class ProfessionnelServiceImpl implements ProfessionnelService {
         return StreamSupport
             .stream(professionnelRepository.findAll().spliterator(), false)
             .filter(professionnel -> professionnel.getDemandeur() == null)
-            .collect(Collectors.toList());
+            .toList();
     }
 
     @Override

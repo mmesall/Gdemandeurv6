@@ -5,7 +5,9 @@ import { Observable } from 'rxjs';
 import { isPresent } from 'app/core/util/operators';
 import { ApplicationConfigService } from 'app/core/config/application-config.service';
 import { createRequestOption } from 'app/core/request/request-util';
-import { IFormation, getFormationIdentifier } from '../formation.model';
+import { IFormation, NewFormation } from '../formation.model';
+
+export type PartialUpdateFormation = Partial<IFormation> & Pick<IFormation, 'id'>;
 
 export type EntityResponseType = HttpResponse<IFormation>;
 export type EntityArrayResponseType = HttpResponse<IFormation[]>;
@@ -16,20 +18,16 @@ export class FormationService {
 
   constructor(protected http: HttpClient, protected applicationConfigService: ApplicationConfigService) {}
 
-  create(formation: IFormation): Observable<EntityResponseType> {
+  create(formation: NewFormation): Observable<EntityResponseType> {
     return this.http.post<IFormation>(this.resourceUrl, formation, { observe: 'response' });
   }
 
   update(formation: IFormation): Observable<EntityResponseType> {
-    return this.http.put<IFormation>(`${this.resourceUrl}/${getFormationIdentifier(formation) as number}`, formation, {
-      observe: 'response',
-    });
+    return this.http.put<IFormation>(`${this.resourceUrl}/${this.getFormationIdentifier(formation)}`, formation, { observe: 'response' });
   }
 
-  partialUpdate(formation: IFormation): Observable<EntityResponseType> {
-    return this.http.patch<IFormation>(`${this.resourceUrl}/${getFormationIdentifier(formation) as number}`, formation, {
-      observe: 'response',
-    });
+  partialUpdate(formation: PartialUpdateFormation): Observable<EntityResponseType> {
+    return this.http.patch<IFormation>(`${this.resourceUrl}/${this.getFormationIdentifier(formation)}`, formation, { observe: 'response' });
   }
 
   find(id: number): Observable<EntityResponseType> {
@@ -45,16 +43,24 @@ export class FormationService {
     return this.http.delete(`${this.resourceUrl}/${id}`, { observe: 'response' });
   }
 
-  addFormationToCollectionIfMissing(
-    formationCollection: IFormation[],
-    ...formationsToCheck: (IFormation | null | undefined)[]
-  ): IFormation[] {
-    const formations: IFormation[] = formationsToCheck.filter(isPresent);
+  getFormationIdentifier(formation: Pick<IFormation, 'id'>): number {
+    return formation.id;
+  }
+
+  compareFormation(o1: Pick<IFormation, 'id'> | null, o2: Pick<IFormation, 'id'> | null): boolean {
+    return o1 && o2 ? this.getFormationIdentifier(o1) === this.getFormationIdentifier(o2) : o1 === o2;
+  }
+
+  addFormationToCollectionIfMissing<Type extends Pick<IFormation, 'id'>>(
+    formationCollection: Type[],
+    ...formationsToCheck: (Type | null | undefined)[]
+  ): Type[] {
+    const formations: Type[] = formationsToCheck.filter(isPresent);
     if (formations.length > 0) {
-      const formationCollectionIdentifiers = formationCollection.map(formationItem => getFormationIdentifier(formationItem)!);
+      const formationCollectionIdentifiers = formationCollection.map(formationItem => this.getFormationIdentifier(formationItem)!);
       const formationsToAdd = formations.filter(formationItem => {
-        const formationIdentifier = getFormationIdentifier(formationItem);
-        if (formationIdentifier == null || formationCollectionIdentifiers.includes(formationIdentifier)) {
+        const formationIdentifier = this.getFormationIdentifier(formationItem);
+        if (formationCollectionIdentifiers.includes(formationIdentifier)) {
           return false;
         }
         formationCollectionIdentifiers.push(formationIdentifier);

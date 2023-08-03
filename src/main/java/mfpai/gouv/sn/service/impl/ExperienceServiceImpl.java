@@ -33,6 +33,12 @@ public class ExperienceServiceImpl implements ExperienceService {
     }
 
     @Override
+    public Experience update(Experience experience) {
+        log.debug("Request to update Experience : {}", experience);
+        return experienceRepository.save(experience);
+    }
+
+    @Override
     public Optional<Experience> partialUpdate(Experience experience) {
         log.debug("Request to partially update Experience : {}", experience);
 

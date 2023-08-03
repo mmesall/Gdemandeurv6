@@ -1,11 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpResponse } from '@angular/common/http';
-import { FormBuilder } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
 import { finalize, map } from 'rxjs/operators';
 
-import { ICandidatureE, CandidatureE } from '../candidature-e.model';
+import SharedModule from 'app/shared/shared.module';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+
+import { CandidatureEFormService, CandidatureEFormGroup } from './candidature-e-form.service';
+import { ICandidatureE } from '../candidature-e.model';
 import { CandidatureEService } from '../service/candidature-e.service';
 import { IEleve } from 'app/entities/eleve/eleve.model';
 import { EleveService } from 'app/entities/eleve/service/eleve.service';
@@ -19,11 +22,14 @@ import { NomFiliere } from 'app/entities/enumerations/nom-filiere.model';
 import { Resultat } from 'app/entities/enumerations/resultat.model';
 
 @Component({
+  standalone: true,
   selector: 'jhi-candidature-e-update',
   templateUrl: './candidature-e-update.component.html',
+  imports: [SharedModule, FormsModule, ReactiveFormsModule],
 })
 export class CandidatureEUpdateComponent implements OnInit {
   isSaving = false;
+  candidatureE: ICandidatureE | null = null;
   nomFiliereValues = Object.keys(NomFiliere);
   resultatValues = Object.keys(Resultat);
 
@@ -32,32 +38,34 @@ export class CandidatureEUpdateComponent implements OnInit {
   formationInitialesSharedCollection: IFormationInitiale[] = [];
   etablissementsSharedCollection: IEtablissement[] = [];
 
-  editForm = this.fb.group({
-    id: [],
-    offreFormation: [],
-    dateDebutOffre: [],
-    dateFinOffre: [],
-    dateDepot: [],
-    resultat: [],
-    eleve: [],
-    etudiant: [],
-    formationInitiale: [],
-    etablissement: [],
-  });
+  editForm: CandidatureEFormGroup = this.candidatureEFormService.createCandidatureEFormGroup();
 
   constructor(
     protected candidatureEService: CandidatureEService,
+    protected candidatureEFormService: CandidatureEFormService,
     protected eleveService: EleveService,
     protected etudiantService: EtudiantService,
     protected formationInitialeService: FormationInitialeService,
     protected etablissementService: EtablissementService,
-    protected activatedRoute: ActivatedRoute,
-    protected fb: FormBuilder
+    protected activatedRoute: ActivatedRoute
   ) {}
+
+  compareEleve = (o1: IEleve | null, o2: IEleve | null): boolean => this.eleveService.compareEleve(o1, o2);
+
+  compareEtudiant = (o1: IEtudiant | null, o2: IEtudiant | null): boolean => this.etudiantService.compareEtudiant(o1, o2);
+
+  compareFormationInitiale = (o1: IFormationInitiale | null, o2: IFormationInitiale | null): boolean =>
+    this.formationInitialeService.compareFormationInitiale(o1, o2);
+
+  compareEtablissement = (o1: IEtablissement | null, o2: IEtablissement | null): boolean =>
+    this.etablissementService.compareEtablissement(o1, o2);
 
   ngOnInit(): void {
     this.activatedRoute.data.subscribe(({ candidatureE }) => {
-      this.updateForm(candidatureE);
+      this.candidatureE = candidatureE;
+      if (candidatureE) {
+        this.updateForm(candidatureE);
+      }
 
       this.loadRelationshipsOptions();
     });
@@ -69,28 +77,12 @@ export class CandidatureEUpdateComponent implements OnInit {
 
   save(): void {
     this.isSaving = true;
-    const candidatureE = this.createFromForm();
-    if (candidatureE.id !== undefined) {
+    const candidatureE = this.candidatureEFormService.getCandidatureE(this.editForm);
+    if (candidatureE.id !== null) {
       this.subscribeToSaveResponse(this.candidatureEService.update(candidatureE));
     } else {
       this.subscribeToSaveResponse(this.candidatureEService.create(candidatureE));
     }
-  }
-
-  trackEleveById(index: number, item: IEleve): number {
-    return item.id!;
-  }
-
-  trackEtudiantById(index: number, item: IEtudiant): number {
-    return item.id!;
-  }
-
-  trackFormationInitialeById(index: number, item: IFormationInitiale): number {
-    return item.id!;
-  }
-
-  trackEtablissementById(index: number, item: IEtablissement): number {
-    return item.id!;
   }
 
   protected subscribeToSaveResponse(result: Observable<HttpResponse<ICandidatureE>>): void {
@@ -113,29 +105,19 @@ export class CandidatureEUpdateComponent implements OnInit {
   }
 
   protected updateForm(candidatureE: ICandidatureE): void {
-    this.editForm.patchValue({
-      id: candidatureE.id,
-      offreFormation: candidatureE.offreFormation,
-      dateDebutOffre: candidatureE.dateDebutOffre,
-      dateFinOffre: candidatureE.dateFinOffre,
-      dateDepot: candidatureE.dateDepot,
-      resultat: candidatureE.resultat,
-      eleve: candidatureE.eleve,
-      etudiant: candidatureE.etudiant,
-      formationInitiale: candidatureE.formationInitiale,
-      etablissement: candidatureE.etablissement,
-    });
+    this.candidatureE = candidatureE;
+    this.candidatureEFormService.resetForm(this.editForm, candidatureE);
 
-    this.elevesSharedCollection = this.eleveService.addEleveToCollectionIfMissing(this.elevesSharedCollection, candidatureE.eleve);
-    this.etudiantsSharedCollection = this.etudiantService.addEtudiantToCollectionIfMissing(
+    this.elevesSharedCollection = this.eleveService.addEleveToCollectionIfMissing<IEleve>(this.elevesSharedCollection, candidatureE.eleve);
+    this.etudiantsSharedCollection = this.etudiantService.addEtudiantToCollectionIfMissing<IEtudiant>(
       this.etudiantsSharedCollection,
       candidatureE.etudiant
     );
-    this.formationInitialesSharedCollection = this.formationInitialeService.addFormationInitialeToCollectionIfMissing(
+    this.formationInitialesSharedCollection = this.formationInitialeService.addFormationInitialeToCollectionIfMissing<IFormationInitiale>(
       this.formationInitialesSharedCollection,
       candidatureE.formationInitiale
     );
-    this.etablissementsSharedCollection = this.etablissementService.addEtablissementToCollectionIfMissing(
+    this.etablissementsSharedCollection = this.etablissementService.addEtablissementToCollectionIfMissing<IEtablissement>(
       this.etablissementsSharedCollection,
       candidatureE.etablissement
     );
@@ -145,7 +127,7 @@ export class CandidatureEUpdateComponent implements OnInit {
     this.eleveService
       .query()
       .pipe(map((res: HttpResponse<IEleve[]>) => res.body ?? []))
-      .pipe(map((eleves: IEleve[]) => this.eleveService.addEleveToCollectionIfMissing(eleves, this.editForm.get('eleve')!.value)))
+      .pipe(map((eleves: IEleve[]) => this.eleveService.addEleveToCollectionIfMissing<IEleve>(eleves, this.candidatureE?.eleve)))
       .subscribe((eleves: IEleve[]) => (this.elevesSharedCollection = eleves));
 
     this.etudiantService
@@ -153,7 +135,7 @@ export class CandidatureEUpdateComponent implements OnInit {
       .pipe(map((res: HttpResponse<IEtudiant[]>) => res.body ?? []))
       .pipe(
         map((etudiants: IEtudiant[]) =>
-          this.etudiantService.addEtudiantToCollectionIfMissing(etudiants, this.editForm.get('etudiant')!.value)
+          this.etudiantService.addEtudiantToCollectionIfMissing<IEtudiant>(etudiants, this.candidatureE?.etudiant)
         )
       )
       .subscribe((etudiants: IEtudiant[]) => (this.etudiantsSharedCollection = etudiants));
@@ -163,9 +145,9 @@ export class CandidatureEUpdateComponent implements OnInit {
       .pipe(map((res: HttpResponse<IFormationInitiale[]>) => res.body ?? []))
       .pipe(
         map((formationInitiales: IFormationInitiale[]) =>
-          this.formationInitialeService.addFormationInitialeToCollectionIfMissing(
+          this.formationInitialeService.addFormationInitialeToCollectionIfMissing<IFormationInitiale>(
             formationInitiales,
-            this.editForm.get('formationInitiale')!.value
+            this.candidatureE?.formationInitiale
           )
         )
       )
@@ -176,25 +158,9 @@ export class CandidatureEUpdateComponent implements OnInit {
       .pipe(map((res: HttpResponse<IEtablissement[]>) => res.body ?? []))
       .pipe(
         map((etablissements: IEtablissement[]) =>
-          this.etablissementService.addEtablissementToCollectionIfMissing(etablissements, this.editForm.get('etablissement')!.value)
+          this.etablissementService.addEtablissementToCollectionIfMissing<IEtablissement>(etablissements, this.candidatureE?.etablissement)
         )
       )
       .subscribe((etablissements: IEtablissement[]) => (this.etablissementsSharedCollection = etablissements));
-  }
-
-  protected createFromForm(): ICandidatureE {
-    return {
-      ...new CandidatureE(),
-      id: this.editForm.get(['id'])!.value,
-      offreFormation: this.editForm.get(['offreFormation'])!.value,
-      dateDebutOffre: this.editForm.get(['dateDebutOffre'])!.value,
-      dateFinOffre: this.editForm.get(['dateFinOffre'])!.value,
-      dateDepot: this.editForm.get(['dateDepot'])!.value,
-      resultat: this.editForm.get(['resultat'])!.value,
-      eleve: this.editForm.get(['eleve'])!.value,
-      etudiant: this.editForm.get(['etudiant'])!.value,
-      formationInitiale: this.editForm.get(['formationInitiale'])!.value,
-      etablissement: this.editForm.get(['etablissement'])!.value,
-    };
   }
 }

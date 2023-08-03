@@ -1,11 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpResponse } from '@angular/common/http';
-import { FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
 import { finalize, map } from 'rxjs/operators';
 
-import { IExperience, Experience } from '../experience.model';
+import SharedModule from 'app/shared/shared.module';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+
+import { ExperienceFormService, ExperienceFormGroup } from './experience-form.service';
+import { IExperience } from '../experience.model';
 import { ExperienceService } from '../service/experience.service';
 import { AlertError } from 'app/shared/alert/alert-error.model';
 import { EventManager, EventWithContent } from 'app/core/util/event-manager.service';
@@ -20,45 +23,49 @@ import { IDemandeur } from 'app/entities/demandeur/demandeur.model';
 import { DemandeurService } from 'app/entities/demandeur/service/demandeur.service';
 
 @Component({
+  standalone: true,
   selector: 'jhi-experience-update',
   templateUrl: './experience-update.component.html',
+  imports: [SharedModule, FormsModule, ReactiveFormsModule],
 })
 export class ExperienceUpdateComponent implements OnInit {
   isSaving = false;
+  experience: IExperience | null = null;
 
   elevesSharedCollection: IEleve[] = [];
   etudiantsSharedCollection: IEtudiant[] = [];
   professionnelsSharedCollection: IProfessionnel[] = [];
   demandeursSharedCollection: IDemandeur[] = [];
 
-  editForm = this.fb.group({
-    id: [],
-    dateDebut: [null, [Validators.required]],
-    dateFin: [null, [Validators.required]],
-    nomEntreprise: [null, [Validators.required]],
-    posteOccupe: [null, [Validators.required]],
-    mission: [],
-    eleve: [],
-    etudiant: [],
-    professionnel: [],
-    demandeur: [],
-  });
+  editForm: ExperienceFormGroup = this.experienceFormService.createExperienceFormGroup();
 
   constructor(
     protected dataUtils: DataUtils,
     protected eventManager: EventManager,
     protected experienceService: ExperienceService,
+    protected experienceFormService: ExperienceFormService,
     protected eleveService: EleveService,
     protected etudiantService: EtudiantService,
     protected professionnelService: ProfessionnelService,
     protected demandeurService: DemandeurService,
-    protected activatedRoute: ActivatedRoute,
-    protected fb: FormBuilder
+    protected activatedRoute: ActivatedRoute
   ) {}
+
+  compareEleve = (o1: IEleve | null, o2: IEleve | null): boolean => this.eleveService.compareEleve(o1, o2);
+
+  compareEtudiant = (o1: IEtudiant | null, o2: IEtudiant | null): boolean => this.etudiantService.compareEtudiant(o1, o2);
+
+  compareProfessionnel = (o1: IProfessionnel | null, o2: IProfessionnel | null): boolean =>
+    this.professionnelService.compareProfessionnel(o1, o2);
+
+  compareDemandeur = (o1: IDemandeur | null, o2: IDemandeur | null): boolean => this.demandeurService.compareDemandeur(o1, o2);
 
   ngOnInit(): void {
     this.activatedRoute.data.subscribe(({ experience }) => {
-      this.updateForm(experience);
+      this.experience = experience;
+      if (experience) {
+        this.updateForm(experience);
+      }
 
       this.loadRelationshipsOptions();
     });
@@ -85,28 +92,12 @@ export class ExperienceUpdateComponent implements OnInit {
 
   save(): void {
     this.isSaving = true;
-    const experience = this.createFromForm();
-    if (experience.id !== undefined) {
+    const experience = this.experienceFormService.getExperience(this.editForm);
+    if (experience.id !== null) {
       this.subscribeToSaveResponse(this.experienceService.update(experience));
     } else {
       this.subscribeToSaveResponse(this.experienceService.create(experience));
     }
-  }
-
-  trackEleveById(index: number, item: IEleve): number {
-    return item.id!;
-  }
-
-  trackEtudiantById(index: number, item: IEtudiant): number {
-    return item.id!;
-  }
-
-  trackProfessionnelById(index: number, item: IProfessionnel): number {
-    return item.id!;
-  }
-
-  trackDemandeurById(index: number, item: IDemandeur): number {
-    return item.id!;
   }
 
   protected subscribeToSaveResponse(result: Observable<HttpResponse<IExperience>>): void {
@@ -129,29 +120,19 @@ export class ExperienceUpdateComponent implements OnInit {
   }
 
   protected updateForm(experience: IExperience): void {
-    this.editForm.patchValue({
-      id: experience.id,
-      dateDebut: experience.dateDebut,
-      dateFin: experience.dateFin,
-      nomEntreprise: experience.nomEntreprise,
-      posteOccupe: experience.posteOccupe,
-      mission: experience.mission,
-      eleve: experience.eleve,
-      etudiant: experience.etudiant,
-      professionnel: experience.professionnel,
-      demandeur: experience.demandeur,
-    });
+    this.experience = experience;
+    this.experienceFormService.resetForm(this.editForm, experience);
 
-    this.elevesSharedCollection = this.eleveService.addEleveToCollectionIfMissing(this.elevesSharedCollection, experience.eleve);
-    this.etudiantsSharedCollection = this.etudiantService.addEtudiantToCollectionIfMissing(
+    this.elevesSharedCollection = this.eleveService.addEleveToCollectionIfMissing<IEleve>(this.elevesSharedCollection, experience.eleve);
+    this.etudiantsSharedCollection = this.etudiantService.addEtudiantToCollectionIfMissing<IEtudiant>(
       this.etudiantsSharedCollection,
       experience.etudiant
     );
-    this.professionnelsSharedCollection = this.professionnelService.addProfessionnelToCollectionIfMissing(
+    this.professionnelsSharedCollection = this.professionnelService.addProfessionnelToCollectionIfMissing<IProfessionnel>(
       this.professionnelsSharedCollection,
       experience.professionnel
     );
-    this.demandeursSharedCollection = this.demandeurService.addDemandeurToCollectionIfMissing(
+    this.demandeursSharedCollection = this.demandeurService.addDemandeurToCollectionIfMissing<IDemandeur>(
       this.demandeursSharedCollection,
       experience.demandeur
     );
@@ -161,7 +142,7 @@ export class ExperienceUpdateComponent implements OnInit {
     this.eleveService
       .query()
       .pipe(map((res: HttpResponse<IEleve[]>) => res.body ?? []))
-      .pipe(map((eleves: IEleve[]) => this.eleveService.addEleveToCollectionIfMissing(eleves, this.editForm.get('eleve')!.value)))
+      .pipe(map((eleves: IEleve[]) => this.eleveService.addEleveToCollectionIfMissing<IEleve>(eleves, this.experience?.eleve)))
       .subscribe((eleves: IEleve[]) => (this.elevesSharedCollection = eleves));
 
     this.etudiantService
@@ -169,7 +150,7 @@ export class ExperienceUpdateComponent implements OnInit {
       .pipe(map((res: HttpResponse<IEtudiant[]>) => res.body ?? []))
       .pipe(
         map((etudiants: IEtudiant[]) =>
-          this.etudiantService.addEtudiantToCollectionIfMissing(etudiants, this.editForm.get('etudiant')!.value)
+          this.etudiantService.addEtudiantToCollectionIfMissing<IEtudiant>(etudiants, this.experience?.etudiant)
         )
       )
       .subscribe((etudiants: IEtudiant[]) => (this.etudiantsSharedCollection = etudiants));
@@ -179,7 +160,7 @@ export class ExperienceUpdateComponent implements OnInit {
       .pipe(map((res: HttpResponse<IProfessionnel[]>) => res.body ?? []))
       .pipe(
         map((professionnels: IProfessionnel[]) =>
-          this.professionnelService.addProfessionnelToCollectionIfMissing(professionnels, this.editForm.get('professionnel')!.value)
+          this.professionnelService.addProfessionnelToCollectionIfMissing<IProfessionnel>(professionnels, this.experience?.professionnel)
         )
       )
       .subscribe((professionnels: IProfessionnel[]) => (this.professionnelsSharedCollection = professionnels));
@@ -189,25 +170,9 @@ export class ExperienceUpdateComponent implements OnInit {
       .pipe(map((res: HttpResponse<IDemandeur[]>) => res.body ?? []))
       .pipe(
         map((demandeurs: IDemandeur[]) =>
-          this.demandeurService.addDemandeurToCollectionIfMissing(demandeurs, this.editForm.get('demandeur')!.value)
+          this.demandeurService.addDemandeurToCollectionIfMissing<IDemandeur>(demandeurs, this.experience?.demandeur)
         )
       )
       .subscribe((demandeurs: IDemandeur[]) => (this.demandeursSharedCollection = demandeurs));
-  }
-
-  protected createFromForm(): IExperience {
-    return {
-      ...new Experience(),
-      id: this.editForm.get(['id'])!.value,
-      dateDebut: this.editForm.get(['dateDebut'])!.value,
-      dateFin: this.editForm.get(['dateFin'])!.value,
-      nomEntreprise: this.editForm.get(['nomEntreprise'])!.value,
-      posteOccupe: this.editForm.get(['posteOccupe'])!.value,
-      mission: this.editForm.get(['mission'])!.value,
-      eleve: this.editForm.get(['eleve'])!.value,
-      etudiant: this.editForm.get(['etudiant'])!.value,
-      professionnel: this.editForm.get(['professionnel'])!.value,
-      demandeur: this.editForm.get(['demandeur'])!.value,
-    };
   }
 }

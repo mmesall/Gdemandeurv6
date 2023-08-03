@@ -6,8 +6,9 @@ import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of, Subject, from } from 'rxjs';
 
+import { DossierFormService } from './dossier-form.service';
 import { DossierService } from '../service/dossier.service';
-import { IDossier, Dossier } from '../dossier.model';
+import { IDossier } from '../dossier.model';
 import { IEleve } from 'app/entities/eleve/eleve.model';
 import { EleveService } from 'app/entities/eleve/service/eleve.service';
 import { IEtudiant } from 'app/entities/etudiant/etudiant.model';
@@ -21,6 +22,7 @@ describe('Dossier Management Update Component', () => {
   let comp: DossierUpdateComponent;
   let fixture: ComponentFixture<DossierUpdateComponent>;
   let activatedRoute: ActivatedRoute;
+  let dossierFormService: DossierFormService;
   let dossierService: DossierService;
   let eleveService: EleveService;
   let etudiantService: EtudiantService;
@@ -28,8 +30,7 @@ describe('Dossier Management Update Component', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule, RouterTestingModule.withRoutes([])],
-      declarations: [DossierUpdateComponent],
+      imports: [HttpClientTestingModule, RouterTestingModule.withRoutes([]), DossierUpdateComponent],
       providers: [
         FormBuilder,
         {
@@ -45,6 +46,7 @@ describe('Dossier Management Update Component', () => {
 
     fixture = TestBed.createComponent(DossierUpdateComponent);
     activatedRoute = TestBed.inject(ActivatedRoute);
+    dossierFormService = TestBed.inject(DossierFormService);
     dossierService = TestBed.inject(DossierService);
     eleveService = TestBed.inject(EleveService);
     etudiantService = TestBed.inject(EtudiantService);
@@ -56,10 +58,10 @@ describe('Dossier Management Update Component', () => {
   describe('ngOnInit', () => {
     it('Should call eleve query and add missing value', () => {
       const dossier: IDossier = { id: 456 };
-      const eleve: IEleve = { id: 70333 };
+      const eleve: IEleve = { id: 8643 };
       dossier.eleve = eleve;
 
-      const eleveCollection: IEleve[] = [{ id: 72365 }];
+      const eleveCollection: IEleve[] = [{ id: 6793 }];
       jest.spyOn(eleveService, 'query').mockReturnValue(of(new HttpResponse({ body: eleveCollection })));
       const expectedCollection: IEleve[] = [eleve, ...eleveCollection];
       jest.spyOn(eleveService, 'addEleveToCollectionIfMissing').mockReturnValue(expectedCollection);
@@ -74,10 +76,10 @@ describe('Dossier Management Update Component', () => {
 
     it('Should call etudiant query and add missing value', () => {
       const dossier: IDossier = { id: 456 };
-      const etudiant: IEtudiant = { id: 78160 };
+      const etudiant: IEtudiant = { id: 23407 };
       dossier.etudiant = etudiant;
 
-      const etudiantCollection: IEtudiant[] = [{ id: 30910 }];
+      const etudiantCollection: IEtudiant[] = [{ id: 13404 }];
       jest.spyOn(etudiantService, 'query').mockReturnValue(of(new HttpResponse({ body: etudiantCollection })));
       const expectedCollection: IEtudiant[] = [etudiant, ...etudiantCollection];
       jest.spyOn(etudiantService, 'addEtudiantToCollectionIfMissing').mockReturnValue(expectedCollection);
@@ -92,10 +94,10 @@ describe('Dossier Management Update Component', () => {
 
     it('Should call professionnel query and add missing value', () => {
       const dossier: IDossier = { id: 456 };
-      const professionnel: IProfessionnel = { id: 11386 };
+      const professionnel: IProfessionnel = { id: 16663 };
       dossier.professionnel = professionnel;
 
-      const professionnelCollection: IProfessionnel[] = [{ id: 32876 }];
+      const professionnelCollection: IProfessionnel[] = [{ id: 18977 }];
       jest.spyOn(professionnelService, 'query').mockReturnValue(of(new HttpResponse({ body: professionnelCollection })));
       const expectedCollection: IProfessionnel[] = [professionnel, ...professionnelCollection];
       jest.spyOn(professionnelService, 'addProfessionnelToCollectionIfMissing').mockReturnValue(expectedCollection);
@@ -110,28 +112,29 @@ describe('Dossier Management Update Component', () => {
 
     it('Should update editForm', () => {
       const dossier: IDossier = { id: 456 };
-      const eleve: IEleve = { id: 73915 };
+      const eleve: IEleve = { id: 9050 };
       dossier.eleve = eleve;
-      const etudiant: IEtudiant = { id: 58238 };
+      const etudiant: IEtudiant = { id: 25429 };
       dossier.etudiant = etudiant;
-      const professionnel: IProfessionnel = { id: 72778 };
+      const professionnel: IProfessionnel = { id: 31302 };
       dossier.professionnel = professionnel;
 
       activatedRoute.data = of({ dossier });
       comp.ngOnInit();
 
-      expect(comp.editForm.value).toEqual(expect.objectContaining(dossier));
       expect(comp.elevesCollection).toContain(eleve);
       expect(comp.etudiantsCollection).toContain(etudiant);
       expect(comp.professionnelsCollection).toContain(professionnel);
+      expect(comp.dossier).toEqual(dossier);
     });
   });
 
   describe('save', () => {
     it('Should call update service on save for existing entity', () => {
       // GIVEN
-      const saveSubject = new Subject<HttpResponse<Dossier>>();
+      const saveSubject = new Subject<HttpResponse<IDossier>>();
       const dossier = { id: 123 };
+      jest.spyOn(dossierFormService, 'getDossier').mockReturnValue(dossier);
       jest.spyOn(dossierService, 'update').mockReturnValue(saveSubject);
       jest.spyOn(comp, 'previousState');
       activatedRoute.data = of({ dossier });
@@ -144,18 +147,20 @@ describe('Dossier Management Update Component', () => {
       saveSubject.complete();
 
       // THEN
+      expect(dossierFormService.getDossier).toHaveBeenCalled();
       expect(comp.previousState).toHaveBeenCalled();
-      expect(dossierService.update).toHaveBeenCalledWith(dossier);
+      expect(dossierService.update).toHaveBeenCalledWith(expect.objectContaining(dossier));
       expect(comp.isSaving).toEqual(false);
     });
 
     it('Should call create service on save for new entity', () => {
       // GIVEN
-      const saveSubject = new Subject<HttpResponse<Dossier>>();
-      const dossier = new Dossier();
+      const saveSubject = new Subject<HttpResponse<IDossier>>();
+      const dossier = { id: 123 };
+      jest.spyOn(dossierFormService, 'getDossier').mockReturnValue({ id: null });
       jest.spyOn(dossierService, 'create').mockReturnValue(saveSubject);
       jest.spyOn(comp, 'previousState');
-      activatedRoute.data = of({ dossier });
+      activatedRoute.data = of({ dossier: null });
       comp.ngOnInit();
 
       // WHEN
@@ -165,14 +170,15 @@ describe('Dossier Management Update Component', () => {
       saveSubject.complete();
 
       // THEN
-      expect(dossierService.create).toHaveBeenCalledWith(dossier);
+      expect(dossierFormService.getDossier).toHaveBeenCalled();
+      expect(dossierService.create).toHaveBeenCalled();
       expect(comp.isSaving).toEqual(false);
       expect(comp.previousState).toHaveBeenCalled();
     });
 
     it('Should set isSaving to false on error', () => {
       // GIVEN
-      const saveSubject = new Subject<HttpResponse<Dossier>>();
+      const saveSubject = new Subject<HttpResponse<IDossier>>();
       const dossier = { id: 123 };
       jest.spyOn(dossierService, 'update').mockReturnValue(saveSubject);
       jest.spyOn(comp, 'previousState');
@@ -185,34 +191,40 @@ describe('Dossier Management Update Component', () => {
       saveSubject.error('This is an error!');
 
       // THEN
-      expect(dossierService.update).toHaveBeenCalledWith(dossier);
+      expect(dossierService.update).toHaveBeenCalled();
       expect(comp.isSaving).toEqual(false);
       expect(comp.previousState).not.toHaveBeenCalled();
     });
   });
 
-  describe('Tracking relationships identifiers', () => {
-    describe('trackEleveById', () => {
-      it('Should return tracked Eleve primary key', () => {
+  describe('Compare relationships', () => {
+    describe('compareEleve', () => {
+      it('Should forward to eleveService', () => {
         const entity = { id: 123 };
-        const trackResult = comp.trackEleveById(0, entity);
-        expect(trackResult).toEqual(entity.id);
+        const entity2 = { id: 456 };
+        jest.spyOn(eleveService, 'compareEleve');
+        comp.compareEleve(entity, entity2);
+        expect(eleveService.compareEleve).toHaveBeenCalledWith(entity, entity2);
       });
     });
 
-    describe('trackEtudiantById', () => {
-      it('Should return tracked Etudiant primary key', () => {
+    describe('compareEtudiant', () => {
+      it('Should forward to etudiantService', () => {
         const entity = { id: 123 };
-        const trackResult = comp.trackEtudiantById(0, entity);
-        expect(trackResult).toEqual(entity.id);
+        const entity2 = { id: 456 };
+        jest.spyOn(etudiantService, 'compareEtudiant');
+        comp.compareEtudiant(entity, entity2);
+        expect(etudiantService.compareEtudiant).toHaveBeenCalledWith(entity, entity2);
       });
     });
 
-    describe('trackProfessionnelById', () => {
-      it('Should return tracked Professionnel primary key', () => {
+    describe('compareProfessionnel', () => {
+      it('Should forward to professionnelService', () => {
         const entity = { id: 123 };
-        const trackResult = comp.trackProfessionnelById(0, entity);
-        expect(trackResult).toEqual(entity.id);
+        const entity2 = { id: 456 };
+        jest.spyOn(professionnelService, 'compareProfessionnel');
+        comp.compareProfessionnel(entity, entity2);
+        expect(professionnelService.compareProfessionnel).toHaveBeenCalledWith(entity, entity2);
       });
     });
   });

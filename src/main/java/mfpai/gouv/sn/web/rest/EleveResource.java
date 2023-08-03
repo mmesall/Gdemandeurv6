@@ -1,13 +1,13 @@
 package mfpai.gouv.sn.web.rest;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.StreamSupport;
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 import mfpai.gouv.sn.domain.Eleve;
 import mfpai.gouv.sn.repository.EleveRepository;
 import mfpai.gouv.sn.service.EleveService;
@@ -94,7 +94,7 @@ public class EleveResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        Eleve result = eleveService.save(eleve);
+        Eleve result = eleveService.update(eleve);
         return ResponseEntity
             .ok()
             .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, eleve.getId().toString()))
@@ -147,9 +147,9 @@ public class EleveResource {
      */
     @GetMapping("/eleves")
     public ResponseEntity<List<Eleve>> getAllEleves(
-        @org.springdoc.api.annotations.ParameterObject Pageable pageable,
+        @org.springdoc.core.annotations.ParameterObject Pageable pageable,
         @RequestParam(required = false) String filter,
-        @RequestParam(required = false, defaultValue = "true") boolean eagerload
+        @RequestParam(required = false, defaultValue = "false") boolean eagerload
     ) {
         if ("dossier-is-null".equals(filter)) {
             log.debug("REST request to get all Eleves where dossier is null");

@@ -1,14 +1,28 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
+
 import { map } from 'rxjs/operators';
+
 import dayjs from 'dayjs/esm';
 
 import { isPresent } from 'app/core/util/operators';
 import { DATE_FORMAT } from 'app/config/input.constants';
 import { ApplicationConfigService } from 'app/core/config/application-config.service';
 import { createRequestOption } from 'app/core/request/request-util';
-import { IDemandeur, getDemandeurIdentifier } from '../demandeur.model';
+import { IDemandeur, NewDemandeur } from '../demandeur.model';
+
+export type PartialUpdateDemandeur = Partial<IDemandeur> & Pick<IDemandeur, 'id'>;
+
+type RestOf<T extends IDemandeur | NewDemandeur> = Omit<T, 'dateNaiss'> & {
+  dateNaiss?: string | null;
+};
+
+export type RestDemandeur = RestOf<IDemandeur>;
+
+export type NewRestDemandeur = RestOf<NewDemandeur>;
+
+export type PartialUpdateRestDemandeur = RestOf<PartialUpdateDemandeur>;
 
 export type EntityResponseType = HttpResponse<IDemandeur>;
 export type EntityArrayResponseType = HttpResponse<IDemandeur[]>;
@@ -19,54 +33,62 @@ export class DemandeurService {
 
   constructor(protected http: HttpClient, protected applicationConfigService: ApplicationConfigService) {}
 
-  create(demandeur: IDemandeur): Observable<EntityResponseType> {
+  create(demandeur: NewDemandeur): Observable<EntityResponseType> {
     const copy = this.convertDateFromClient(demandeur);
     return this.http
-      .post<IDemandeur>(this.resourceUrl, copy, { observe: 'response' })
-      .pipe(map((res: EntityResponseType) => this.convertDateFromServer(res)));
+      .post<RestDemandeur>(this.resourceUrl, copy, { observe: 'response' })
+      .pipe(map(res => this.convertResponseFromServer(res)));
   }
 
   update(demandeur: IDemandeur): Observable<EntityResponseType> {
     const copy = this.convertDateFromClient(demandeur);
     return this.http
-      .put<IDemandeur>(`${this.resourceUrl}/${getDemandeurIdentifier(demandeur) as number}`, copy, { observe: 'response' })
-      .pipe(map((res: EntityResponseType) => this.convertDateFromServer(res)));
+      .put<RestDemandeur>(`${this.resourceUrl}/${this.getDemandeurIdentifier(demandeur)}`, copy, { observe: 'response' })
+      .pipe(map(res => this.convertResponseFromServer(res)));
   }
 
-  partialUpdate(demandeur: IDemandeur): Observable<EntityResponseType> {
+  partialUpdate(demandeur: PartialUpdateDemandeur): Observable<EntityResponseType> {
     const copy = this.convertDateFromClient(demandeur);
     return this.http
-      .patch<IDemandeur>(`${this.resourceUrl}/${getDemandeurIdentifier(demandeur) as number}`, copy, { observe: 'response' })
-      .pipe(map((res: EntityResponseType) => this.convertDateFromServer(res)));
+      .patch<RestDemandeur>(`${this.resourceUrl}/${this.getDemandeurIdentifier(demandeur)}`, copy, { observe: 'response' })
+      .pipe(map(res => this.convertResponseFromServer(res)));
   }
 
   find(id: number): Observable<EntityResponseType> {
     return this.http
-      .get<IDemandeur>(`${this.resourceUrl}/${id}`, { observe: 'response' })
-      .pipe(map((res: EntityResponseType) => this.convertDateFromServer(res)));
+      .get<RestDemandeur>(`${this.resourceUrl}/${id}`, { observe: 'response' })
+      .pipe(map(res => this.convertResponseFromServer(res)));
   }
 
   query(req?: any): Observable<EntityArrayResponseType> {
     const options = createRequestOption(req);
     return this.http
-      .get<IDemandeur[]>(this.resourceUrl, { params: options, observe: 'response' })
-      .pipe(map((res: EntityArrayResponseType) => this.convertDateArrayFromServer(res)));
+      .get<RestDemandeur[]>(this.resourceUrl, { params: options, observe: 'response' })
+      .pipe(map(res => this.convertResponseArrayFromServer(res)));
   }
 
   delete(id: number): Observable<HttpResponse<{}>> {
     return this.http.delete(`${this.resourceUrl}/${id}`, { observe: 'response' });
   }
 
-  addDemandeurToCollectionIfMissing(
-    demandeurCollection: IDemandeur[],
-    ...demandeursToCheck: (IDemandeur | null | undefined)[]
-  ): IDemandeur[] {
-    const demandeurs: IDemandeur[] = demandeursToCheck.filter(isPresent);
+  getDemandeurIdentifier(demandeur: Pick<IDemandeur, 'id'>): number {
+    return demandeur.id;
+  }
+
+  compareDemandeur(o1: Pick<IDemandeur, 'id'> | null, o2: Pick<IDemandeur, 'id'> | null): boolean {
+    return o1 && o2 ? this.getDemandeurIdentifier(o1) === this.getDemandeurIdentifier(o2) : o1 === o2;
+  }
+
+  addDemandeurToCollectionIfMissing<Type extends Pick<IDemandeur, 'id'>>(
+    demandeurCollection: Type[],
+    ...demandeursToCheck: (Type | null | undefined)[]
+  ): Type[] {
+    const demandeurs: Type[] = demandeursToCheck.filter(isPresent);
     if (demandeurs.length > 0) {
-      const demandeurCollectionIdentifiers = demandeurCollection.map(demandeurItem => getDemandeurIdentifier(demandeurItem)!);
+      const demandeurCollectionIdentifiers = demandeurCollection.map(demandeurItem => this.getDemandeurIdentifier(demandeurItem)!);
       const demandeursToAdd = demandeurs.filter(demandeurItem => {
-        const demandeurIdentifier = getDemandeurIdentifier(demandeurItem);
-        if (demandeurIdentifier == null || demandeurCollectionIdentifiers.includes(demandeurIdentifier)) {
+        const demandeurIdentifier = this.getDemandeurIdentifier(demandeurItem);
+        if (demandeurCollectionIdentifiers.includes(demandeurIdentifier)) {
           return false;
         }
         demandeurCollectionIdentifiers.push(demandeurIdentifier);
@@ -77,25 +99,29 @@ export class DemandeurService {
     return demandeurCollection;
   }
 
-  protected convertDateFromClient(demandeur: IDemandeur): IDemandeur {
-    return Object.assign({}, demandeur, {
-      dateNaiss: demandeur.dateNaiss?.isValid() ? demandeur.dateNaiss.format(DATE_FORMAT) : undefined,
+  protected convertDateFromClient<T extends IDemandeur | NewDemandeur | PartialUpdateDemandeur>(demandeur: T): RestOf<T> {
+    return {
+      ...demandeur,
+      dateNaiss: demandeur.dateNaiss?.format(DATE_FORMAT) ?? null,
+    };
+  }
+
+  protected convertDateFromServer(restDemandeur: RestDemandeur): IDemandeur {
+    return {
+      ...restDemandeur,
+      dateNaiss: restDemandeur.dateNaiss ? dayjs(restDemandeur.dateNaiss) : undefined,
+    };
+  }
+
+  protected convertResponseFromServer(res: HttpResponse<RestDemandeur>): HttpResponse<IDemandeur> {
+    return res.clone({
+      body: res.body ? this.convertDateFromServer(res.body) : null,
     });
   }
 
-  protected convertDateFromServer(res: EntityResponseType): EntityResponseType {
-    if (res.body) {
-      res.body.dateNaiss = res.body.dateNaiss ? dayjs(res.body.dateNaiss) : undefined;
-    }
-    return res;
-  }
-
-  protected convertDateArrayFromServer(res: EntityArrayResponseType): EntityArrayResponseType {
-    if (res.body) {
-      res.body.forEach((demandeur: IDemandeur) => {
-        demandeur.dateNaiss = demandeur.dateNaiss ? dayjs(demandeur.dateNaiss) : undefined;
-      });
-    }
-    return res;
+  protected convertResponseArrayFromServer(res: HttpResponse<RestDemandeur[]>): HttpResponse<IDemandeur[]> {
+    return res.clone({
+      body: res.body ? res.body.map(item => this.convertDateFromServer(item)) : null,
+    });
   }
 }

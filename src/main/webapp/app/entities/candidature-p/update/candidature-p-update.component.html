@@ -4,21 +4,23 @@
       <h2
         id="jhi-candidature-p-heading"
         data-cy="CandidaturePCreateUpdateHeading"
-        style="text-align: center; font-style: italic; font-weight: bold"
+        jhiTranslate="jhipsterProjectBaseJwtApp.candidatureP.home.createOrEditLabel"
       >
-        Créer une nouvelle candidature
+        Créer ou éditer un Candidature P
       </h2>
 
       <div>
         <jhi-alert-error></jhi-alert-error>
 
-        <div class="row mb-3" [hidden]="editForm.get('id')!.value == null">
-          <label class="form-label" for="field_id">ID</label>
+        <div class="mb-3" *ngIf="editForm.controls.id.value !== null">
+          <label class="form-label" jhiTranslate="global.field.id" for="field_id">ID</label>
           <input type="number" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
         </div>
 
-        <div class="row mb-3">
-          <label class="form-label" for="field_offreFormation">Offre Formation en:</label>
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="jhipsterProjectBaseJwtApp.candidatureP.offreFormation" for="field_offreFormation"
+            >Offre Formation</label
+          >
           <select
             class="form-control"
             name="offreFormation"
@@ -31,8 +33,10 @@
           </select>
         </div>
 
-        <div class="row mb-3">
-          <label class="form-label" for="field_dateDebutOffre">Date Debut Offre</label>
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="jhipsterProjectBaseJwtApp.candidatureP.dateDebutOffre" for="field_dateDebutOffre"
+            >Date Debut Offre</label
+          >
           <div class="input-group">
             <input
               id="field_dateDebutOffre"
@@ -50,8 +54,10 @@
           </div>
         </div>
 
-        <div class="row mb-3">
-          <label class="form-label" for="field_dateFinOffre">Date Fin Offre</label>
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="jhipsterProjectBaseJwtApp.candidatureP.dateFinOffre" for="field_dateFinOffre"
+            >Date Fin Offre</label
+          >
           <div class="input-group">
             <input
               id="field_dateFinOffre"
@@ -69,8 +75,8 @@
           </div>
         </div>
 
-        <div class="row mb-3">
-          <label class="form-label" for="field_dateDepot">Date de dépot</label>
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="jhipsterProjectBaseJwtApp.candidatureP.dateDepot" for="field_dateDepot">Date Depot</label>
           <div class="input-group">
             <input
               id="field_dateDepot"
@@ -86,81 +92,66 @@
           </div>
         </div>
 
-        <div class="row mb-3">
-          <label class="form-label" for="field_resultat">Resultat</label>
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="jhipsterProjectBaseJwtApp.candidatureP.resultat" for="field_resultat">Resultat</label>
           <select class="form-control" name="resultat" formControlName="resultat" id="field_resultat" data-cy="resultat">
-            <option [ngValue]=""></option>
-            <option value="SOUMIS">Soumis</option>
-            <option *jhiHasAnyAuthority="'ROLE_ADMIN'" value="ACCORD">Accord</option>
-            <option *jhiHasAnyAuthority="'ROLE_ADMIN'" value="REJET">Rejet</option>
-            <!-- <option *ngFor="let resultat of resultatValues" [value]="resultat">{{resultat}}</option> -->
+            <option [ngValue]="null"></option>
+            <option *ngFor="let resultat of resultatValues" [value]="resultat">{{ resultat }}</option>
           </select>
         </div>
 
-        <div *jhiHasAnyAuthority="'ROLE_ADMIN'" class="row mb-3">
-          <label class="form-label" for="field_professionnel">Professionnel</label>
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="jhipsterProjectBaseJwtApp.candidatureP.professionnel" for="field_professionnel"
+            >Professionnel</label
+          >
           <select
             class="form-control"
             id="field_professionnel"
             data-cy="professionnel"
             name="professionnel"
             formControlName="professionnel"
+            [compareWith]="compareProfessionnel"
           >
             <option [ngValue]="null"></option>
-            <option
-              [ngValue]="
-                professionnelOption.id === editForm.get('professionnel')!.value?.id
-                  ? editForm.get('professionnel')!.value
-                  : professionnelOption
-              "
-              *ngFor="let professionnelOption of professionnelsSharedCollection; trackBy: trackProfessionnelById"
-            >
+            <option [ngValue]="professionnelOption" *ngFor="let professionnelOption of professionnelsSharedCollection">
               {{ professionnelOption.profession }}
             </option>
           </select>
         </div>
 
-        <div class="row mb-3">
-          <label class="form-label" for="field_formationContinue">Formation Choisie</label>
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="jhipsterProjectBaseJwtApp.candidatureP.formationContinue" for="field_formationContinue"
+            >Formation Continue</label
+          >
           <select
             class="form-control"
             id="field_formationContinue"
             data-cy="formationContinue"
             name="formationContinue"
             formControlName="formationContinue"
+            [compareWith]="compareFormationContinue"
           >
             <option [ngValue]="null"></option>
-            <option
-              [ngValue]="
-                formationContinueOption.id === editForm.get('formationContinue')!.value?.id
-                  ? editForm.get('formationContinue')!.value
-                  : formationContinueOption
-              "
-              *ngFor="let formationContinueOption of formationContinuesSharedCollection; trackBy: trackFormationContinueById"
-            >
+            <option [ngValue]="formationContinueOption" *ngFor="let formationContinueOption of formationContinuesSharedCollection">
               {{ formationContinueOption.nomFormationC }}
             </option>
           </select>
         </div>
 
-        <div class="row mb-3">
-          <label class="form-label" for="field_etablissement">Etablissement souhaité</label>
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="jhipsterProjectBaseJwtApp.candidatureP.etablissement" for="field_etablissement"
+            >Etablissement</label
+          >
           <select
             class="form-control"
             id="field_etablissement"
             data-cy="etablissement"
             name="etablissement"
             formControlName="etablissement"
+            [compareWith]="compareEtablissement"
           >
             <option [ngValue]="null"></option>
-            <option
-              [ngValue]="
-                etablissementOption.id === editForm.get('etablissement')!.value?.id
-                  ? editForm.get('etablissement')!.value
-                  : etablissementOption
-              "
-              *ngFor="let etablissementOption of etablissementsSharedCollection; trackBy: trackEtablissementById"
-            >
+            <option [ngValue]="etablissementOption" *ngFor="let etablissementOption of etablissementsSharedCollection">
               {{ etablissementOption.nomEtablissement }}
             </option>
           </select>
@@ -169,7 +160,7 @@
 
       <div>
         <button type="button" id="cancel-save" data-cy="entityCreateCancelButton" class="btn btn-secondary" (click)="previousState()">
-          <fa-icon icon="ban"></fa-icon>&nbsp;<span>Annuler</span>
+          <fa-icon icon="ban"></fa-icon>&nbsp;<span jhiTranslate="entity.action.cancel">Annuler</span>
         </button>
 
         <button
@@ -179,7 +170,7 @@
           [disabled]="editForm.invalid || isSaving"
           class="btn btn-primary"
         >
-          <fa-icon icon="save"></fa-icon>&nbsp;<span>Sauvegarder</span>
+          <fa-icon icon="save"></fa-icon>&nbsp;<span jhiTranslate="entity.action.save">Sauvegarder</span>
         </button>
       </div>
     </form>

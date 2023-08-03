@@ -36,6 +36,12 @@ public class ServiceMFPAIServiceImpl implements ServiceMFPAIService {
     }
 
     @Override
+    public ServiceMFPAI update(ServiceMFPAI serviceMFPAI) {
+        log.debug("Request to update ServiceMFPAI : {}", serviceMFPAI);
+        return serviceMFPAIRepository.save(serviceMFPAI);
+    }
+
+    @Override
     public Optional<ServiceMFPAI> partialUpdate(ServiceMFPAI serviceMFPAI) {
         log.debug("Request to partially update ServiceMFPAI : {}", serviceMFPAI);
 
@@ -80,7 +86,7 @@ public class ServiceMFPAIServiceImpl implements ServiceMFPAIService {
         return StreamSupport
             .stream(serviceMFPAIRepository.findAll().spliterator(), false)
             .filter(serviceMFPAI -> serviceMFPAI.getAgent() == null)
-            .collect(Collectors.toList());
+            .toList();
     }
 
     @Override

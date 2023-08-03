@@ -5,10 +5,10 @@ import static org.hamcrest.Matchers.hasItem;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import jakarta.persistence.EntityManager;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicLong;
-import javax.persistence.EntityManager;
 import mfpai.gouv.sn.IntegrationTest;
 import mfpai.gouv.sn.domain.ServiceMFPAI;
 import mfpai.gouv.sn.repository.ServiceMFPAIRepository;
@@ -200,14 +200,14 @@ class ServiceMFPAIResourceIT {
 
     @Test
     @Transactional
-    void putNewServiceMFPAI() throws Exception {
+    void putExistingServiceMFPAI() throws Exception {
         // Initialize the database
         serviceMFPAIRepository.saveAndFlush(serviceMFPAI);
 
         int databaseSizeBeforeUpdate = serviceMFPAIRepository.findAll().size();
 
         // Update the serviceMFPAI
-        ServiceMFPAI updatedServiceMFPAI = serviceMFPAIRepository.findById(serviceMFPAI.getId()).get();
+        ServiceMFPAI updatedServiceMFPAI = serviceMFPAIRepository.findById(serviceMFPAI.getId()).orElseThrow();
         // Disconnect from session so that the updates on updatedServiceMFPAI are not directly saved in db
         em.detach(updatedServiceMFPAI);
         updatedServiceMFPAI
@@ -304,11 +304,7 @@ class ServiceMFPAIResourceIT {
         ServiceMFPAI partialUpdatedServiceMFPAI = new ServiceMFPAI();
         partialUpdatedServiceMFPAI.setId(serviceMFPAI.getId());
 
-        partialUpdatedServiceMFPAI
-            .imageService(UPDATED_IMAGE_SERVICE)
-            .imageServiceContentType(UPDATED_IMAGE_SERVICE_CONTENT_TYPE)
-            .nomService(UPDATED_NOM_SERVICE)
-            .chefService(UPDATED_CHEF_SERVICE);
+        partialUpdatedServiceMFPAI.imageService(UPDATED_IMAGE_SERVICE).imageServiceContentType(UPDATED_IMAGE_SERVICE_CONTENT_TYPE);
 
         restServiceMFPAIMockMvc
             .perform(
@@ -324,8 +320,8 @@ class ServiceMFPAIResourceIT {
         ServiceMFPAI testServiceMFPAI = serviceMFPAIList.get(serviceMFPAIList.size() - 1);
         assertThat(testServiceMFPAI.getImageService()).isEqualTo(UPDATED_IMAGE_SERVICE);
         assertThat(testServiceMFPAI.getImageServiceContentType()).isEqualTo(UPDATED_IMAGE_SERVICE_CONTENT_TYPE);
-        assertThat(testServiceMFPAI.getNomService()).isEqualTo(UPDATED_NOM_SERVICE);
-        assertThat(testServiceMFPAI.getChefService()).isEqualTo(UPDATED_CHEF_SERVICE);
+        assertThat(testServiceMFPAI.getNomService()).isEqualTo(DEFAULT_NOM_SERVICE);
+        assertThat(testServiceMFPAI.getChefService()).isEqualTo(DEFAULT_CHEF_SERVICE);
         assertThat(testServiceMFPAI.getDescription()).isEqualTo(DEFAULT_DESCRIPTION);
     }
 

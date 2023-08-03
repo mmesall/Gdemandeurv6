@@ -36,6 +36,12 @@ public class DossierServiceImpl implements DossierService {
     }
 
     @Override
+    public Dossier update(Dossier dossier) {
+        log.debug("Request to update Dossier : {}", dossier);
+        return dossierRepository.save(dossier);
+    }
+
+    @Override
     public Optional<Dossier> partialUpdate(Dossier dossier) {
         log.debug("Request to partially update Dossier : {}", dossier);
 
@@ -44,9 +50,6 @@ public class DossierServiceImpl implements DossierService {
             .map(existingDossier -> {
                 if (dossier.getNumDossier() != null) {
                     existingDossier.setNumDossier(dossier.getNumDossier());
-                }
-                if (dossier.getDateNaiss() != null) {
-                    existingDossier.setDateNaiss(dossier.getDateNaiss());
                 }
                 if (dossier.getPrenom() != null) {
                     existingDossier.setPrenom(dossier.getPrenom());
@@ -57,14 +60,17 @@ public class DossierServiceImpl implements DossierService {
                 if (dossier.getNomUtilisateur() != null) {
                     existingDossier.setNomUtilisateur(dossier.getNomUtilisateur());
                 }
+                if (dossier.getDateNaiss() != null) {
+                    existingDossier.setDateNaiss(dossier.getDateNaiss());
+                }
+                if (dossier.getLieuNaiss() != null) {
+                    existingDossier.setLieuNaiss(dossier.getLieuNaiss());
+                }
                 if (dossier.getRegionNaiss() != null) {
                     existingDossier.setRegionNaiss(dossier.getRegionNaiss());
                 }
                 if (dossier.getDepartementNaiss() != null) {
                     existingDossier.setDepartementNaiss(dossier.getDepartementNaiss());
-                }
-                if (dossier.getLieuNaiss() != null) {
-                    existingDossier.setLieuNaiss(dossier.getLieuNaiss());
                 }
                 if (dossier.getTypePiece() != null) {
                     existingDossier.setTypePiece(dossier.getTypePiece());
@@ -96,14 +102,23 @@ public class DossierServiceImpl implements DossierService {
                 if (dossier.getNiveauFormation() != null) {
                     existingDossier.setNiveauFormation(dossier.getNiveauFormation());
                 }
-                if (dossier.getSpecialite1() != null) {
-                    existingDossier.setSpecialite1(dossier.getSpecialite1());
+                if (dossier.getSpecialite() != null) {
+                    existingDossier.setSpecialite(dossier.getSpecialite());
                 }
-                if (dossier.getSpecialite2() != null) {
-                    existingDossier.setSpecialite2(dossier.getSpecialite2());
+                if (dossier.getIntituleDiplome() != null) {
+                    existingDossier.setIntituleDiplome(dossier.getIntituleDiplome());
                 }
-                if (dossier.getDiplomeRequis() != null) {
-                    existingDossier.setDiplomeRequis(dossier.getDiplomeRequis());
+                if (dossier.getDiplome() != null) {
+                    existingDossier.setDiplome(dossier.getDiplome());
+                }
+                if (dossier.getDiplomeContentType() != null) {
+                    existingDossier.setDiplomeContentType(dossier.getDiplomeContentType());
+                }
+                if (dossier.getAnneeObtention() != null) {
+                    existingDossier.setAnneeObtention(dossier.getAnneeObtention());
+                }
+                if (dossier.getLieuObtention() != null) {
+                    existingDossier.setLieuObtention(dossier.getLieuObtention());
                 }
                 if (dossier.getCv() != null) {
                     existingDossier.setCv(dossier.getCv());
@@ -114,8 +129,38 @@ public class DossierServiceImpl implements DossierService {
                 if (dossier.getLettreMotivation() != null) {
                     existingDossier.setLettreMotivation(dossier.getLettreMotivation());
                 }
+                if (dossier.getLettreMotivationContentType() != null) {
+                    existingDossier.setLettreMotivationContentType(dossier.getLettreMotivationContentType());
+                }
                 if (dossier.getProfession() != null) {
                     existingDossier.setProfession(dossier.getProfession());
+                }
+                if (dossier.getAutreSpecialite() != null) {
+                    existingDossier.setAutreSpecialite(dossier.getAutreSpecialite());
+                }
+                if (dossier.getNomCompetence() != null) {
+                    existingDossier.setNomCompetence(dossier.getNomCompetence());
+                }
+                if (dossier.getNiveauCompetence() != null) {
+                    existingDossier.setNiveauCompetence(dossier.getNiveauCompetence());
+                }
+                if (dossier.getIntituleExperience() != null) {
+                    existingDossier.setIntituleExperience(dossier.getIntituleExperience());
+                }
+                if (dossier.getPosteOccupe() != null) {
+                    existingDossier.setPosteOccupe(dossier.getPosteOccupe());
+                }
+                if (dossier.getDateDebut() != null) {
+                    existingDossier.setDateDebut(dossier.getDateDebut());
+                }
+                if (dossier.getDateFin() != null) {
+                    existingDossier.setDateFin(dossier.getDateFin());
+                }
+                if (dossier.getNomEntreprise() != null) {
+                    existingDossier.setNomEntreprise(dossier.getNomEntreprise());
+                }
+                if (dossier.getMission() != null) {
+                    existingDossier.setMission(dossier.getMission());
                 }
 
                 return existingDossier;
@@ -144,7 +189,7 @@ public class DossierServiceImpl implements DossierService {
         return StreamSupport
             .stream(dossierRepository.findAll().spliterator(), false)
             .filter(dossier -> dossier.getDemandeur() == null)
-            .collect(Collectors.toList());
+            .toList();
     }
 
     @Override

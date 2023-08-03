@@ -93,7 +93,7 @@ public class CandidatureEResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        CandidatureE result = candidatureEService.save(candidatureE);
+        CandidatureE result = candidatureEService.update(candidatureE);
         return ResponseEntity
             .ok()
             .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, candidatureE.getId().toString()))
@@ -145,8 +145,8 @@ public class CandidatureEResource {
      */
     @GetMapping("/candidature-es")
     public ResponseEntity<List<CandidatureE>> getAllCandidatureES(
-        @org.springdoc.api.annotations.ParameterObject Pageable pageable,
-        @RequestParam(required = false, defaultValue = "true") boolean eagerload
+        @org.springdoc.core.annotations.ParameterObject Pageable pageable,
+        @RequestParam(required = false, defaultValue = "false") boolean eagerload
     ) {
         log.debug("REST request to get a page of CandidatureES");
         Page<CandidatureE> page;

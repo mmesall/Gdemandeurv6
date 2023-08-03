@@ -18,6 +18,14 @@ public interface DiplomeService {
     Diplome save(Diplome diplome);
 
     /**
+     * Updates a diplome.
+     *
+     * @param diplome the entity to update.
+     * @return the persisted entity.
+     */
+    Diplome update(Diplome diplome);
+
+    /**
      * Partially updates a diplome.
      *
      * @param diplome the entity to update partially.

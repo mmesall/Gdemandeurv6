@@ -10,51 +10,25 @@ import { LYCEE } from 'app/entities/enumerations/lycee.model';
 import { DiplomeObtenu } from 'app/entities/enumerations/diplome-obtenu.model';
 
 export interface IFormationInitiale {
-  id?: number;
+  id: number;
   nomFormationI?: string | null;
   duree?: string | null;
-  admission?: Admission | null;
-  diplomeRequis?: DiplomeRequis | null;
-  niveauEtude?: NiveauEtude | null;
-  ficheFormationContentType?: string | null;
+  admission?: keyof typeof Admission | null;
+  diplomeRequis?: keyof typeof DiplomeRequis | null;
+  niveauEtude?: keyof typeof NiveauEtude | null;
   ficheFormation?: string | null;
-  filiere?: NomFiliere | null;
-  serie?: NomSerie | null;
-  cfp?: CFP | null;
-  lycee?: LYCEE | null;
+  ficheFormationContentType?: string | null;
+  filiere?: keyof typeof NomFiliere | null;
+  serie?: keyof typeof NomSerie | null;
+  cfp?: keyof typeof CFP | null;
+  lycee?: keyof typeof LYCEE | null;
   nomConcours?: string | null;
   dateOuverture?: dayjs.Dayjs | null;
   dateCloture?: dayjs.Dayjs | null;
   dateConcours?: dayjs.Dayjs | null;
-  nomDiplome?: DiplomeObtenu | null;
+  nomDiplome?: keyof typeof DiplomeObtenu | null;
   nomDebouche?: string | null;
-  formation?: IFormation | null;
+  formation?: Pick<IFormation, 'id'> | null;
 }
 
-export class FormationInitiale implements IFormationInitiale {
-  constructor(
-    public id?: number,
-    public nomFormationI?: string | null,
-    public duree?: string | null,
-    public admission?: Admission | null,
-    public diplomeRequis?: DiplomeRequis | null,
-    public niveauEtude?: NiveauEtude | null,
-    public ficheFormationContentType?: string | null,
-    public ficheFormation?: string | null,
-    public filiere?: NomFiliere | null,
-    public serie?: NomSerie | null,
-    public cfp?: CFP | null,
-    public lycee?: LYCEE | null,
-    public nomConcours?: string | null,
-    public dateOuverture?: dayjs.Dayjs | null,
-    public dateCloture?: dayjs.Dayjs | null,
-    public dateConcours?: dayjs.Dayjs | null,
-    public nomDiplome?: DiplomeObtenu | null,
-    public nomDebouche?: string | null,
-    public formation?: IFormation | null
-  ) {}
-}
-
-export function getFormationInitialeIdentifier(formationInitiale: IFormationInitiale): number | undefined {
-  return formationInitiale.id;
-}
+export type NewFormationInitiale = Omit<IFormationInitiale, 'id'> & { id: null };

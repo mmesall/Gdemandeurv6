@@ -18,8 +18,7 @@ describe('Etudiant Management Delete Component', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
-      declarations: [EtudiantDeleteDialogComponent],
+      imports: [HttpClientTestingModule, EtudiantDeleteDialogComponent],
       providers: [NgbActiveModal],
     })
       .overrideTemplate(EtudiantDeleteDialogComponent, '')

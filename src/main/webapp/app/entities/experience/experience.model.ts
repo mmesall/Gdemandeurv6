@@ -5,33 +5,16 @@ import { IProfessionnel } from 'app/entities/professionnel/professionnel.model';
 import { IDemandeur } from 'app/entities/demandeur/demandeur.model';
 
 export interface IExperience {
-  id?: number;
-  dateDebut?: dayjs.Dayjs;
-  dateFin?: dayjs.Dayjs;
-  nomEntreprise?: string;
-  posteOccupe?: string;
+  id: number;
+  dateDebut?: dayjs.Dayjs | null;
+  dateFin?: dayjs.Dayjs | null;
+  nomEntreprise?: string | null;
+  posteOccupe?: string | null;
   mission?: string | null;
-  eleve?: IEleve | null;
-  etudiant?: IEtudiant | null;
-  professionnel?: IProfessionnel | null;
-  demandeur?: IDemandeur | null;
+  eleve?: Pick<IEleve, 'id' | 'niveauEtude'> | null;
+  etudiant?: Pick<IEtudiant, 'id' | 'carteEtudiant'> | null;
+  professionnel?: Pick<IProfessionnel, 'id' | 'profession'> | null;
+  demandeur?: Pick<IDemandeur, 'id' | 'profil'> | null;
 }
 
-export class Experience implements IExperience {
-  constructor(
-    public id?: number,
-    public dateDebut?: dayjs.Dayjs,
-    public dateFin?: dayjs.Dayjs,
-    public nomEntreprise?: string,
-    public posteOccupe?: string,
-    public mission?: string | null,
-    public eleve?: IEleve | null,
-    public etudiant?: IEtudiant | null,
-    public professionnel?: IProfessionnel | null,
-    public demandeur?: IDemandeur | null
-  ) {}
-}
-
-export function getExperienceIdentifier(experience: IExperience): number | undefined {
-  return experience.id;
-}
+export type NewExperience = Omit<IExperience, 'id'> & { id: null };

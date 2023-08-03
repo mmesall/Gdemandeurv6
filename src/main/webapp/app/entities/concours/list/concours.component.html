@@ -1,11 +1,11 @@
 <div>
-  <h2 id="page-heading" data-cy="ConcoursHeading" style="text-align: center; font-style: italic; font-weight: bold">
-    <span>Concours de formations professionnelles et techniques</span>
+  <h2 id="page-heading" data-cy="ConcoursHeading">
+    <span jhiTranslate="jhipsterProjectBaseJwtApp.concours.home.title">Concours</span>
 
-    <div *jhiHasAnyAuthority="'ROLE_ADMIN'" class="d-flex justify-content-end">
-      <button class="btn btn-info me-2" (click)="reset()" [disabled]="isLoading">
+    <div class="d-flex justify-content-end">
+      <button class="btn btn-info me-2" (click)="load()" [disabled]="isLoading">
         <fa-icon icon="sync" [spin]="isLoading"></fa-icon>
-        <span>Refresh List</span>
+        <span jhiTranslate="jhipsterProjectBaseJwtApp.concours.home.refreshListLabel">Actualiser la liste</span>
       </button>
 
       <button
@@ -15,7 +15,7 @@
         [routerLink]="['/concours/new']"
       >
         <fa-icon icon="plus"></fa-icon>
-        <span> Creer un nouveau concours </span>
+        <span jhiTranslate="jhipsterProjectBaseJwtApp.concours.home.createLabel"> Créer un nouveau Concours </span>
       </button>
     </div>
   </h2>
@@ -25,33 +25,85 @@
   <jhi-alert></jhi-alert>
 
   <div class="alert alert-warning" id="no-result" *ngIf="concours?.length === 0">
-    <span>Aucun concours disponiple</span>
+    <span jhiTranslate="jhipsterProjectBaseJwtApp.concours.home.notFound">Aucun Concours trouvé</span>
   </div>
 
-  <div class="table-responsive" id="entities" *ngIf="concours && concours.length > 0">
+  <div class="table-responsive table-entities" id="entities" *ngIf="concours && concours.length > 0">
     <table class="table table-striped" aria-describedby="page-heading">
       <thead>
-        <tr jhiSort [(predicate)]="predicate" [(ascending)]="ascending" (sortChange)="reset()">
-          <th *jhiHasAnyAuthority="'ROLE_ADMIN'" scope="col" jhiSortBy="id"><span>ID</span> <fa-icon icon="sort"></fa-icon></th>
-          <th scope="col" jhiSortBy="nomConcours"><span>Nom Concours</span> <fa-icon icon="sort"></fa-icon></th>
-          <th scope="col" jhiSortBy="nomEtablissement"><span>Nom Etablissement</span> <fa-icon icon="sort"></fa-icon></th>
-          <th scope="col" jhiSortBy="niveauEtude"><span>Niveau Etude</span> <fa-icon icon="sort"></fa-icon></th>
-          <th scope="col" jhiSortBy="dateOuverture"><span>Date Ouverture</span> <fa-icon icon="sort"></fa-icon></th>
-          <th scope="col" jhiSortBy="dateCloture"><span>Date Cloture</span> <fa-icon icon="sort"></fa-icon></th>
-          <th scope="col" jhiSortBy="dateConcours"><span>Date Concours</span> <fa-icon icon="sort"></fa-icon></th>
-          <th scope="col" jhiSortBy="affiche"><span>Affiche</span> <fa-icon icon="sort"></fa-icon></th>
-          <th scope="col" jhiSortBy="formation.nomFormation"><span>Formation</span> <fa-icon icon="sort"></fa-icon></th>
+        <tr jhiSort [(predicate)]="predicate" [(ascending)]="ascending" (sortChange)="navigateToWithComponentValues()">
+          <th scope="col" jhiSortBy="id">
+            <div class="d-flex">
+              <span jhiTranslate="global.field.id">ID</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="nomConcours">
+            <div class="d-flex">
+              <span jhiTranslate="jhipsterProjectBaseJwtApp.concours.nomConcours">Nom Concours</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="nomEtablissement">
+            <div class="d-flex">
+              <span jhiTranslate="jhipsterProjectBaseJwtApp.concours.nomEtablissement">Nom Etablissement</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="niveauEtude">
+            <div class="d-flex">
+              <span jhiTranslate="jhipsterProjectBaseJwtApp.concours.niveauEtude">Niveau Etude</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="dateOuverture">
+            <div class="d-flex">
+              <span jhiTranslate="jhipsterProjectBaseJwtApp.concours.dateOuverture">Date Ouverture</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="dateCloture">
+            <div class="d-flex">
+              <span jhiTranslate="jhipsterProjectBaseJwtApp.concours.dateCloture">Date Cloture</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="dateConcours">
+            <div class="d-flex">
+              <span jhiTranslate="jhipsterProjectBaseJwtApp.concours.dateConcours">Date Concours</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="affiche">
+            <div class="d-flex">
+              <span jhiTranslate="jhipsterProjectBaseJwtApp.concours.affiche">Affiche</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="formation.nomFormation">
+            <div class="d-flex">
+              <span jhiTranslate="jhipsterProjectBaseJwtApp.concours.formation">Formation</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
           <th scope="col"></th>
         </tr>
       </thead>
-      <tbody infinite-scroll (scrolled)="loadPage(page + 1)" [infiniteScrollDisabled]="page >= links['last']" [infiniteScrollDistance]="0">
+      <tbody
+        infinite-scroll
+        (scrolled)="loadPage(page + 1)"
+        [infiniteScrollDisabled]="page - 1 >= links['last']"
+        [infiniteScrollDistance]="0"
+      >
         <tr *ngFor="let concours of concours; trackBy: trackId" data-cy="entityTable">
-          <td *jhiHasAnyAuthority="'ROLE_ADMIN'">
+          <td>
             <a [routerLink]="['/concours', concours.id, 'view']">{{ concours.id }}</a>
           </td>
           <td>{{ concours.nomConcours }}</td>
-          <td>{{ concours.nomEtablissement }}</td>
-          <td>{{ concours.niveauEtude }}</td>
+          <td jhiTranslate="{{ 'jhipsterProjectBaseJwtApp.NomEtablissement.' + concours.nomEtablissement }}">
+            {{ concours.nomEtablissement }}
+          </td>
+          <td jhiTranslate="{{ 'jhipsterProjectBaseJwtApp.NiveauEtude.' + concours.niveauEtude }}">{{ concours.niveauEtude }}</td>
           <td>{{ concours.dateOuverture | formatMediumDate }}</td>
           <td>{{ concours.dateCloture | formatMediumDate }}</td>
           <td>{{ concours.dateConcours | formatMediumDate }}</td>
@@ -67,7 +119,7 @@
           </td>
           <td>
             <div *ngIf="concours.formation">
-              <a [routerLink]="['/formation', concours.formation?.id, 'view']">{{ concours.formation?.nomFormation }}</a>
+              <a [routerLink]="['/formation', concours.formation.id, 'view']">{{ concours.formation.nomFormation }}</a>
             </div>
           </td>
           <td class="text-end">
@@ -79,29 +131,22 @@
                 data-cy="entityDetailsButton"
               >
                 <fa-icon icon="eye"></fa-icon>
-                <!-- <span class="d-none d-md-inline">View</span> -->
+                <span class="d-none d-md-inline" jhiTranslate="entity.action.view">Voir</span>
               </button>
 
               <button
-                *jhiHasAnyAuthority="'ROLE_ADMIN'"
                 type="submit"
                 [routerLink]="['/concours', concours.id, 'edit']"
                 class="btn btn-primary btn-sm"
                 data-cy="entityEditButton"
               >
                 <fa-icon icon="pencil-alt"></fa-icon>
-                <!-- <span class="d-none d-md-inline">Edit</span> -->
+                <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Editer</span>
               </button>
 
-              <button
-                *jhiHasAnyAuthority="'ROLE_ADMIN'"
-                type="submit"
-                (click)="delete(concours)"
-                class="btn btn-danger btn-sm"
-                data-cy="entityDeleteButton"
-              >
+              <button type="submit" (click)="delete(concours)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
                 <fa-icon icon="times"></fa-icon>
-                <!-- <span class="d-none d-md-inline">Delete</span> -->
+                <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Supprimer</span>
               </button>
             </div>
           </td>

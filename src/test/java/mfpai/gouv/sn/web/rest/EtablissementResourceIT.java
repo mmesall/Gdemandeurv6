@@ -5,10 +5,10 @@ import static org.hamcrest.Matchers.hasItem;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import jakarta.persistence.EntityManager;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicLong;
-import javax.persistence.EntityManager;
 import mfpai.gouv.sn.IntegrationTest;
 import mfpai.gouv.sn.domain.Etablissement;
 import mfpai.gouv.sn.domain.Formation;
@@ -368,14 +368,14 @@ class EtablissementResourceIT {
 
     @Test
     @Transactional
-    void putNewEtablissement() throws Exception {
+    void putExistingEtablissement() throws Exception {
         // Initialize the database
         etablissementRepository.saveAndFlush(etablissement);
 
         int databaseSizeBeforeUpdate = etablissementRepository.findAll().size();
 
         // Update the etablissement
-        Etablissement updatedEtablissement = etablissementRepository.findById(etablissement.getId()).get();
+        Etablissement updatedEtablissement = etablissementRepository.findById(etablissement.getId()).orElseThrow();
         // Disconnect from session so that the updates on updatedEtablissement are not directly saved in db
         em.detach(updatedEtablissement);
         updatedEtablissement
@@ -499,13 +499,15 @@ class EtablissementResourceIT {
         partialUpdatedEtablissement.setId(etablissement.getId());
 
         partialUpdatedEtablissement
-            .photo(UPDATED_PHOTO)
-            .photoContentType(UPDATED_PHOTO_CONTENT_TYPE)
+            .nomEtablissement(UPDATED_NOM_ETABLISSEMENT)
+            .departement(UPDATED_DEPARTEMENT)
             .email(UPDATED_EMAIL)
-            .telephone(UPDATED_TELEPHONE)
             .typeEtablissement(UPDATED_TYPE_ETABLISSEMENT)
+            .autreRegion(UPDATED_AUTRE_REGION)
             .autreDepartement(UPDATED_AUTRE_DEPARTEMENT)
-            .serie(UPDATED_SERIE)
+            .cfp(UPDATED_CFP)
+            .filiere(UPDATED_FILIERE)
+            .autreFiliere(UPDATED_AUTRE_FILIERE)
             .autreSerie(UPDATED_AUTRE_SERIE);
 
         restEtablissementMockMvc
@@ -520,22 +522,22 @@ class EtablissementResourceIT {
         List<Etablissement> etablissementList = etablissementRepository.findAll();
         assertThat(etablissementList).hasSize(databaseSizeBeforeUpdate);
         Etablissement testEtablissement = etablissementList.get(etablissementList.size() - 1);
-        assertThat(testEtablissement.getNomEtablissement()).isEqualTo(DEFAULT_NOM_ETABLISSEMENT);
-        assertThat(testEtablissement.getPhoto()).isEqualTo(UPDATED_PHOTO);
-        assertThat(testEtablissement.getPhotoContentType()).isEqualTo(UPDATED_PHOTO_CONTENT_TYPE);
+        assertThat(testEtablissement.getNomEtablissement()).isEqualTo(UPDATED_NOM_ETABLISSEMENT);
+        assertThat(testEtablissement.getPhoto()).isEqualTo(DEFAULT_PHOTO);
+        assertThat(testEtablissement.getPhotoContentType()).isEqualTo(DEFAULT_PHOTO_CONTENT_TYPE);
         assertThat(testEtablissement.getRegion()).isEqualTo(DEFAULT_REGION);
-        assertThat(testEtablissement.getDepartement()).isEqualTo(DEFAULT_DEPARTEMENT);
+        assertThat(testEtablissement.getDepartement()).isEqualTo(UPDATED_DEPARTEMENT);
         assertThat(testEtablissement.getEmail()).isEqualTo(UPDATED_EMAIL);
-        assertThat(testEtablissement.getTelephone()).isEqualTo(UPDATED_TELEPHONE);
+        assertThat(testEtablissement.getTelephone()).isEqualTo(DEFAULT_TELEPHONE);
         assertThat(testEtablissement.getTypeEtablissement()).isEqualTo(UPDATED_TYPE_ETABLISSEMENT);
         assertThat(testEtablissement.getStatut()).isEqualTo(DEFAULT_STATUT);
-        assertThat(testEtablissement.getAutreRegion()).isEqualTo(DEFAULT_AUTRE_REGION);
+        assertThat(testEtablissement.getAutreRegion()).isEqualTo(UPDATED_AUTRE_REGION);
         assertThat(testEtablissement.getAutreDepartement()).isEqualTo(UPDATED_AUTRE_DEPARTEMENT);
-        assertThat(testEtablissement.getCfp()).isEqualTo(DEFAULT_CFP);
+        assertThat(testEtablissement.getCfp()).isEqualTo(UPDATED_CFP);
         assertThat(testEtablissement.getLycee()).isEqualTo(DEFAULT_LYCEE);
-        assertThat(testEtablissement.getFiliere()).isEqualTo(DEFAULT_FILIERE);
-        assertThat(testEtablissement.getSerie()).isEqualTo(UPDATED_SERIE);
-        assertThat(testEtablissement.getAutreFiliere()).isEqualTo(DEFAULT_AUTRE_FILIERE);
+        assertThat(testEtablissement.getFiliere()).isEqualTo(UPDATED_FILIERE);
+        assertThat(testEtablissement.getSerie()).isEqualTo(DEFAULT_SERIE);
+        assertThat(testEtablissement.getAutreFiliere()).isEqualTo(UPDATED_AUTRE_FILIERE);
         assertThat(testEtablissement.getAutreSerie()).isEqualTo(UPDATED_AUTRE_SERIE);
         assertThat(testEtablissement.getAutreNomEtablissement()).isEqualTo(DEFAULT_AUTRE_NOM_ETABLISSEMENT);
     }

@@ -6,8 +6,9 @@ import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of, Subject, from } from 'rxjs';
 
+import { DiplomeFormService } from './diplome-form.service';
 import { DiplomeService } from '../service/diplome.service';
-import { IDiplome, Diplome } from '../diplome.model';
+import { IDiplome } from '../diplome.model';
 import { IEleve } from 'app/entities/eleve/eleve.model';
 import { EleveService } from 'app/entities/eleve/service/eleve.service';
 import { IEtudiant } from 'app/entities/etudiant/etudiant.model';
@@ -23,6 +24,7 @@ describe('Diplome Management Update Component', () => {
   let comp: DiplomeUpdateComponent;
   let fixture: ComponentFixture<DiplomeUpdateComponent>;
   let activatedRoute: ActivatedRoute;
+  let diplomeFormService: DiplomeFormService;
   let diplomeService: DiplomeService;
   let eleveService: EleveService;
   let etudiantService: EtudiantService;
@@ -31,8 +33,7 @@ describe('Diplome Management Update Component', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule, RouterTestingModule.withRoutes([])],
-      declarations: [DiplomeUpdateComponent],
+      imports: [HttpClientTestingModule, RouterTestingModule.withRoutes([]), DiplomeUpdateComponent],
       providers: [
         FormBuilder,
         {
@@ -48,6 +49,7 @@ describe('Diplome Management Update Component', () => {
 
     fixture = TestBed.createComponent(DiplomeUpdateComponent);
     activatedRoute = TestBed.inject(ActivatedRoute);
+    diplomeFormService = TestBed.inject(DiplomeFormService);
     diplomeService = TestBed.inject(DiplomeService);
     eleveService = TestBed.inject(EleveService);
     etudiantService = TestBed.inject(EtudiantService);
@@ -60,10 +62,10 @@ describe('Diplome Management Update Component', () => {
   describe('ngOnInit', () => {
     it('Should call Eleve query and add missing value', () => {
       const diplome: IDiplome = { id: 456 };
-      const eleve: IEleve = { id: 78654 };
+      const eleve: IEleve = { id: 13808 };
       diplome.eleve = eleve;
 
-      const eleveCollection: IEleve[] = [{ id: 92865 }];
+      const eleveCollection: IEleve[] = [{ id: 16161 }];
       jest.spyOn(eleveService, 'query').mockReturnValue(of(new HttpResponse({ body: eleveCollection })));
       const additionalEleves = [eleve];
       const expectedCollection: IEleve[] = [...additionalEleves, ...eleveCollection];
@@ -73,16 +75,19 @@ describe('Diplome Management Update Component', () => {
       comp.ngOnInit();
 
       expect(eleveService.query).toHaveBeenCalled();
-      expect(eleveService.addEleveToCollectionIfMissing).toHaveBeenCalledWith(eleveCollection, ...additionalEleves);
+      expect(eleveService.addEleveToCollectionIfMissing).toHaveBeenCalledWith(
+        eleveCollection,
+        ...additionalEleves.map(expect.objectContaining)
+      );
       expect(comp.elevesSharedCollection).toEqual(expectedCollection);
     });
 
     it('Should call Etudiant query and add missing value', () => {
       const diplome: IDiplome = { id: 456 };
-      const etudiant: IEtudiant = { id: 46690 };
+      const etudiant: IEtudiant = { id: 13918 };
       diplome.etudiant = etudiant;
 
-      const etudiantCollection: IEtudiant[] = [{ id: 87593 }];
+      const etudiantCollection: IEtudiant[] = [{ id: 6207 }];
       jest.spyOn(etudiantService, 'query').mockReturnValue(of(new HttpResponse({ body: etudiantCollection })));
       const additionalEtudiants = [etudiant];
       const expectedCollection: IEtudiant[] = [...additionalEtudiants, ...etudiantCollection];
@@ -92,16 +97,19 @@ describe('Diplome Management Update Component', () => {
       comp.ngOnInit();
 
       expect(etudiantService.query).toHaveBeenCalled();
-      expect(etudiantService.addEtudiantToCollectionIfMissing).toHaveBeenCalledWith(etudiantCollection, ...additionalEtudiants);
+      expect(etudiantService.addEtudiantToCollectionIfMissing).toHaveBeenCalledWith(
+        etudiantCollection,
+        ...additionalEtudiants.map(expect.objectContaining)
+      );
       expect(comp.etudiantsSharedCollection).toEqual(expectedCollection);
     });
 
     it('Should call Professionnel query and add missing value', () => {
       const diplome: IDiplome = { id: 456 };
-      const professionnel: IProfessionnel = { id: 90073 };
+      const professionnel: IProfessionnel = { id: 29988 };
       diplome.professionnel = professionnel;
 
-      const professionnelCollection: IProfessionnel[] = [{ id: 3277 }];
+      const professionnelCollection: IProfessionnel[] = [{ id: 26045 }];
       jest.spyOn(professionnelService, 'query').mockReturnValue(of(new HttpResponse({ body: professionnelCollection })));
       const additionalProfessionnels = [professionnel];
       const expectedCollection: IProfessionnel[] = [...additionalProfessionnels, ...professionnelCollection];
@@ -113,17 +121,17 @@ describe('Diplome Management Update Component', () => {
       expect(professionnelService.query).toHaveBeenCalled();
       expect(professionnelService.addProfessionnelToCollectionIfMissing).toHaveBeenCalledWith(
         professionnelCollection,
-        ...additionalProfessionnels
+        ...additionalProfessionnels.map(expect.objectContaining)
       );
       expect(comp.professionnelsSharedCollection).toEqual(expectedCollection);
     });
 
     it('Should call Demandeur query and add missing value', () => {
       const diplome: IDiplome = { id: 456 };
-      const demandeur: IDemandeur = { id: 33327 };
+      const demandeur: IDemandeur = { id: 24717 };
       diplome.demandeur = demandeur;
 
-      const demandeurCollection: IDemandeur[] = [{ id: 12833 }];
+      const demandeurCollection: IDemandeur[] = [{ id: 2878 }];
       jest.spyOn(demandeurService, 'query').mockReturnValue(of(new HttpResponse({ body: demandeurCollection })));
       const additionalDemandeurs = [demandeur];
       const expectedCollection: IDemandeur[] = [...additionalDemandeurs, ...demandeurCollection];
@@ -133,37 +141,41 @@ describe('Diplome Management Update Component', () => {
       comp.ngOnInit();
 
       expect(demandeurService.query).toHaveBeenCalled();
-      expect(demandeurService.addDemandeurToCollectionIfMissing).toHaveBeenCalledWith(demandeurCollection, ...additionalDemandeurs);
+      expect(demandeurService.addDemandeurToCollectionIfMissing).toHaveBeenCalledWith(
+        demandeurCollection,
+        ...additionalDemandeurs.map(expect.objectContaining)
+      );
       expect(comp.demandeursSharedCollection).toEqual(expectedCollection);
     });
 
     it('Should update editForm', () => {
       const diplome: IDiplome = { id: 456 };
-      const eleve: IEleve = { id: 95930 };
+      const eleve: IEleve = { id: 15851 };
       diplome.eleve = eleve;
-      const etudiant: IEtudiant = { id: 76994 };
+      const etudiant: IEtudiant = { id: 14668 };
       diplome.etudiant = etudiant;
-      const professionnel: IProfessionnel = { id: 46564 };
+      const professionnel: IProfessionnel = { id: 5241 };
       diplome.professionnel = professionnel;
-      const demandeur: IDemandeur = { id: 41121 };
+      const demandeur: IDemandeur = { id: 3291 };
       diplome.demandeur = demandeur;
 
       activatedRoute.data = of({ diplome });
       comp.ngOnInit();
 
-      expect(comp.editForm.value).toEqual(expect.objectContaining(diplome));
       expect(comp.elevesSharedCollection).toContain(eleve);
       expect(comp.etudiantsSharedCollection).toContain(etudiant);
       expect(comp.professionnelsSharedCollection).toContain(professionnel);
       expect(comp.demandeursSharedCollection).toContain(demandeur);
+      expect(comp.diplome).toEqual(diplome);
     });
   });
 
   describe('save', () => {
     it('Should call update service on save for existing entity', () => {
       // GIVEN
-      const saveSubject = new Subject<HttpResponse<Diplome>>();
+      const saveSubject = new Subject<HttpResponse<IDiplome>>();
       const diplome = { id: 123 };
+      jest.spyOn(diplomeFormService, 'getDiplome').mockReturnValue(diplome);
       jest.spyOn(diplomeService, 'update').mockReturnValue(saveSubject);
       jest.spyOn(comp, 'previousState');
       activatedRoute.data = of({ diplome });
@@ -176,18 +188,20 @@ describe('Diplome Management Update Component', () => {
       saveSubject.complete();
 
       // THEN
+      expect(diplomeFormService.getDiplome).toHaveBeenCalled();
       expect(comp.previousState).toHaveBeenCalled();
-      expect(diplomeService.update).toHaveBeenCalledWith(diplome);
+      expect(diplomeService.update).toHaveBeenCalledWith(expect.objectContaining(diplome));
       expect(comp.isSaving).toEqual(false);
     });
 
     it('Should call create service on save for new entity', () => {
       // GIVEN
-      const saveSubject = new Subject<HttpResponse<Diplome>>();
-      const diplome = new Diplome();
+      const saveSubject = new Subject<HttpResponse<IDiplome>>();
+      const diplome = { id: 123 };
+      jest.spyOn(diplomeFormService, 'getDiplome').mockReturnValue({ id: null });
       jest.spyOn(diplomeService, 'create').mockReturnValue(saveSubject);
       jest.spyOn(comp, 'previousState');
-      activatedRoute.data = of({ diplome });
+      activatedRoute.data = of({ diplome: null });
       comp.ngOnInit();
 
       // WHEN
@@ -197,14 +211,15 @@ describe('Diplome Management Update Component', () => {
       saveSubject.complete();
 
       // THEN
-      expect(diplomeService.create).toHaveBeenCalledWith(diplome);
+      expect(diplomeFormService.getDiplome).toHaveBeenCalled();
+      expect(diplomeService.create).toHaveBeenCalled();
       expect(comp.isSaving).toEqual(false);
       expect(comp.previousState).toHaveBeenCalled();
     });
 
     it('Should set isSaving to false on error', () => {
       // GIVEN
-      const saveSubject = new Subject<HttpResponse<Diplome>>();
+      const saveSubject = new Subject<HttpResponse<IDiplome>>();
       const diplome = { id: 123 };
       jest.spyOn(diplomeService, 'update').mockReturnValue(saveSubject);
       jest.spyOn(comp, 'previousState');
@@ -217,42 +232,50 @@ describe('Diplome Management Update Component', () => {
       saveSubject.error('This is an error!');
 
       // THEN
-      expect(diplomeService.update).toHaveBeenCalledWith(diplome);
+      expect(diplomeService.update).toHaveBeenCalled();
       expect(comp.isSaving).toEqual(false);
       expect(comp.previousState).not.toHaveBeenCalled();
     });
   });
 
-  describe('Tracking relationships identifiers', () => {
-    describe('trackEleveById', () => {
-      it('Should return tracked Eleve primary key', () => {
+  describe('Compare relationships', () => {
+    describe('compareEleve', () => {
+      it('Should forward to eleveService', () => {
         const entity = { id: 123 };
-        const trackResult = comp.trackEleveById(0, entity);
-        expect(trackResult).toEqual(entity.id);
+        const entity2 = { id: 456 };
+        jest.spyOn(eleveService, 'compareEleve');
+        comp.compareEleve(entity, entity2);
+        expect(eleveService.compareEleve).toHaveBeenCalledWith(entity, entity2);
       });
     });
 
-    describe('trackEtudiantById', () => {
-      it('Should return tracked Etudiant primary key', () => {
+    describe('compareEtudiant', () => {
+      it('Should forward to etudiantService', () => {
         const entity = { id: 123 };
-        const trackResult = comp.trackEtudiantById(0, entity);
-        expect(trackResult).toEqual(entity.id);
+        const entity2 = { id: 456 };
+        jest.spyOn(etudiantService, 'compareEtudiant');
+        comp.compareEtudiant(entity, entity2);
+        expect(etudiantService.compareEtudiant).toHaveBeenCalledWith(entity, entity2);
       });
     });
 
-    describe('trackProfessionnelById', () => {
-      it('Should return tracked Professionnel primary key', () => {
+    describe('compareProfessionnel', () => {
+      it('Should forward to professionnelService', () => {
         const entity = { id: 123 };
-        const trackResult = comp.trackProfessionnelById(0, entity);
-        expect(trackResult).toEqual(entity.id);
+        const entity2 = { id: 456 };
+        jest.spyOn(professionnelService, 'compareProfessionnel');
+        comp.compareProfessionnel(entity, entity2);
+        expect(professionnelService.compareProfessionnel).toHaveBeenCalledWith(entity, entity2);
       });
     });
 
-    describe('trackDemandeurById', () => {
-      it('Should return tracked Demandeur primary key', () => {
+    describe('compareDemandeur', () => {
+      it('Should forward to demandeurService', () => {
         const entity = { id: 123 };
-        const trackResult = comp.trackDemandeurById(0, entity);
-        expect(trackResult).toEqual(entity.id);
+        const entity2 = { id: 456 };
+        jest.spyOn(demandeurService, 'compareDemandeur');
+        comp.compareDemandeur(entity, entity2);
+        expect(demandeurService.compareDemandeur).toHaveBeenCalledWith(entity, entity2);
       });
     });
   });

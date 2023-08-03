@@ -1,36 +1,38 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ActivatedRoute } from '@angular/router';
+import { TestBed } from '@angular/core/testing';
+import { provideRouter, withComponentInputBinding } from '@angular/router';
+import { RouterTestingHarness, RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
 
 import { EtudiantDetailComponent } from './etudiant-detail.component';
 
 describe('Etudiant Management Detail Component', () => {
-  let comp: EtudiantDetailComponent;
-  let fixture: ComponentFixture<EtudiantDetailComponent>;
-
-  beforeEach(() => {
-    TestBed.configureTestingModule({
-      declarations: [EtudiantDetailComponent],
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [EtudiantDetailComponent, RouterTestingModule.withRoutes([], { bindToComponentInputs: true })],
       providers: [
-        {
-          provide: ActivatedRoute,
-          useValue: { data: of({ etudiant: { id: 123 } }) },
-        },
+        provideRouter(
+          [
+            {
+              path: '**',
+              component: EtudiantDetailComponent,
+              resolve: { etudiant: () => of({ id: 123 }) },
+            },
+          ],
+          withComponentInputBinding()
+        ),
       ],
     })
       .overrideTemplate(EtudiantDetailComponent, '')
       .compileComponents();
-    fixture = TestBed.createComponent(EtudiantDetailComponent);
-    comp = fixture.componentInstance;
   });
 
   describe('OnInit', () => {
-    it('Should load etudiant on init', () => {
-      // WHEN
-      comp.ngOnInit();
+    it('Should load etudiant on init', async () => {
+      const harness = await RouterTestingHarness.create();
+      const instance = await harness.navigateByUrl('/', EtudiantDetailComponent);
 
       // THEN
-      expect(comp.etudiant).toEqual(expect.objectContaining({ id: 123 }));
+      expect(instance.etudiant).toEqual(expect.objectContaining({ id: 123 }));
     });
   });
 });

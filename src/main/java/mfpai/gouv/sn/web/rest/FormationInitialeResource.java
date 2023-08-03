@@ -97,7 +97,7 @@ public class FormationInitialeResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        FormationInitiale result = formationInitialeService.save(formationInitiale);
+        FormationInitiale result = formationInitialeService.update(formationInitiale);
         return ResponseEntity
             .ok()
             .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, formationInitiale.getId().toString()))
@@ -148,7 +148,7 @@ public class FormationInitialeResource {
      */
     @GetMapping("/formation-initiales")
     public ResponseEntity<List<FormationInitiale>> getAllFormationInitiales(
-        @org.springdoc.api.annotations.ParameterObject Pageable pageable
+        @org.springdoc.core.annotations.ParameterObject Pageable pageable
     ) {
         log.debug("REST request to get a page of FormationInitiales");
         Page<FormationInitiale> page = formationInitialeService.findAll(pageable);

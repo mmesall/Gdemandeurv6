@@ -1,8 +1,6 @@
 {
   "applications": "*",
   "changelogDate": "20230328104900",
-  "dto": "no",
-  "embedded": false,
   "entityTableName": "agent",
   "fields": [
     {
@@ -41,28 +39,25 @@
       "fieldValidateRules": ["unique"]
     }
   ],
-  "fluentMethods": true,
-  "jpaMetamodelFiltering": false,
   "name": "Agent",
   "pagination": "infinite-scroll",
-  "readOnly": false,
   "relationships": [
     {
       "otherEntityField": "login",
       "otherEntityName": "user",
-      "otherEntityRelationshipName": "agent",
-      "ownerSide": true,
       "relationshipName": "user",
+      "relationshipSide": "left",
       "relationshipType": "one-to-one"
     },
     {
       "otherEntityField": "nomService",
       "otherEntityName": "serviceMFPAI",
       "otherEntityRelationshipName": "agent",
-      "ownerSide": true,
       "relationshipName": "serviceMFPAI",
+      "relationshipSide": "left",
       "relationshipType": "one-to-one"
     }
   ],
+  "searchEngine": "no",
   "service": "serviceImpl"
 }

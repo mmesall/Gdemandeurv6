@@ -1,8 +1,6 @@
 {
   "applications": "*",
   "changelogDate": "20230328104853",
-  "dto": "no",
-  "embedded": false,
   "entityTableName": "diplome",
   "fields": [
     {
@@ -40,17 +38,15 @@
       "fieldValidateRules": ["required"]
     }
   ],
-  "fluentMethods": true,
-  "jpaMetamodelFiltering": false,
   "name": "Diplome",
   "pagination": "infinite-scroll",
-  "readOnly": false,
   "relationships": [
     {
       "otherEntityField": "niveauEtude",
       "otherEntityName": "eleve",
       "otherEntityRelationshipName": "diplome",
       "relationshipName": "eleve",
+      "relationshipSide": "right",
       "relationshipType": "many-to-one"
     },
     {
@@ -58,6 +54,7 @@
       "otherEntityName": "etudiant",
       "otherEntityRelationshipName": "diplome",
       "relationshipName": "etudiant",
+      "relationshipSide": "right",
       "relationshipType": "many-to-one"
     },
     {
@@ -65,6 +62,7 @@
       "otherEntityName": "professionnel",
       "otherEntityRelationshipName": "diplome",
       "relationshipName": "professionnel",
+      "relationshipSide": "right",
       "relationshipType": "many-to-one"
     },
     {
@@ -72,8 +70,10 @@
       "otherEntityName": "demandeur",
       "otherEntityRelationshipName": "diplome",
       "relationshipName": "demandeur",
+      "relationshipSide": "right",
       "relationshipType": "many-to-one"
     }
   ],
+  "searchEngine": "no",
   "service": "serviceImpl"
 }

@@ -6,8 +6,9 @@ import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of, Subject, from } from 'rxjs';
 
+import { FormationFormService } from './formation-form.service';
 import { FormationService } from '../service/formation.service';
-import { IFormation, Formation } from '../formation.model';
+import { IFormation } from '../formation.model';
 import { IEtablissement } from 'app/entities/etablissement/etablissement.model';
 import { EtablissementService } from 'app/entities/etablissement/service/etablissement.service';
 
@@ -17,13 +18,13 @@ describe('Formation Management Update Component', () => {
   let comp: FormationUpdateComponent;
   let fixture: ComponentFixture<FormationUpdateComponent>;
   let activatedRoute: ActivatedRoute;
+  let formationFormService: FormationFormService;
   let formationService: FormationService;
   let etablissementService: EtablissementService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule, RouterTestingModule.withRoutes([])],
-      declarations: [FormationUpdateComponent],
+      imports: [HttpClientTestingModule, RouterTestingModule.withRoutes([]), FormationUpdateComponent],
       providers: [
         FormBuilder,
         {
@@ -39,6 +40,7 @@ describe('Formation Management Update Component', () => {
 
     fixture = TestBed.createComponent(FormationUpdateComponent);
     activatedRoute = TestBed.inject(ActivatedRoute);
+    formationFormService = TestBed.inject(FormationFormService);
     formationService = TestBed.inject(FormationService);
     etablissementService = TestBed.inject(EtablissementService);
 
@@ -48,10 +50,10 @@ describe('Formation Management Update Component', () => {
   describe('ngOnInit', () => {
     it('Should call Etablissement query and add missing value', () => {
       const formation: IFormation = { id: 456 };
-      const etablissements: IEtablissement[] = [{ id: 65018 }];
+      const etablissements: IEtablissement[] = [{ id: 30060 }];
       formation.etablissements = etablissements;
 
-      const etablissementCollection: IEtablissement[] = [{ id: 10817 }];
+      const etablissementCollection: IEtablissement[] = [{ id: 32473 }];
       jest.spyOn(etablissementService, 'query').mockReturnValue(of(new HttpResponse({ body: etablissementCollection })));
       const additionalEtablissements = [...etablissements];
       const expectedCollection: IEtablissement[] = [...additionalEtablissements, ...etablissementCollection];
@@ -63,29 +65,30 @@ describe('Formation Management Update Component', () => {
       expect(etablissementService.query).toHaveBeenCalled();
       expect(etablissementService.addEtablissementToCollectionIfMissing).toHaveBeenCalledWith(
         etablissementCollection,
-        ...additionalEtablissements
+        ...additionalEtablissements.map(expect.objectContaining)
       );
       expect(comp.etablissementsSharedCollection).toEqual(expectedCollection);
     });
 
     it('Should update editForm', () => {
       const formation: IFormation = { id: 456 };
-      const etablissements: IEtablissement = { id: 97199 };
-      formation.etablissements = [etablissements];
+      const etablissement: IEtablissement = { id: 29698 };
+      formation.etablissements = [etablissement];
 
       activatedRoute.data = of({ formation });
       comp.ngOnInit();
 
-      expect(comp.editForm.value).toEqual(expect.objectContaining(formation));
-      expect(comp.etablissementsSharedCollection).toContain(etablissements);
+      expect(comp.etablissementsSharedCollection).toContain(etablissement);
+      expect(comp.formation).toEqual(formation);
     });
   });
 
   describe('save', () => {
     it('Should call update service on save for existing entity', () => {
       // GIVEN
-      const saveSubject = new Subject<HttpResponse<Formation>>();
+      const saveSubject = new Subject<HttpResponse<IFormation>>();
       const formation = { id: 123 };
+      jest.spyOn(formationFormService, 'getFormation').mockReturnValue(formation);
       jest.spyOn(formationService, 'update').mockReturnValue(saveSubject);
       jest.spyOn(comp, 'previousState');
       activatedRoute.data = of({ formation });
@@ -98,18 +101,20 @@ describe('Formation Management Update Component', () => {
       saveSubject.complete();
 
       // THEN
+      expect(formationFormService.getFormation).toHaveBeenCalled();
       expect(comp.previousState).toHaveBeenCalled();
-      expect(formationService.update).toHaveBeenCalledWith(formation);
+      expect(formationService.update).toHaveBeenCalledWith(expect.objectContaining(formation));
       expect(comp.isSaving).toEqual(false);
     });
 
     it('Should call create service on save for new entity', () => {
       // GIVEN
-      const saveSubject = new Subject<HttpResponse<Formation>>();
-      const formation = new Formation();
+      const saveSubject = new Subject<HttpResponse<IFormation>>();
+      const formation = { id: 123 };
+      jest.spyOn(formationFormService, 'getFormation').mockReturnValue({ id: null });
       jest.spyOn(formationService, 'create').mockReturnValue(saveSubject);
       jest.spyOn(comp, 'previousState');
-      activatedRoute.data = of({ formation });
+      activatedRoute.data = of({ formation: null });
       comp.ngOnInit();
 
       // WHEN
@@ -119,14 +124,15 @@ describe('Formation Management Update Component', () => {
       saveSubject.complete();
 
       // THEN
-      expect(formationService.create).toHaveBeenCalledWith(formation);
+      expect(formationFormService.getFormation).toHaveBeenCalled();
+      expect(formationService.create).toHaveBeenCalled();
       expect(comp.isSaving).toEqual(false);
       expect(comp.previousState).toHaveBeenCalled();
     });
 
     it('Should set isSaving to false on error', () => {
       // GIVEN
-      const saveSubject = new Subject<HttpResponse<Formation>>();
+      const saveSubject = new Subject<HttpResponse<IFormation>>();
       const formation = { id: 123 };
       jest.spyOn(formationService, 'update').mockReturnValue(saveSubject);
       jest.spyOn(comp, 'previousState');
@@ -139,46 +145,20 @@ describe('Formation Management Update Component', () => {
       saveSubject.error('This is an error!');
 
       // THEN
-      expect(formationService.update).toHaveBeenCalledWith(formation);
+      expect(formationService.update).toHaveBeenCalled();
       expect(comp.isSaving).toEqual(false);
       expect(comp.previousState).not.toHaveBeenCalled();
     });
   });
 
-  describe('Tracking relationships identifiers', () => {
-    describe('trackEtablissementById', () => {
-      it('Should return tracked Etablissement primary key', () => {
+  describe('Compare relationships', () => {
+    describe('compareEtablissement', () => {
+      it('Should forward to etablissementService', () => {
         const entity = { id: 123 };
-        const trackResult = comp.trackEtablissementById(0, entity);
-        expect(trackResult).toEqual(entity.id);
-      });
-    });
-  });
-
-  describe('Getting selected relationships', () => {
-    describe('getSelectedEtablissement', () => {
-      it('Should return option if no Etablissement is selected', () => {
-        const option = { id: 123 };
-        const result = comp.getSelectedEtablissement(option);
-        expect(result === option).toEqual(true);
-      });
-
-      it('Should return selected Etablissement for according option', () => {
-        const option = { id: 123 };
-        const selected = { id: 123 };
-        const selected2 = { id: 456 };
-        const result = comp.getSelectedEtablissement(option, [selected2, selected]);
-        expect(result === selected).toEqual(true);
-        expect(result === selected2).toEqual(false);
-        expect(result === option).toEqual(false);
-      });
-
-      it('Should return option if this Etablissement is not selected', () => {
-        const option = { id: 123 };
-        const selected = { id: 456 };
-        const result = comp.getSelectedEtablissement(option, [selected]);
-        expect(result === option).toEqual(true);
-        expect(result === selected).toEqual(false);
+        const entity2 = { id: 456 };
+        jest.spyOn(etablissementService, 'compareEtablissement');
+        comp.compareEtablissement(entity, entity2);
+        expect(etablissementService.compareEtablissement).toHaveBeenCalledWith(entity, entity2);
       });
     });
   });

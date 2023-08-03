@@ -18,8 +18,7 @@ describe('Dossier Management Delete Component', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
-      declarations: [DossierDeleteDialogComponent],
+      imports: [HttpClientTestingModule, DossierDeleteDialogComponent],
       providers: [NgbActiveModal],
     })
       .overrideTemplate(DossierDeleteDialogComponent, '')

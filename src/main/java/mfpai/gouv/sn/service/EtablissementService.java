@@ -18,6 +18,14 @@ public interface EtablissementService {
     Etablissement save(Etablissement etablissement);
 
     /**
+     * Updates a etablissement.
+     *
+     * @param etablissement the entity to update.
+     * @return the persisted entity.
+     */
+    Etablissement update(Etablissement etablissement);
+
+    /**
      * Partially updates a etablissement.
      *
      * @param etablissement the entity to update partially.

@@ -1,11 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpResponse } from '@angular/common/http';
-import { FormBuilder } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
 import { finalize, map } from 'rxjs/operators';
 
-import { IDemandeur, Demandeur } from '../demandeur.model';
+import SharedModule from 'app/shared/shared.module';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+
+import { DemandeurFormService, DemandeurFormGroup } from './demandeur-form.service';
+import { IDemandeur } from '../demandeur.model';
 import { DemandeurService } from '../service/demandeur.service';
 import { IUser } from 'app/entities/user/user.model';
 import { UserService } from 'app/entities/user/user.service';
@@ -21,11 +24,14 @@ import { Sexe } from 'app/entities/enumerations/sexe.model';
 import { Profil } from 'app/entities/enumerations/profil.model';
 
 @Component({
+  standalone: true,
   selector: 'jhi-demandeur-update',
   templateUrl: './demandeur-update.component.html',
+  imports: [SharedModule, FormsModule, ReactiveFormsModule],
 })
 export class DemandeurUpdateComponent implements OnInit {
   isSaving = false;
+  demandeur: IDemandeur | null = null;
   sexeValues = Object.keys(Sexe);
   profilValues = Object.keys(Profil);
 
@@ -35,37 +41,36 @@ export class DemandeurUpdateComponent implements OnInit {
   etudiantsCollection: IEtudiant[] = [];
   professionnelsCollection: IProfessionnel[] = [];
 
-  editForm = this.fb.group({
-    id: [],
-    nom: [],
-    prenom: [],
-    dateNaiss: [],
-    lieuNaiss: [],
-    sexe: [],
-    telephone: [],
-    email: [null, []],
-    profil: [],
-    user: [],
-    dossier: [],
-    eleve: [],
-    etudiant: [],
-    professionnel: [],
-  });
+  editForm: DemandeurFormGroup = this.demandeurFormService.createDemandeurFormGroup();
 
   constructor(
     protected demandeurService: DemandeurService,
+    protected demandeurFormService: DemandeurFormService,
     protected userService: UserService,
     protected dossierService: DossierService,
     protected eleveService: EleveService,
     protected etudiantService: EtudiantService,
     protected professionnelService: ProfessionnelService,
-    protected activatedRoute: ActivatedRoute,
-    protected fb: FormBuilder
+    protected activatedRoute: ActivatedRoute
   ) {}
+
+  compareUser = (o1: IUser | null, o2: IUser | null): boolean => this.userService.compareUser(o1, o2);
+
+  compareDossier = (o1: IDossier | null, o2: IDossier | null): boolean => this.dossierService.compareDossier(o1, o2);
+
+  compareEleve = (o1: IEleve | null, o2: IEleve | null): boolean => this.eleveService.compareEleve(o1, o2);
+
+  compareEtudiant = (o1: IEtudiant | null, o2: IEtudiant | null): boolean => this.etudiantService.compareEtudiant(o1, o2);
+
+  compareProfessionnel = (o1: IProfessionnel | null, o2: IProfessionnel | null): boolean =>
+    this.professionnelService.compareProfessionnel(o1, o2);
 
   ngOnInit(): void {
     this.activatedRoute.data.subscribe(({ demandeur }) => {
-      this.updateForm(demandeur);
+      this.demandeur = demandeur;
+      if (demandeur) {
+        this.updateForm(demandeur);
+      }
 
       this.loadRelationshipsOptions();
     });
@@ -77,32 +82,12 @@ export class DemandeurUpdateComponent implements OnInit {
 
   save(): void {
     this.isSaving = true;
-    const demandeur = this.createFromForm();
-    if (demandeur.id !== undefined) {
+    const demandeur = this.demandeurFormService.getDemandeur(this.editForm);
+    if (demandeur.id !== null) {
       this.subscribeToSaveResponse(this.demandeurService.update(demandeur));
     } else {
       this.subscribeToSaveResponse(this.demandeurService.create(demandeur));
     }
-  }
-
-  trackUserById(index: number, item: IUser): number {
-    return item.id!;
-  }
-
-  trackDossierById(index: number, item: IDossier): number {
-    return item.id!;
-  }
-
-  trackEleveById(index: number, item: IEleve): number {
-    return item.id!;
-  }
-
-  trackEtudiantById(index: number, item: IEtudiant): number {
-    return item.id!;
-  }
-
-  trackProfessionnelById(index: number, item: IProfessionnel): number {
-    return item.id!;
   }
 
   protected subscribeToSaveResponse(result: Observable<HttpResponse<IDemandeur>>): void {
@@ -125,28 +110,17 @@ export class DemandeurUpdateComponent implements OnInit {
   }
 
   protected updateForm(demandeur: IDemandeur): void {
-    this.editForm.patchValue({
-      id: demandeur.id,
-      nom: demandeur.nom,
-      prenom: demandeur.prenom,
-      dateNaiss: demandeur.dateNaiss,
-      lieuNaiss: demandeur.lieuNaiss,
-      sexe: demandeur.sexe,
-      telephone: demandeur.telephone,
-      email: demandeur.email,
-      profil: demandeur.profil,
-      user: demandeur.user,
-      dossier: demandeur.dossier,
-      eleve: demandeur.eleve,
-      etudiant: demandeur.etudiant,
-      professionnel: demandeur.professionnel,
-    });
+    this.demandeur = demandeur;
+    this.demandeurFormService.resetForm(this.editForm, demandeur);
 
-    this.usersSharedCollection = this.userService.addUserToCollectionIfMissing(this.usersSharedCollection, demandeur.user);
-    this.dossiersCollection = this.dossierService.addDossierToCollectionIfMissing(this.dossiersCollection, demandeur.dossier);
-    this.elevesCollection = this.eleveService.addEleveToCollectionIfMissing(this.elevesCollection, demandeur.eleve);
-    this.etudiantsCollection = this.etudiantService.addEtudiantToCollectionIfMissing(this.etudiantsCollection, demandeur.etudiant);
-    this.professionnelsCollection = this.professionnelService.addProfessionnelToCollectionIfMissing(
+    this.usersSharedCollection = this.userService.addUserToCollectionIfMissing<IUser>(this.usersSharedCollection, demandeur.user);
+    this.dossiersCollection = this.dossierService.addDossierToCollectionIfMissing<IDossier>(this.dossiersCollection, demandeur.dossier);
+    this.elevesCollection = this.eleveService.addEleveToCollectionIfMissing<IEleve>(this.elevesCollection, demandeur.eleve);
+    this.etudiantsCollection = this.etudiantService.addEtudiantToCollectionIfMissing<IEtudiant>(
+      this.etudiantsCollection,
+      demandeur.etudiant
+    );
+    this.professionnelsCollection = this.professionnelService.addProfessionnelToCollectionIfMissing<IProfessionnel>(
       this.professionnelsCollection,
       demandeur.professionnel
     );
@@ -156,21 +130,19 @@ export class DemandeurUpdateComponent implements OnInit {
     this.userService
       .query()
       .pipe(map((res: HttpResponse<IUser[]>) => res.body ?? []))
-      .pipe(map((users: IUser[]) => this.userService.addUserToCollectionIfMissing(users, this.editForm.get('user')!.value)))
+      .pipe(map((users: IUser[]) => this.userService.addUserToCollectionIfMissing<IUser>(users, this.demandeur?.user)))
       .subscribe((users: IUser[]) => (this.usersSharedCollection = users));
 
     this.dossierService
       .query({ filter: 'demandeur-is-null' })
       .pipe(map((res: HttpResponse<IDossier[]>) => res.body ?? []))
-      .pipe(
-        map((dossiers: IDossier[]) => this.dossierService.addDossierToCollectionIfMissing(dossiers, this.editForm.get('dossier')!.value))
-      )
+      .pipe(map((dossiers: IDossier[]) => this.dossierService.addDossierToCollectionIfMissing<IDossier>(dossiers, this.demandeur?.dossier)))
       .subscribe((dossiers: IDossier[]) => (this.dossiersCollection = dossiers));
 
     this.eleveService
       .query({ filter: 'demandeur-is-null' })
       .pipe(map((res: HttpResponse<IEleve[]>) => res.body ?? []))
-      .pipe(map((eleves: IEleve[]) => this.eleveService.addEleveToCollectionIfMissing(eleves, this.editForm.get('eleve')!.value)))
+      .pipe(map((eleves: IEleve[]) => this.eleveService.addEleveToCollectionIfMissing<IEleve>(eleves, this.demandeur?.eleve)))
       .subscribe((eleves: IEleve[]) => (this.elevesCollection = eleves));
 
     this.etudiantService
@@ -178,7 +150,7 @@ export class DemandeurUpdateComponent implements OnInit {
       .pipe(map((res: HttpResponse<IEtudiant[]>) => res.body ?? []))
       .pipe(
         map((etudiants: IEtudiant[]) =>
-          this.etudiantService.addEtudiantToCollectionIfMissing(etudiants, this.editForm.get('etudiant')!.value)
+          this.etudiantService.addEtudiantToCollectionIfMissing<IEtudiant>(etudiants, this.demandeur?.etudiant)
         )
       )
       .subscribe((etudiants: IEtudiant[]) => (this.etudiantsCollection = etudiants));
@@ -188,29 +160,9 @@ export class DemandeurUpdateComponent implements OnInit {
       .pipe(map((res: HttpResponse<IProfessionnel[]>) => res.body ?? []))
       .pipe(
         map((professionnels: IProfessionnel[]) =>
-          this.professionnelService.addProfessionnelToCollectionIfMissing(professionnels, this.editForm.get('professionnel')!.value)
+          this.professionnelService.addProfessionnelToCollectionIfMissing<IProfessionnel>(professionnels, this.demandeur?.professionnel)
         )
       )
       .subscribe((professionnels: IProfessionnel[]) => (this.professionnelsCollection = professionnels));
-  }
-
-  protected createFromForm(): IDemandeur {
-    return {
-      ...new Demandeur(),
-      id: this.editForm.get(['id'])!.value,
-      nom: this.editForm.get(['nom'])!.value,
-      prenom: this.editForm.get(['prenom'])!.value,
-      dateNaiss: this.editForm.get(['dateNaiss'])!.value,
-      lieuNaiss: this.editForm.get(['lieuNaiss'])!.value,
-      sexe: this.editForm.get(['sexe'])!.value,
-      telephone: this.editForm.get(['telephone'])!.value,
-      email: this.editForm.get(['email'])!.value,
-      profil: this.editForm.get(['profil'])!.value,
-      user: this.editForm.get(['user'])!.value,
-      dossier: this.editForm.get(['dossier'])!.value,
-      eleve: this.editForm.get(['eleve'])!.value,
-      etudiant: this.editForm.get(['etudiant'])!.value,
-      professionnel: this.editForm.get(['professionnel'])!.value,
-    };
   }
 }

@@ -1,14 +1,28 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
+
 import { map } from 'rxjs/operators';
+
 import dayjs from 'dayjs/esm';
 
 import { isPresent } from 'app/core/util/operators';
 import { DATE_FORMAT } from 'app/config/input.constants';
 import { ApplicationConfigService } from 'app/core/config/application-config.service';
 import { createRequestOption } from 'app/core/request/request-util';
-import { IEtudiant, getEtudiantIdentifier } from '../etudiant.model';
+import { IEtudiant, NewEtudiant } from '../etudiant.model';
+
+export type PartialUpdateEtudiant = Partial<IEtudiant> & Pick<IEtudiant, 'id'>;
+
+type RestOf<T extends IEtudiant | NewEtudiant> = Omit<T, 'dateNaiss'> & {
+  dateNaiss?: string | null;
+};
+
+export type RestEtudiant = RestOf<IEtudiant>;
+
+export type NewRestEtudiant = RestOf<NewEtudiant>;
+
+export type PartialUpdateRestEtudiant = RestOf<PartialUpdateEtudiant>;
 
 export type EntityResponseType = HttpResponse<IEtudiant>;
 export type EntityArrayResponseType = HttpResponse<IEtudiant[]>;
@@ -19,51 +33,62 @@ export class EtudiantService {
 
   constructor(protected http: HttpClient, protected applicationConfigService: ApplicationConfigService) {}
 
-  create(etudiant: IEtudiant): Observable<EntityResponseType> {
+  create(etudiant: NewEtudiant): Observable<EntityResponseType> {
     const copy = this.convertDateFromClient(etudiant);
     return this.http
-      .post<IEtudiant>(this.resourceUrl, copy, { observe: 'response' })
-      .pipe(map((res: EntityResponseType) => this.convertDateFromServer(res)));
+      .post<RestEtudiant>(this.resourceUrl, copy, { observe: 'response' })
+      .pipe(map(res => this.convertResponseFromServer(res)));
   }
 
   update(etudiant: IEtudiant): Observable<EntityResponseType> {
     const copy = this.convertDateFromClient(etudiant);
     return this.http
-      .put<IEtudiant>(`${this.resourceUrl}/${getEtudiantIdentifier(etudiant) as number}`, copy, { observe: 'response' })
-      .pipe(map((res: EntityResponseType) => this.convertDateFromServer(res)));
+      .put<RestEtudiant>(`${this.resourceUrl}/${this.getEtudiantIdentifier(etudiant)}`, copy, { observe: 'response' })
+      .pipe(map(res => this.convertResponseFromServer(res)));
   }
 
-  partialUpdate(etudiant: IEtudiant): Observable<EntityResponseType> {
+  partialUpdate(etudiant: PartialUpdateEtudiant): Observable<EntityResponseType> {
     const copy = this.convertDateFromClient(etudiant);
     return this.http
-      .patch<IEtudiant>(`${this.resourceUrl}/${getEtudiantIdentifier(etudiant) as number}`, copy, { observe: 'response' })
-      .pipe(map((res: EntityResponseType) => this.convertDateFromServer(res)));
+      .patch<RestEtudiant>(`${this.resourceUrl}/${this.getEtudiantIdentifier(etudiant)}`, copy, { observe: 'response' })
+      .pipe(map(res => this.convertResponseFromServer(res)));
   }
 
   find(id: number): Observable<EntityResponseType> {
     return this.http
-      .get<IEtudiant>(`${this.resourceUrl}/${id}`, { observe: 'response' })
-      .pipe(map((res: EntityResponseType) => this.convertDateFromServer(res)));
+      .get<RestEtudiant>(`${this.resourceUrl}/${id}`, { observe: 'response' })
+      .pipe(map(res => this.convertResponseFromServer(res)));
   }
 
   query(req?: any): Observable<EntityArrayResponseType> {
     const options = createRequestOption(req);
     return this.http
-      .get<IEtudiant[]>(this.resourceUrl, { params: options, observe: 'response' })
-      .pipe(map((res: EntityArrayResponseType) => this.convertDateArrayFromServer(res)));
+      .get<RestEtudiant[]>(this.resourceUrl, { params: options, observe: 'response' })
+      .pipe(map(res => this.convertResponseArrayFromServer(res)));
   }
 
   delete(id: number): Observable<HttpResponse<{}>> {
     return this.http.delete(`${this.resourceUrl}/${id}`, { observe: 'response' });
   }
 
-  addEtudiantToCollectionIfMissing(etudiantCollection: IEtudiant[], ...etudiantsToCheck: (IEtudiant | null | undefined)[]): IEtudiant[] {
-    const etudiants: IEtudiant[] = etudiantsToCheck.filter(isPresent);
+  getEtudiantIdentifier(etudiant: Pick<IEtudiant, 'id'>): number {
+    return etudiant.id;
+  }
+
+  compareEtudiant(o1: Pick<IEtudiant, 'id'> | null, o2: Pick<IEtudiant, 'id'> | null): boolean {
+    return o1 && o2 ? this.getEtudiantIdentifier(o1) === this.getEtudiantIdentifier(o2) : o1 === o2;
+  }
+
+  addEtudiantToCollectionIfMissing<Type extends Pick<IEtudiant, 'id'>>(
+    etudiantCollection: Type[],
+    ...etudiantsToCheck: (Type | null | undefined)[]
+  ): Type[] {
+    const etudiants: Type[] = etudiantsToCheck.filter(isPresent);
     if (etudiants.length > 0) {
-      const etudiantCollectionIdentifiers = etudiantCollection.map(etudiantItem => getEtudiantIdentifier(etudiantItem)!);
+      const etudiantCollectionIdentifiers = etudiantCollection.map(etudiantItem => this.getEtudiantIdentifier(etudiantItem)!);
       const etudiantsToAdd = etudiants.filter(etudiantItem => {
-        const etudiantIdentifier = getEtudiantIdentifier(etudiantItem);
-        if (etudiantIdentifier == null || etudiantCollectionIdentifiers.includes(etudiantIdentifier)) {
+        const etudiantIdentifier = this.getEtudiantIdentifier(etudiantItem);
+        if (etudiantCollectionIdentifiers.includes(etudiantIdentifier)) {
           return false;
         }
         etudiantCollectionIdentifiers.push(etudiantIdentifier);
@@ -74,25 +99,29 @@ export class EtudiantService {
     return etudiantCollection;
   }
 
-  protected convertDateFromClient(etudiant: IEtudiant): IEtudiant {
-    return Object.assign({}, etudiant, {
-      dateNaiss: etudiant.dateNaiss?.isValid() ? etudiant.dateNaiss.format(DATE_FORMAT) : undefined,
+  protected convertDateFromClient<T extends IEtudiant | NewEtudiant | PartialUpdateEtudiant>(etudiant: T): RestOf<T> {
+    return {
+      ...etudiant,
+      dateNaiss: etudiant.dateNaiss?.format(DATE_FORMAT) ?? null,
+    };
+  }
+
+  protected convertDateFromServer(restEtudiant: RestEtudiant): IEtudiant {
+    return {
+      ...restEtudiant,
+      dateNaiss: restEtudiant.dateNaiss ? dayjs(restEtudiant.dateNaiss) : undefined,
+    };
+  }
+
+  protected convertResponseFromServer(res: HttpResponse<RestEtudiant>): HttpResponse<IEtudiant> {
+    return res.clone({
+      body: res.body ? this.convertDateFromServer(res.body) : null,
     });
   }
 
-  protected convertDateFromServer(res: EntityResponseType): EntityResponseType {
-    if (res.body) {
-      res.body.dateNaiss = res.body.dateNaiss ? dayjs(res.body.dateNaiss) : undefined;
-    }
-    return res;
-  }
-
-  protected convertDateArrayFromServer(res: EntityArrayResponseType): EntityArrayResponseType {
-    if (res.body) {
-      res.body.forEach((etudiant: IEtudiant) => {
-        etudiant.dateNaiss = etudiant.dateNaiss ? dayjs(etudiant.dateNaiss) : undefined;
-      });
-    }
-    return res;
+  protected convertResponseArrayFromServer(res: HttpResponse<RestEtudiant[]>): HttpResponse<IEtudiant[]> {
+    return res.clone({
+      body: res.body ? res.body.map(item => this.convertDateFromServer(item)) : null,
+    });
   }
 }

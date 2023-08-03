@@ -1,13 +1,13 @@
 package mfpai.gouv.sn.web.rest;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.StreamSupport;
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 import mfpai.gouv.sn.domain.Formation;
 import mfpai.gouv.sn.repository.FormationRepository;
 import mfpai.gouv.sn.service.FormationService;
@@ -96,7 +96,7 @@ public class FormationResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        Formation result = formationService.save(formation);
+        Formation result = formationService.update(formation);
         return ResponseEntity
             .ok()
             .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, formation.getId().toString()))
@@ -149,13 +149,28 @@ public class FormationResource {
      */
     @GetMapping("/formations")
     public ResponseEntity<List<Formation>> getAllFormations(
-        @org.springdoc.api.annotations.ParameterObject Pageable pageable,
+        @org.springdoc.core.annotations.ParameterObject Pageable pageable,
         @RequestParam(required = false) String filter,
-        @RequestParam(required = false, defaultValue = "true") boolean eagerload
+        @RequestParam(required = false, defaultValue = "false") boolean eagerload
     ) {
         if ("priseencharge-is-null".equals(filter)) {
             log.debug("REST request to get all Formations where priseEnCharge is null");
             return new ResponseEntity<>(formationService.findAllWherePriseEnChargeIsNull(), HttpStatus.OK);
+        }
+
+        if ("formationinitiale-is-null".equals(filter)) {
+            log.debug("REST request to get all Formations where formationInitiale is null");
+            return new ResponseEntity<>(formationService.findAllWhereFormationInitialeIsNull(), HttpStatus.OK);
+        }
+
+        if ("formationcontinue-is-null".equals(filter)) {
+            log.debug("REST request to get all Formations where formationContinue is null");
+            return new ResponseEntity<>(formationService.findAllWhereFormationContinueIsNull(), HttpStatus.OK);
+        }
+
+        if ("concours-is-null".equals(filter)) {
+            log.debug("REST request to get all Formations where concours is null");
+            return new ResponseEntity<>(formationService.findAllWhereConcoursIsNull(), HttpStatus.OK);
         }
         log.debug("REST request to get a page of Formations");
         Page<Formation> page;

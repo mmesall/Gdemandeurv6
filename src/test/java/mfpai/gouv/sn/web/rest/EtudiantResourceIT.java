@@ -2,25 +2,34 @@ package mfpai.gouv.sn.web.rest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import jakarta.persistence.EntityManager;
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicLong;
-import javax.persistence.EntityManager;
 import mfpai.gouv.sn.IntegrationTest;
 import mfpai.gouv.sn.domain.Etudiant;
 import mfpai.gouv.sn.domain.enumeration.NomDepartement;
 import mfpai.gouv.sn.domain.enumeration.NomRegion;
 import mfpai.gouv.sn.domain.enumeration.Sexe;
 import mfpai.gouv.sn.repository.EtudiantRepository;
+import mfpai.gouv.sn.service.EtudiantService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
@@ -30,6 +39,7 @@ import org.springframework.transaction.annotation.Transactional;
  * Integration tests for the {@link EtudiantResource} REST controller.
  */
 @IntegrationTest
+@ExtendWith(MockitoExtension.class)
 @AutoConfigureMockMvc
 @WithMockUser
 class EtudiantResourceIT {
@@ -78,6 +88,12 @@ class EtudiantResourceIT {
 
     @Autowired
     private EtudiantRepository etudiantRepository;
+
+    @Mock
+    private EtudiantRepository etudiantRepositoryMock;
+
+    @Mock
+    private EtudiantService etudiantServiceMock;
 
     @Autowired
     private EntityManager em;
@@ -277,6 +293,23 @@ class EtudiantResourceIT {
             .andExpect(jsonPath("$.[*].cni").value(hasItem(DEFAULT_CNI.intValue())));
     }
 
+    @SuppressWarnings({ "unchecked" })
+    void getAllEtudiantsWithEagerRelationshipsIsEnabled() throws Exception {
+        when(etudiantServiceMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
+
+        restEtudiantMockMvc.perform(get(ENTITY_API_URL + "?eagerload=true")).andExpect(status().isOk());
+
+        verify(etudiantServiceMock, times(1)).findAllWithEagerRelationships(any());
+    }
+
+    @SuppressWarnings({ "unchecked" })
+    void getAllEtudiantsWithEagerRelationshipsIsNotEnabled() throws Exception {
+        when(etudiantServiceMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
+
+        restEtudiantMockMvc.perform(get(ENTITY_API_URL + "?eagerload=false")).andExpect(status().isOk());
+        verify(etudiantRepositoryMock, times(1)).findAll(any(Pageable.class));
+    }
+
     @Test
     @Transactional
     void getEtudiant() throws Exception {
@@ -312,14 +345,14 @@ class EtudiantResourceIT {
 
     @Test
     @Transactional
-    void putNewEtudiant() throws Exception {
+    void putExistingEtudiant() throws Exception {
         // Initialize the database
         etudiantRepository.saveAndFlush(etudiant);
 
         int databaseSizeBeforeUpdate = etudiantRepository.findAll().size();
 
         // Update the etudiant
-        Etudiant updatedEtudiant = etudiantRepository.findById(etudiant.getId()).get();
+        Etudiant updatedEtudiant = etudiantRepository.findById(etudiant.getId()).orElseThrow();
         // Disconnect from session so that the updates on updatedEtudiant are not directly saved in db
         em.detach(updatedEtudiant);
         updatedEtudiant
@@ -432,10 +465,9 @@ class EtudiantResourceIT {
 
         partialUpdatedEtudiant
             .carteEtudiant(UPDATED_CARTE_ETUDIANT)
-            .nom(UPDATED_NOM)
-            .sexe(UPDATED_SEXE)
-            .departResidence(UPDATED_DEPART_RESIDENCE)
-            .email(UPDATED_EMAIL);
+            .telephone(UPDATED_TELEPHONE)
+            .adressePhysique(UPDATED_ADRESSE_PHYSIQUE)
+            .regionResidence(UPDATED_REGION_RESIDENCE);
 
         restEtudiantMockMvc
             .perform(
@@ -450,16 +482,16 @@ class EtudiantResourceIT {
         assertThat(etudiantList).hasSize(databaseSizeBeforeUpdate);
         Etudiant testEtudiant = etudiantList.get(etudiantList.size() - 1);
         assertThat(testEtudiant.getCarteEtudiant()).isEqualTo(UPDATED_CARTE_ETUDIANT);
-        assertThat(testEtudiant.getNom()).isEqualTo(UPDATED_NOM);
+        assertThat(testEtudiant.getNom()).isEqualTo(DEFAULT_NOM);
         assertThat(testEtudiant.getPrenom()).isEqualTo(DEFAULT_PRENOM);
         assertThat(testEtudiant.getDateNaiss()).isEqualTo(DEFAULT_DATE_NAISS);
         assertThat(testEtudiant.getLieuNaiss()).isEqualTo(DEFAULT_LIEU_NAISS);
-        assertThat(testEtudiant.getSexe()).isEqualTo(UPDATED_SEXE);
-        assertThat(testEtudiant.getTelephone()).isEqualTo(DEFAULT_TELEPHONE);
-        assertThat(testEtudiant.getAdressePhysique()).isEqualTo(DEFAULT_ADRESSE_PHYSIQUE);
-        assertThat(testEtudiant.getRegionResidence()).isEqualTo(DEFAULT_REGION_RESIDENCE);
-        assertThat(testEtudiant.getDepartResidence()).isEqualTo(UPDATED_DEPART_RESIDENCE);
-        assertThat(testEtudiant.getEmail()).isEqualTo(UPDATED_EMAIL);
+        assertThat(testEtudiant.getSexe()).isEqualTo(DEFAULT_SEXE);
+        assertThat(testEtudiant.getTelephone()).isEqualTo(UPDATED_TELEPHONE);
+        assertThat(testEtudiant.getAdressePhysique()).isEqualTo(UPDATED_ADRESSE_PHYSIQUE);
+        assertThat(testEtudiant.getRegionResidence()).isEqualTo(UPDATED_REGION_RESIDENCE);
+        assertThat(testEtudiant.getDepartResidence()).isEqualTo(DEFAULT_DEPART_RESIDENCE);
+        assertThat(testEtudiant.getEmail()).isEqualTo(DEFAULT_EMAIL);
         assertThat(testEtudiant.getCni()).isEqualTo(DEFAULT_CNI);
     }
 

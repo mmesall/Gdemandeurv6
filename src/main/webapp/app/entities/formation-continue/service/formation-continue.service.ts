@@ -5,7 +5,9 @@ import { Observable } from 'rxjs';
 import { isPresent } from 'app/core/util/operators';
 import { ApplicationConfigService } from 'app/core/config/application-config.service';
 import { createRequestOption } from 'app/core/request/request-util';
-import { IFormationContinue, getFormationContinueIdentifier } from '../formation-continue.model';
+import { IFormationContinue, NewFormationContinue } from '../formation-continue.model';
+
+export type PartialUpdateFormationContinue = Partial<IFormationContinue> & Pick<IFormationContinue, 'id'>;
 
 export type EntityResponseType = HttpResponse<IFormationContinue>;
 export type EntityArrayResponseType = HttpResponse<IFormationContinue[]>;
@@ -16,21 +18,21 @@ export class FormationContinueService {
 
   constructor(protected http: HttpClient, protected applicationConfigService: ApplicationConfigService) {}
 
-  create(formationContinue: IFormationContinue): Observable<EntityResponseType> {
+  create(formationContinue: NewFormationContinue): Observable<EntityResponseType> {
     return this.http.post<IFormationContinue>(this.resourceUrl, formationContinue, { observe: 'response' });
   }
 
   update(formationContinue: IFormationContinue): Observable<EntityResponseType> {
     return this.http.put<IFormationContinue>(
-      `${this.resourceUrl}/${getFormationContinueIdentifier(formationContinue) as number}`,
+      `${this.resourceUrl}/${this.getFormationContinueIdentifier(formationContinue)}`,
       formationContinue,
       { observe: 'response' }
     );
   }
 
-  partialUpdate(formationContinue: IFormationContinue): Observable<EntityResponseType> {
+  partialUpdate(formationContinue: PartialUpdateFormationContinue): Observable<EntityResponseType> {
     return this.http.patch<IFormationContinue>(
-      `${this.resourceUrl}/${getFormationContinueIdentifier(formationContinue) as number}`,
+      `${this.resourceUrl}/${this.getFormationContinueIdentifier(formationContinue)}`,
       formationContinue,
       { observe: 'response' }
     );
@@ -49,18 +51,26 @@ export class FormationContinueService {
     return this.http.delete(`${this.resourceUrl}/${id}`, { observe: 'response' });
   }
 
-  addFormationContinueToCollectionIfMissing(
-    formationContinueCollection: IFormationContinue[],
-    ...formationContinuesToCheck: (IFormationContinue | null | undefined)[]
-  ): IFormationContinue[] {
-    const formationContinues: IFormationContinue[] = formationContinuesToCheck.filter(isPresent);
+  getFormationContinueIdentifier(formationContinue: Pick<IFormationContinue, 'id'>): number {
+    return formationContinue.id;
+  }
+
+  compareFormationContinue(o1: Pick<IFormationContinue, 'id'> | null, o2: Pick<IFormationContinue, 'id'> | null): boolean {
+    return o1 && o2 ? this.getFormationContinueIdentifier(o1) === this.getFormationContinueIdentifier(o2) : o1 === o2;
+  }
+
+  addFormationContinueToCollectionIfMissing<Type extends Pick<IFormationContinue, 'id'>>(
+    formationContinueCollection: Type[],
+    ...formationContinuesToCheck: (Type | null | undefined)[]
+  ): Type[] {
+    const formationContinues: Type[] = formationContinuesToCheck.filter(isPresent);
     if (formationContinues.length > 0) {
       const formationContinueCollectionIdentifiers = formationContinueCollection.map(
-        formationContinueItem => getFormationContinueIdentifier(formationContinueItem)!
+        formationContinueItem => this.getFormationContinueIdentifier(formationContinueItem)!
       );
       const formationContinuesToAdd = formationContinues.filter(formationContinueItem => {
-        const formationContinueIdentifier = getFormationContinueIdentifier(formationContinueItem);
-        if (formationContinueIdentifier == null || formationContinueCollectionIdentifiers.includes(formationContinueIdentifier)) {
+        const formationContinueIdentifier = this.getFormationContinueIdentifier(formationContinueItem);
+        if (formationContinueCollectionIdentifiers.includes(formationContinueIdentifier)) {
           return false;
         }
         formationContinueCollectionIdentifiers.push(formationContinueIdentifier);

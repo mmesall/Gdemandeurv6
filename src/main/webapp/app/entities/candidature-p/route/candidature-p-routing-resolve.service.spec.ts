@@ -1,21 +1,20 @@
 import { TestBed } from '@angular/core/testing';
 import { HttpResponse } from '@angular/common/http';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { ActivatedRouteSnapshot, ActivatedRoute, Router, convertToParamMap } from '@angular/router';
+import { ActivatedRouteSnapshot, ActivatedRoute, Router, convertToParamMap, RouterStateSnapshot } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
 
-import { ICandidatureP, CandidatureP } from '../candidature-p.model';
+import { ICandidatureP } from '../candidature-p.model';
 import { CandidaturePService } from '../service/candidature-p.service';
 
-import { CandidaturePRoutingResolveService } from './candidature-p-routing-resolve.service';
+import candidaturePResolve from './candidature-p-routing-resolve.service';
 
 describe('CandidatureP routing resolve service', () => {
   let mockRouter: Router;
   let mockActivatedRouteSnapshot: ActivatedRouteSnapshot;
-  let routingResolveService: CandidaturePRoutingResolveService;
   let service: CandidaturePService;
-  let resultCandidatureP: ICandidatureP | undefined;
+  let resultCandidatureP: ICandidatureP | null | undefined;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -34,7 +33,6 @@ describe('CandidatureP routing resolve service', () => {
     mockRouter = TestBed.inject(Router);
     jest.spyOn(mockRouter, 'navigate').mockImplementation(() => Promise.resolve(true));
     mockActivatedRouteSnapshot = TestBed.inject(ActivatedRoute).snapshot;
-    routingResolveService = TestBed.inject(CandidaturePRoutingResolveService);
     service = TestBed.inject(CandidaturePService);
     resultCandidatureP = undefined;
   });
@@ -46,8 +44,12 @@ describe('CandidatureP routing resolve service', () => {
       mockActivatedRouteSnapshot.params = { id: 123 };
 
       // WHEN
-      routingResolveService.resolve(mockActivatedRouteSnapshot).subscribe(result => {
-        resultCandidatureP = result;
+      TestBed.runInInjectionContext(() => {
+        candidaturePResolve(mockActivatedRouteSnapshot).subscribe({
+          next(result) {
+            resultCandidatureP = result;
+          },
+        });
       });
 
       // THEN
@@ -55,29 +57,37 @@ describe('CandidatureP routing resolve service', () => {
       expect(resultCandidatureP).toEqual({ id: 123 });
     });
 
-    it('should return new ICandidatureP if id is not provided', () => {
+    it('should return null if id is not provided', () => {
       // GIVEN
       service.find = jest.fn();
       mockActivatedRouteSnapshot.params = {};
 
       // WHEN
-      routingResolveService.resolve(mockActivatedRouteSnapshot).subscribe(result => {
-        resultCandidatureP = result;
+      TestBed.runInInjectionContext(() => {
+        candidaturePResolve(mockActivatedRouteSnapshot).subscribe({
+          next(result) {
+            resultCandidatureP = result;
+          },
+        });
       });
 
       // THEN
       expect(service.find).not.toBeCalled();
-      expect(resultCandidatureP).toEqual(new CandidatureP());
+      expect(resultCandidatureP).toEqual(null);
     });
 
     it('should route to 404 page if data not found in server', () => {
       // GIVEN
-      jest.spyOn(service, 'find').mockReturnValue(of(new HttpResponse({ body: null as unknown as CandidatureP })));
+      jest.spyOn(service, 'find').mockReturnValue(of(new HttpResponse<ICandidatureP>({ body: null })));
       mockActivatedRouteSnapshot.params = { id: 123 };
 
       // WHEN
-      routingResolveService.resolve(mockActivatedRouteSnapshot).subscribe(result => {
-        resultCandidatureP = result;
+      TestBed.runInInjectionContext(() => {
+        candidaturePResolve(mockActivatedRouteSnapshot).subscribe({
+          next(result) {
+            resultCandidatureP = result;
+          },
+        });
       });
 
       // THEN

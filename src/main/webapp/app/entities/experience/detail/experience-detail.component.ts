@@ -1,23 +1,21 @@
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { Component, Input } from '@angular/core';
+import { ActivatedRoute, RouterModule } from '@angular/router';
 
+import SharedModule from 'app/shared/shared.module';
+import { DurationPipe, FormatMediumDatetimePipe, FormatMediumDatePipe } from 'app/shared/date';
 import { IExperience } from '../experience.model';
 import { DataUtils } from 'app/core/util/data-util.service';
 
 @Component({
+  standalone: true,
   selector: 'jhi-experience-detail',
   templateUrl: './experience-detail.component.html',
+  imports: [SharedModule, RouterModule, DurationPipe, FormatMediumDatetimePipe, FormatMediumDatePipe],
 })
-export class ExperienceDetailComponent implements OnInit {
-  experience: IExperience | null = null;
+export class ExperienceDetailComponent {
+  @Input() experience: IExperience | null = null;
 
   constructor(protected dataUtils: DataUtils, protected activatedRoute: ActivatedRoute) {}
-
-  ngOnInit(): void {
-    this.activatedRoute.data.subscribe(({ experience }) => {
-      this.experience = experience;
-    });
-  }
 
   byteSize(base64String: string): string {
     return this.dataUtils.byteSize(base64String);

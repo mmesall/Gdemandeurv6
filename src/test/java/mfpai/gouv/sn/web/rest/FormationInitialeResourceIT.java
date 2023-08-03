@@ -5,12 +5,12 @@ import static org.hamcrest.Matchers.hasItem;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import jakarta.persistence.EntityManager;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicLong;
-import javax.persistence.EntityManager;
 import mfpai.gouv.sn.IntegrationTest;
 import mfpai.gouv.sn.domain.FormationInitiale;
 import mfpai.gouv.sn.domain.enumeration.Admission;
@@ -293,14 +293,14 @@ class FormationInitialeResourceIT {
 
     @Test
     @Transactional
-    void putNewFormationInitiale() throws Exception {
+    void putExistingFormationInitiale() throws Exception {
         // Initialize the database
         formationInitialeRepository.saveAndFlush(formationInitiale);
 
         int databaseSizeBeforeUpdate = formationInitialeRepository.findAll().size();
 
         // Update the formationInitiale
-        FormationInitiale updatedFormationInitiale = formationInitialeRepository.findById(formationInitiale.getId()).get();
+        FormationInitiale updatedFormationInitiale = formationInitialeRepository.findById(formationInitiale.getId()).orElseThrow();
         // Disconnect from session so that the updates on updatedFormationInitiale are not directly saved in db
         em.detach(updatedFormationInitiale);
         updatedFormationInitiale
@@ -424,14 +424,14 @@ class FormationInitialeResourceIT {
         partialUpdatedFormationInitiale.setId(formationInitiale.getId());
 
         partialUpdatedFormationInitiale
-            .duree(UPDATED_DUREE)
-            .niveauEtude(UPDATED_NIVEAU_ETUDE)
+            .diplomeRequis(UPDATED_DIPLOME_REQUIS)
             .ficheFormation(UPDATED_FICHE_FORMATION)
             .ficheFormationContentType(UPDATED_FICHE_FORMATION_CONTENT_TYPE)
+            .filiere(UPDATED_FILIERE)
             .cfp(UPDATED_CFP)
-            .lycee(UPDATED_LYCEE)
-            .dateOuverture(UPDATED_DATE_OUVERTURE)
-            .dateConcours(UPDATED_DATE_CONCOURS);
+            .dateCloture(UPDATED_DATE_CLOTURE)
+            .dateConcours(UPDATED_DATE_CONCOURS)
+            .nomDebouche(UPDATED_NOM_DEBOUCHE);
 
         restFormationInitialeMockMvc
             .perform(
@@ -446,22 +446,22 @@ class FormationInitialeResourceIT {
         assertThat(formationInitialeList).hasSize(databaseSizeBeforeUpdate);
         FormationInitiale testFormationInitiale = formationInitialeList.get(formationInitialeList.size() - 1);
         assertThat(testFormationInitiale.getNomFormationI()).isEqualTo(DEFAULT_NOM_FORMATION_I);
-        assertThat(testFormationInitiale.getDuree()).isEqualTo(UPDATED_DUREE);
+        assertThat(testFormationInitiale.getDuree()).isEqualTo(DEFAULT_DUREE);
         assertThat(testFormationInitiale.getAdmission()).isEqualTo(DEFAULT_ADMISSION);
-        assertThat(testFormationInitiale.getDiplomeRequis()).isEqualTo(DEFAULT_DIPLOME_REQUIS);
-        assertThat(testFormationInitiale.getNiveauEtude()).isEqualTo(UPDATED_NIVEAU_ETUDE);
+        assertThat(testFormationInitiale.getDiplomeRequis()).isEqualTo(UPDATED_DIPLOME_REQUIS);
+        assertThat(testFormationInitiale.getNiveauEtude()).isEqualTo(DEFAULT_NIVEAU_ETUDE);
         assertThat(testFormationInitiale.getFicheFormation()).isEqualTo(UPDATED_FICHE_FORMATION);
         assertThat(testFormationInitiale.getFicheFormationContentType()).isEqualTo(UPDATED_FICHE_FORMATION_CONTENT_TYPE);
-        assertThat(testFormationInitiale.getFiliere()).isEqualTo(DEFAULT_FILIERE);
+        assertThat(testFormationInitiale.getFiliere()).isEqualTo(UPDATED_FILIERE);
         assertThat(testFormationInitiale.getSerie()).isEqualTo(DEFAULT_SERIE);
         assertThat(testFormationInitiale.getCfp()).isEqualTo(UPDATED_CFP);
-        assertThat(testFormationInitiale.getLycee()).isEqualTo(UPDATED_LYCEE);
+        assertThat(testFormationInitiale.getLycee()).isEqualTo(DEFAULT_LYCEE);
         assertThat(testFormationInitiale.getNomConcours()).isEqualTo(DEFAULT_NOM_CONCOURS);
-        assertThat(testFormationInitiale.getDateOuverture()).isEqualTo(UPDATED_DATE_OUVERTURE);
-        assertThat(testFormationInitiale.getDateCloture()).isEqualTo(DEFAULT_DATE_CLOTURE);
+        assertThat(testFormationInitiale.getDateOuverture()).isEqualTo(DEFAULT_DATE_OUVERTURE);
+        assertThat(testFormationInitiale.getDateCloture()).isEqualTo(UPDATED_DATE_CLOTURE);
         assertThat(testFormationInitiale.getDateConcours()).isEqualTo(UPDATED_DATE_CONCOURS);
         assertThat(testFormationInitiale.getNomDiplome()).isEqualTo(DEFAULT_NOM_DIPLOME);
-        assertThat(testFormationInitiale.getNomDebouche()).isEqualTo(DEFAULT_NOM_DEBOUCHE);
+        assertThat(testFormationInitiale.getNomDebouche()).isEqualTo(UPDATED_NOM_DEBOUCHE);
     }
 
     @Test

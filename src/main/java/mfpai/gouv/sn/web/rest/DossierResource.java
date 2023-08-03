@@ -1,13 +1,13 @@
 package mfpai.gouv.sn.web.rest;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.StreamSupport;
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 import mfpai.gouv.sn.domain.Dossier;
 import mfpai.gouv.sn.repository.DossierRepository;
 import mfpai.gouv.sn.service.DossierService;
@@ -96,7 +96,7 @@ public class DossierResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        Dossier result = dossierService.save(dossier);
+        Dossier result = dossierService.update(dossier);
         return ResponseEntity
             .ok()
             .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, dossier.getId().toString()))
@@ -149,9 +149,9 @@ public class DossierResource {
      */
     @GetMapping("/dossiers")
     public ResponseEntity<List<Dossier>> getAllDossiers(
-        @org.springdoc.api.annotations.ParameterObject Pageable pageable,
+        @org.springdoc.core.annotations.ParameterObject Pageable pageable,
         @RequestParam(required = false) String filter,
-        @RequestParam(required = false, defaultValue = "true") boolean eagerload
+        @RequestParam(required = false, defaultValue = "false") boolean eagerload
     ) {
         if ("demandeur-is-null".equals(filter)) {
             log.debug("REST request to get all Dossiers where demandeur is null");

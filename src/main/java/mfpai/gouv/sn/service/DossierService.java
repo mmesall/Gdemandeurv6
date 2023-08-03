@@ -19,6 +19,14 @@ public interface DossierService {
     Dossier save(Dossier dossier);
 
     /**
+     * Updates a dossier.
+     *
+     * @param dossier the entity to update.
+     * @return the persisted entity.
+     */
+    Dossier update(Dossier dossier);
+
+    /**
      * Partially updates a dossier.
      *
      * @param dossier the entity to update partially.
@@ -33,6 +41,7 @@ public interface DossierService {
      * @return the list of entities.
      */
     Page<Dossier> findAll(Pageable pageable);
+
     /**
      * Get all the Dossier where Demandeur is {@code null}.
      *
@@ -62,5 +71,4 @@ public interface DossierService {
      * @param id the id of the entity.
      */
     void delete(Long id);
-    // Long findOneByIdDesc();
 }

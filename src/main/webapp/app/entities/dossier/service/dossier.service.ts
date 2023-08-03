@@ -1,14 +1,31 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
+
 import { map } from 'rxjs/operators';
+
 import dayjs from 'dayjs/esm';
 
 import { isPresent } from 'app/core/util/operators';
 import { DATE_FORMAT } from 'app/config/input.constants';
 import { ApplicationConfigService } from 'app/core/config/application-config.service';
 import { createRequestOption } from 'app/core/request/request-util';
-import { IDossier, getDossierIdentifier } from '../dossier.model';
+import { IDossier, NewDossier } from '../dossier.model';
+
+export type PartialUpdateDossier = Partial<IDossier> & Pick<IDossier, 'id'>;
+
+type RestOf<T extends IDossier | NewDossier> = Omit<T, 'dateNaiss' | 'anneeObtention' | 'dateDebut' | 'dateFin'> & {
+  dateNaiss?: string | null;
+  anneeObtention?: string | null;
+  dateDebut?: string | null;
+  dateFin?: string | null;
+};
+
+export type RestDossier = RestOf<IDossier>;
+
+export type NewRestDossier = RestOf<NewDossier>;
+
+export type PartialUpdateRestDossier = RestOf<PartialUpdateDossier>;
 
 export type EntityResponseType = HttpResponse<IDossier>;
 export type EntityArrayResponseType = HttpResponse<IDossier[]>;
@@ -19,51 +36,62 @@ export class DossierService {
 
   constructor(protected http: HttpClient, protected applicationConfigService: ApplicationConfigService) {}
 
-  create(dossier: IDossier): Observable<EntityResponseType> {
+  create(dossier: NewDossier): Observable<EntityResponseType> {
     const copy = this.convertDateFromClient(dossier);
     return this.http
-      .post<IDossier>(this.resourceUrl, copy, { observe: 'response' })
-      .pipe(map((res: EntityResponseType) => this.convertDateFromServer(res)));
+      .post<RestDossier>(this.resourceUrl, copy, { observe: 'response' })
+      .pipe(map(res => this.convertResponseFromServer(res)));
   }
 
   update(dossier: IDossier): Observable<EntityResponseType> {
     const copy = this.convertDateFromClient(dossier);
     return this.http
-      .put<IDossier>(`${this.resourceUrl}/${getDossierIdentifier(dossier) as number}`, copy, { observe: 'response' })
-      .pipe(map((res: EntityResponseType) => this.convertDateFromServer(res)));
+      .put<RestDossier>(`${this.resourceUrl}/${this.getDossierIdentifier(dossier)}`, copy, { observe: 'response' })
+      .pipe(map(res => this.convertResponseFromServer(res)));
   }
 
-  partialUpdate(dossier: IDossier): Observable<EntityResponseType> {
+  partialUpdate(dossier: PartialUpdateDossier): Observable<EntityResponseType> {
     const copy = this.convertDateFromClient(dossier);
     return this.http
-      .patch<IDossier>(`${this.resourceUrl}/${getDossierIdentifier(dossier) as number}`, copy, { observe: 'response' })
-      .pipe(map((res: EntityResponseType) => this.convertDateFromServer(res)));
+      .patch<RestDossier>(`${this.resourceUrl}/${this.getDossierIdentifier(dossier)}`, copy, { observe: 'response' })
+      .pipe(map(res => this.convertResponseFromServer(res)));
   }
 
   find(id: number): Observable<EntityResponseType> {
     return this.http
-      .get<IDossier>(`${this.resourceUrl}/${id}`, { observe: 'response' })
-      .pipe(map((res: EntityResponseType) => this.convertDateFromServer(res)));
+      .get<RestDossier>(`${this.resourceUrl}/${id}`, { observe: 'response' })
+      .pipe(map(res => this.convertResponseFromServer(res)));
   }
 
   query(req?: any): Observable<EntityArrayResponseType> {
     const options = createRequestOption(req);
     return this.http
-      .get<IDossier[]>(this.resourceUrl, { params: options, observe: 'response' })
-      .pipe(map((res: EntityArrayResponseType) => this.convertDateArrayFromServer(res)));
+      .get<RestDossier[]>(this.resourceUrl, { params: options, observe: 'response' })
+      .pipe(map(res => this.convertResponseArrayFromServer(res)));
   }
 
   delete(id: number): Observable<HttpResponse<{}>> {
     return this.http.delete(`${this.resourceUrl}/${id}`, { observe: 'response' });
   }
 
-  addDossierToCollectionIfMissing(dossierCollection: IDossier[], ...dossiersToCheck: (IDossier | null | undefined)[]): IDossier[] {
-    const dossiers: IDossier[] = dossiersToCheck.filter(isPresent);
+  getDossierIdentifier(dossier: Pick<IDossier, 'id'>): number {
+    return dossier.id;
+  }
+
+  compareDossier(o1: Pick<IDossier, 'id'> | null, o2: Pick<IDossier, 'id'> | null): boolean {
+    return o1 && o2 ? this.getDossierIdentifier(o1) === this.getDossierIdentifier(o2) : o1 === o2;
+  }
+
+  addDossierToCollectionIfMissing<Type extends Pick<IDossier, 'id'>>(
+    dossierCollection: Type[],
+    ...dossiersToCheck: (Type | null | undefined)[]
+  ): Type[] {
+    const dossiers: Type[] = dossiersToCheck.filter(isPresent);
     if (dossiers.length > 0) {
-      const dossierCollectionIdentifiers = dossierCollection.map(dossierItem => getDossierIdentifier(dossierItem)!);
+      const dossierCollectionIdentifiers = dossierCollection.map(dossierItem => this.getDossierIdentifier(dossierItem)!);
       const dossiersToAdd = dossiers.filter(dossierItem => {
-        const dossierIdentifier = getDossierIdentifier(dossierItem);
-        if (dossierIdentifier == null || dossierCollectionIdentifiers.includes(dossierIdentifier)) {
+        const dossierIdentifier = this.getDossierIdentifier(dossierItem);
+        if (dossierCollectionIdentifiers.includes(dossierIdentifier)) {
           return false;
         }
         dossierCollectionIdentifiers.push(dossierIdentifier);
@@ -74,25 +102,35 @@ export class DossierService {
     return dossierCollection;
   }
 
-  protected convertDateFromClient(dossier: IDossier): IDossier {
-    return Object.assign({}, dossier, {
-      dateNaiss: dossier.dateNaiss?.isValid() ? dossier.dateNaiss.format(DATE_FORMAT) : undefined,
+  protected convertDateFromClient<T extends IDossier | NewDossier | PartialUpdateDossier>(dossier: T): RestOf<T> {
+    return {
+      ...dossier,
+      dateNaiss: dossier.dateNaiss?.format(DATE_FORMAT) ?? null,
+      anneeObtention: dossier.anneeObtention?.format(DATE_FORMAT) ?? null,
+      dateDebut: dossier.dateDebut?.format(DATE_FORMAT) ?? null,
+      dateFin: dossier.dateFin?.format(DATE_FORMAT) ?? null,
+    };
+  }
+
+  protected convertDateFromServer(restDossier: RestDossier): IDossier {
+    return {
+      ...restDossier,
+      dateNaiss: restDossier.dateNaiss ? dayjs(restDossier.dateNaiss) : undefined,
+      anneeObtention: restDossier.anneeObtention ? dayjs(restDossier.anneeObtention) : undefined,
+      dateDebut: restDossier.dateDebut ? dayjs(restDossier.dateDebut) : undefined,
+      dateFin: restDossier.dateFin ? dayjs(restDossier.dateFin) : undefined,
+    };
+  }
+
+  protected convertResponseFromServer(res: HttpResponse<RestDossier>): HttpResponse<IDossier> {
+    return res.clone({
+      body: res.body ? this.convertDateFromServer(res.body) : null,
     });
   }
 
-  protected convertDateFromServer(res: EntityResponseType): EntityResponseType {
-    if (res.body) {
-      res.body.dateNaiss = res.body.dateNaiss ? dayjs(res.body.dateNaiss) : undefined;
-    }
-    return res;
-  }
-
-  protected convertDateArrayFromServer(res: EntityArrayResponseType): EntityArrayResponseType {
-    if (res.body) {
-      res.body.forEach((dossier: IDossier) => {
-        dossier.dateNaiss = dossier.dateNaiss ? dayjs(dossier.dateNaiss) : undefined;
-      });
-    }
-    return res;
+  protected convertResponseArrayFromServer(res: HttpResponse<RestDossier[]>): HttpResponse<IDossier[]> {
+    return res.clone({
+      body: res.body ? res.body.map(item => this.convertDateFromServer(item)) : null,
+    });
   }
 }

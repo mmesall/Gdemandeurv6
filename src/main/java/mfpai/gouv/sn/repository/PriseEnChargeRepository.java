@@ -10,7 +10,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 /**
- * Spring Data SQL repository for the PriseEnCharge entity.
+ * Spring Data JPA repository for the PriseEnCharge entity.
  */
 @Repository
 public interface PriseEnChargeRepository extends JpaRepository<PriseEnCharge, Long> {
@@ -27,12 +27,12 @@ public interface PriseEnChargeRepository extends JpaRepository<PriseEnCharge, Lo
     }
 
     @Query(
-        value = "select distinct priseEnCharge from PriseEnCharge priseEnCharge left join fetch priseEnCharge.bailleur",
-        countQuery = "select count(distinct priseEnCharge) from PriseEnCharge priseEnCharge"
+        value = "select priseEnCharge from PriseEnCharge priseEnCharge left join fetch priseEnCharge.bailleur",
+        countQuery = "select count(priseEnCharge) from PriseEnCharge priseEnCharge"
     )
     Page<PriseEnCharge> findAllWithToOneRelationships(Pageable pageable);
 
-    @Query("select distinct priseEnCharge from PriseEnCharge priseEnCharge left join fetch priseEnCharge.bailleur")
+    @Query("select priseEnCharge from PriseEnCharge priseEnCharge left join fetch priseEnCharge.bailleur")
     List<PriseEnCharge> findAllWithToOneRelationships();
 
     @Query("select priseEnCharge from PriseEnCharge priseEnCharge left join fetch priseEnCharge.bailleur where priseEnCharge.id =:id")

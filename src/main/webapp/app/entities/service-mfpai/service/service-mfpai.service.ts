@@ -5,7 +5,9 @@ import { Observable } from 'rxjs';
 import { isPresent } from 'app/core/util/operators';
 import { ApplicationConfigService } from 'app/core/config/application-config.service';
 import { createRequestOption } from 'app/core/request/request-util';
-import { IServiceMFPAI, getServiceMFPAIIdentifier } from '../service-mfpai.model';
+import { IServiceMFPAI, NewServiceMFPAI } from '../service-mfpai.model';
+
+export type PartialUpdateServiceMFPAI = Partial<IServiceMFPAI> & Pick<IServiceMFPAI, 'id'>;
 
 export type EntityResponseType = HttpResponse<IServiceMFPAI>;
 export type EntityArrayResponseType = HttpResponse<IServiceMFPAI[]>;
@@ -16,18 +18,18 @@ export class ServiceMFPAIService {
 
   constructor(protected http: HttpClient, protected applicationConfigService: ApplicationConfigService) {}
 
-  create(serviceMFPAI: IServiceMFPAI): Observable<EntityResponseType> {
+  create(serviceMFPAI: NewServiceMFPAI): Observable<EntityResponseType> {
     return this.http.post<IServiceMFPAI>(this.resourceUrl, serviceMFPAI, { observe: 'response' });
   }
 
   update(serviceMFPAI: IServiceMFPAI): Observable<EntityResponseType> {
-    return this.http.put<IServiceMFPAI>(`${this.resourceUrl}/${getServiceMFPAIIdentifier(serviceMFPAI) as number}`, serviceMFPAI, {
+    return this.http.put<IServiceMFPAI>(`${this.resourceUrl}/${this.getServiceMFPAIIdentifier(serviceMFPAI)}`, serviceMFPAI, {
       observe: 'response',
     });
   }
 
-  partialUpdate(serviceMFPAI: IServiceMFPAI): Observable<EntityResponseType> {
-    return this.http.patch<IServiceMFPAI>(`${this.resourceUrl}/${getServiceMFPAIIdentifier(serviceMFPAI) as number}`, serviceMFPAI, {
+  partialUpdate(serviceMFPAI: PartialUpdateServiceMFPAI): Observable<EntityResponseType> {
+    return this.http.patch<IServiceMFPAI>(`${this.resourceUrl}/${this.getServiceMFPAIIdentifier(serviceMFPAI)}`, serviceMFPAI, {
       observe: 'response',
     });
   }
@@ -45,18 +47,26 @@ export class ServiceMFPAIService {
     return this.http.delete(`${this.resourceUrl}/${id}`, { observe: 'response' });
   }
 
-  addServiceMFPAIToCollectionIfMissing(
-    serviceMFPAICollection: IServiceMFPAI[],
-    ...serviceMFPAISToCheck: (IServiceMFPAI | null | undefined)[]
-  ): IServiceMFPAI[] {
-    const serviceMFPAIS: IServiceMFPAI[] = serviceMFPAISToCheck.filter(isPresent);
+  getServiceMFPAIIdentifier(serviceMFPAI: Pick<IServiceMFPAI, 'id'>): number {
+    return serviceMFPAI.id;
+  }
+
+  compareServiceMFPAI(o1: Pick<IServiceMFPAI, 'id'> | null, o2: Pick<IServiceMFPAI, 'id'> | null): boolean {
+    return o1 && o2 ? this.getServiceMFPAIIdentifier(o1) === this.getServiceMFPAIIdentifier(o2) : o1 === o2;
+  }
+
+  addServiceMFPAIToCollectionIfMissing<Type extends Pick<IServiceMFPAI, 'id'>>(
+    serviceMFPAICollection: Type[],
+    ...serviceMFPAISToCheck: (Type | null | undefined)[]
+  ): Type[] {
+    const serviceMFPAIS: Type[] = serviceMFPAISToCheck.filter(isPresent);
     if (serviceMFPAIS.length > 0) {
       const serviceMFPAICollectionIdentifiers = serviceMFPAICollection.map(
-        serviceMFPAIItem => getServiceMFPAIIdentifier(serviceMFPAIItem)!
+        serviceMFPAIItem => this.getServiceMFPAIIdentifier(serviceMFPAIItem)!
       );
       const serviceMFPAISToAdd = serviceMFPAIS.filter(serviceMFPAIItem => {
-        const serviceMFPAIIdentifier = getServiceMFPAIIdentifier(serviceMFPAIItem);
-        if (serviceMFPAIIdentifier == null || serviceMFPAICollectionIdentifiers.includes(serviceMFPAIIdentifier)) {
+        const serviceMFPAIIdentifier = this.getServiceMFPAIIdentifier(serviceMFPAIItem);
+        if (serviceMFPAICollectionIdentifiers.includes(serviceMFPAIIdentifier)) {
           return false;
         }
         serviceMFPAICollectionIdentifiers.push(serviceMFPAIIdentifier);

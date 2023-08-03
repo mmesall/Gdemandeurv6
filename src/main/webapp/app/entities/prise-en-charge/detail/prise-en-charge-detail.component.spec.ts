@@ -1,36 +1,38 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ActivatedRoute } from '@angular/router';
+import { TestBed } from '@angular/core/testing';
+import { provideRouter, withComponentInputBinding } from '@angular/router';
+import { RouterTestingHarness, RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
 
 import { PriseEnChargeDetailComponent } from './prise-en-charge-detail.component';
 
 describe('PriseEnCharge Management Detail Component', () => {
-  let comp: PriseEnChargeDetailComponent;
-  let fixture: ComponentFixture<PriseEnChargeDetailComponent>;
-
-  beforeEach(() => {
-    TestBed.configureTestingModule({
-      declarations: [PriseEnChargeDetailComponent],
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [PriseEnChargeDetailComponent, RouterTestingModule.withRoutes([], { bindToComponentInputs: true })],
       providers: [
-        {
-          provide: ActivatedRoute,
-          useValue: { data: of({ priseEnCharge: { id: 123 } }) },
-        },
+        provideRouter(
+          [
+            {
+              path: '**',
+              component: PriseEnChargeDetailComponent,
+              resolve: { priseEnCharge: () => of({ id: 123 }) },
+            },
+          ],
+          withComponentInputBinding()
+        ),
       ],
     })
       .overrideTemplate(PriseEnChargeDetailComponent, '')
       .compileComponents();
-    fixture = TestBed.createComponent(PriseEnChargeDetailComponent);
-    comp = fixture.componentInstance;
   });
 
   describe('OnInit', () => {
-    it('Should load priseEnCharge on init', () => {
-      // WHEN
-      comp.ngOnInit();
+    it('Should load priseEnCharge on init', async () => {
+      const harness = await RouterTestingHarness.create();
+      const instance = await harness.navigateByUrl('/', PriseEnChargeDetailComponent);
 
       // THEN
-      expect(comp.priseEnCharge).toEqual(expect.objectContaining({ id: 123 }));
+      expect(instance.priseEnCharge).toEqual(expect.objectContaining({ id: 123 }));
     });
   });
 });

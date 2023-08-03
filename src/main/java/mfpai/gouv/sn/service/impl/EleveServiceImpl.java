@@ -36,6 +36,12 @@ public class EleveServiceImpl implements EleveService {
     }
 
     @Override
+    public Eleve update(Eleve eleve) {
+        log.debug("Request to update Eleve : {}", eleve);
+        return eleveRepository.save(eleve);
+    }
+
+    @Override
     public Optional<Eleve> partialUpdate(Eleve eleve) {
         log.debug("Request to partially update Eleve : {}", eleve);
 
@@ -99,10 +105,7 @@ public class EleveServiceImpl implements EleveService {
     @Transactional(readOnly = true)
     public List<Eleve> findAllWhereDossierIsNull() {
         log.debug("Request to get all eleves where Dossier is null");
-        return StreamSupport
-            .stream(eleveRepository.findAll().spliterator(), false)
-            .filter(eleve -> eleve.getDossier() == null)
-            .collect(Collectors.toList());
+        return StreamSupport.stream(eleveRepository.findAll().spliterator(), false).filter(eleve -> eleve.getDossier() == null).toList();
     }
 
     /**
@@ -112,10 +115,7 @@ public class EleveServiceImpl implements EleveService {
     @Transactional(readOnly = true)
     public List<Eleve> findAllWhereDemandeurIsNull() {
         log.debug("Request to get all eleves where Demandeur is null");
-        return StreamSupport
-            .stream(eleveRepository.findAll().spliterator(), false)
-            .filter(eleve -> eleve.getDemandeur() == null)
-            .collect(Collectors.toList());
+        return StreamSupport.stream(eleveRepository.findAll().spliterator(), false).filter(eleve -> eleve.getDemandeur() == null).toList();
     }
 
     @Override

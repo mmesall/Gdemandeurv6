@@ -93,7 +93,7 @@ public class ConcoursResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        Concours result = concoursService.save(concours);
+        Concours result = concoursService.update(concours);
         return ResponseEntity
             .ok()
             .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, concours.getId().toString()))
@@ -145,8 +145,8 @@ public class ConcoursResource {
      */
     @GetMapping("/concours")
     public ResponseEntity<List<Concours>> getAllConcours(
-        @org.springdoc.api.annotations.ParameterObject Pageable pageable,
-        @RequestParam(required = false, defaultValue = "true") boolean eagerload
+        @org.springdoc.core.annotations.ParameterObject Pageable pageable,
+        @RequestParam(required = false, defaultValue = "false") boolean eagerload
     ) {
         log.debug("REST request to get a page of Concours");
         Page<Concours> page;

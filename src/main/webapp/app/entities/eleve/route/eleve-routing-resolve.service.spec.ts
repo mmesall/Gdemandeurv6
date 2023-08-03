@@ -1,21 +1,20 @@
 import { TestBed } from '@angular/core/testing';
 import { HttpResponse } from '@angular/common/http';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { ActivatedRouteSnapshot, ActivatedRoute, Router, convertToParamMap } from '@angular/router';
+import { ActivatedRouteSnapshot, ActivatedRoute, Router, convertToParamMap, RouterStateSnapshot } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
 
-import { IEleve, Eleve } from '../eleve.model';
+import { IEleve } from '../eleve.model';
 import { EleveService } from '../service/eleve.service';
 
-import { EleveRoutingResolveService } from './eleve-routing-resolve.service';
+import eleveResolve from './eleve-routing-resolve.service';
 
 describe('Eleve routing resolve service', () => {
   let mockRouter: Router;
   let mockActivatedRouteSnapshot: ActivatedRouteSnapshot;
-  let routingResolveService: EleveRoutingResolveService;
   let service: EleveService;
-  let resultEleve: IEleve | undefined;
+  let resultEleve: IEleve | null | undefined;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -34,7 +33,6 @@ describe('Eleve routing resolve service', () => {
     mockRouter = TestBed.inject(Router);
     jest.spyOn(mockRouter, 'navigate').mockImplementation(() => Promise.resolve(true));
     mockActivatedRouteSnapshot = TestBed.inject(ActivatedRoute).snapshot;
-    routingResolveService = TestBed.inject(EleveRoutingResolveService);
     service = TestBed.inject(EleveService);
     resultEleve = undefined;
   });
@@ -46,8 +44,12 @@ describe('Eleve routing resolve service', () => {
       mockActivatedRouteSnapshot.params = { id: 123 };
 
       // WHEN
-      routingResolveService.resolve(mockActivatedRouteSnapshot).subscribe(result => {
-        resultEleve = result;
+      TestBed.runInInjectionContext(() => {
+        eleveResolve(mockActivatedRouteSnapshot).subscribe({
+          next(result) {
+            resultEleve = result;
+          },
+        });
       });
 
       // THEN
@@ -55,29 +57,37 @@ describe('Eleve routing resolve service', () => {
       expect(resultEleve).toEqual({ id: 123 });
     });
 
-    it('should return new IEleve if id is not provided', () => {
+    it('should return null if id is not provided', () => {
       // GIVEN
       service.find = jest.fn();
       mockActivatedRouteSnapshot.params = {};
 
       // WHEN
-      routingResolveService.resolve(mockActivatedRouteSnapshot).subscribe(result => {
-        resultEleve = result;
+      TestBed.runInInjectionContext(() => {
+        eleveResolve(mockActivatedRouteSnapshot).subscribe({
+          next(result) {
+            resultEleve = result;
+          },
+        });
       });
 
       // THEN
       expect(service.find).not.toBeCalled();
-      expect(resultEleve).toEqual(new Eleve());
+      expect(resultEleve).toEqual(null);
     });
 
     it('should route to 404 page if data not found in server', () => {
       // GIVEN
-      jest.spyOn(service, 'find').mockReturnValue(of(new HttpResponse({ body: null as unknown as Eleve })));
+      jest.spyOn(service, 'find').mockReturnValue(of(new HttpResponse<IEleve>({ body: null })));
       mockActivatedRouteSnapshot.params = { id: 123 };
 
       // WHEN
-      routingResolveService.resolve(mockActivatedRouteSnapshot).subscribe(result => {
-        resultEleve = result;
+      TestBed.runInInjectionContext(() => {
+        eleveResolve(mockActivatedRouteSnapshot).subscribe({
+          next(result) {
+            resultEleve = result;
+          },
+        });
       });
 
       // THEN

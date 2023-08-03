@@ -5,7 +5,9 @@ import { Observable } from 'rxjs';
 import { isPresent } from 'app/core/util/operators';
 import { ApplicationConfigService } from 'app/core/config/application-config.service';
 import { createRequestOption } from 'app/core/request/request-util';
-import { IDiplome, getDiplomeIdentifier } from '../diplome.model';
+import { IDiplome, NewDiplome } from '../diplome.model';
+
+export type PartialUpdateDiplome = Partial<IDiplome> & Pick<IDiplome, 'id'>;
 
 export type EntityResponseType = HttpResponse<IDiplome>;
 export type EntityArrayResponseType = HttpResponse<IDiplome[]>;
@@ -16,16 +18,16 @@ export class DiplomeService {
 
   constructor(protected http: HttpClient, protected applicationConfigService: ApplicationConfigService) {}
 
-  create(diplome: IDiplome): Observable<EntityResponseType> {
+  create(diplome: NewDiplome): Observable<EntityResponseType> {
     return this.http.post<IDiplome>(this.resourceUrl, diplome, { observe: 'response' });
   }
 
   update(diplome: IDiplome): Observable<EntityResponseType> {
-    return this.http.put<IDiplome>(`${this.resourceUrl}/${getDiplomeIdentifier(diplome) as number}`, diplome, { observe: 'response' });
+    return this.http.put<IDiplome>(`${this.resourceUrl}/${this.getDiplomeIdentifier(diplome)}`, diplome, { observe: 'response' });
   }
 
-  partialUpdate(diplome: IDiplome): Observable<EntityResponseType> {
-    return this.http.patch<IDiplome>(`${this.resourceUrl}/${getDiplomeIdentifier(diplome) as number}`, diplome, { observe: 'response' });
+  partialUpdate(diplome: PartialUpdateDiplome): Observable<EntityResponseType> {
+    return this.http.patch<IDiplome>(`${this.resourceUrl}/${this.getDiplomeIdentifier(diplome)}`, diplome, { observe: 'response' });
   }
 
   find(id: number): Observable<EntityResponseType> {
@@ -41,13 +43,24 @@ export class DiplomeService {
     return this.http.delete(`${this.resourceUrl}/${id}`, { observe: 'response' });
   }
 
-  addDiplomeToCollectionIfMissing(diplomeCollection: IDiplome[], ...diplomesToCheck: (IDiplome | null | undefined)[]): IDiplome[] {
-    const diplomes: IDiplome[] = diplomesToCheck.filter(isPresent);
+  getDiplomeIdentifier(diplome: Pick<IDiplome, 'id'>): number {
+    return diplome.id;
+  }
+
+  compareDiplome(o1: Pick<IDiplome, 'id'> | null, o2: Pick<IDiplome, 'id'> | null): boolean {
+    return o1 && o2 ? this.getDiplomeIdentifier(o1) === this.getDiplomeIdentifier(o2) : o1 === o2;
+  }
+
+  addDiplomeToCollectionIfMissing<Type extends Pick<IDiplome, 'id'>>(
+    diplomeCollection: Type[],
+    ...diplomesToCheck: (Type | null | undefined)[]
+  ): Type[] {
+    const diplomes: Type[] = diplomesToCheck.filter(isPresent);
     if (diplomes.length > 0) {
-      const diplomeCollectionIdentifiers = diplomeCollection.map(diplomeItem => getDiplomeIdentifier(diplomeItem)!);
+      const diplomeCollectionIdentifiers = diplomeCollection.map(diplomeItem => this.getDiplomeIdentifier(diplomeItem)!);
       const diplomesToAdd = diplomes.filter(diplomeItem => {
-        const diplomeIdentifier = getDiplomeIdentifier(diplomeItem);
-        if (diplomeIdentifier == null || diplomeCollectionIdentifiers.includes(diplomeIdentifier)) {
+        const diplomeIdentifier = this.getDiplomeIdentifier(diplomeItem);
+        if (diplomeCollectionIdentifiers.includes(diplomeIdentifier)) {
           return false;
         }
         diplomeCollectionIdentifiers.push(diplomeIdentifier);

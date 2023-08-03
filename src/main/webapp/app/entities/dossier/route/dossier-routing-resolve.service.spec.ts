@@ -1,21 +1,20 @@
 import { TestBed } from '@angular/core/testing';
 import { HttpResponse } from '@angular/common/http';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { ActivatedRouteSnapshot, ActivatedRoute, Router, convertToParamMap } from '@angular/router';
+import { ActivatedRouteSnapshot, ActivatedRoute, Router, convertToParamMap, RouterStateSnapshot } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
 
-import { IDossier, Dossier } from '../dossier.model';
+import { IDossier } from '../dossier.model';
 import { DossierService } from '../service/dossier.service';
 
-import { DossierRoutingResolveService } from './dossier-routing-resolve.service';
+import dossierResolve from './dossier-routing-resolve.service';
 
 describe('Dossier routing resolve service', () => {
   let mockRouter: Router;
   let mockActivatedRouteSnapshot: ActivatedRouteSnapshot;
-  let routingResolveService: DossierRoutingResolveService;
   let service: DossierService;
-  let resultDossier: IDossier | undefined;
+  let resultDossier: IDossier | null | undefined;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -34,7 +33,6 @@ describe('Dossier routing resolve service', () => {
     mockRouter = TestBed.inject(Router);
     jest.spyOn(mockRouter, 'navigate').mockImplementation(() => Promise.resolve(true));
     mockActivatedRouteSnapshot = TestBed.inject(ActivatedRoute).snapshot;
-    routingResolveService = TestBed.inject(DossierRoutingResolveService);
     service = TestBed.inject(DossierService);
     resultDossier = undefined;
   });
@@ -46,8 +44,12 @@ describe('Dossier routing resolve service', () => {
       mockActivatedRouteSnapshot.params = { id: 123 };
 
       // WHEN
-      routingResolveService.resolve(mockActivatedRouteSnapshot).subscribe(result => {
-        resultDossier = result;
+      TestBed.runInInjectionContext(() => {
+        dossierResolve(mockActivatedRouteSnapshot).subscribe({
+          next(result) {
+            resultDossier = result;
+          },
+        });
       });
 
       // THEN
@@ -55,29 +57,37 @@ describe('Dossier routing resolve service', () => {
       expect(resultDossier).toEqual({ id: 123 });
     });
 
-    it('should return new IDossier if id is not provided', () => {
+    it('should return null if id is not provided', () => {
       // GIVEN
       service.find = jest.fn();
       mockActivatedRouteSnapshot.params = {};
 
       // WHEN
-      routingResolveService.resolve(mockActivatedRouteSnapshot).subscribe(result => {
-        resultDossier = result;
+      TestBed.runInInjectionContext(() => {
+        dossierResolve(mockActivatedRouteSnapshot).subscribe({
+          next(result) {
+            resultDossier = result;
+          },
+        });
       });
 
       // THEN
       expect(service.find).not.toBeCalled();
-      expect(resultDossier).toEqual(new Dossier());
+      expect(resultDossier).toEqual(null);
     });
 
     it('should route to 404 page if data not found in server', () => {
       // GIVEN
-      jest.spyOn(service, 'find').mockReturnValue(of(new HttpResponse({ body: null as unknown as Dossier })));
+      jest.spyOn(service, 'find').mockReturnValue(of(new HttpResponse<IDossier>({ body: null })));
       mockActivatedRouteSnapshot.params = { id: 123 };
 
       // WHEN
-      routingResolveService.resolve(mockActivatedRouteSnapshot).subscribe(result => {
-        resultDossier = result;
+      TestBed.runInInjectionContext(() => {
+        dossierResolve(mockActivatedRouteSnapshot).subscribe({
+          next(result) {
+            resultDossier = result;
+          },
+        });
       });
 
       // THEN

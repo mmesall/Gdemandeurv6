@@ -1,7 +1,7 @@
 <div class="d-flex justify-content-center">
   <div class="col-8">
     <div *ngIf="formation">
-      <h2 data-cy="formationDetailsHeading"><span>Formation</span></h2>
+      <h2 data-cy="formationDetailsHeading"><span jhiTranslate="jhipsterProjectBaseJwtApp.formation.detail.title">Formation</span></h2>
 
       <hr />
 
@@ -10,15 +10,15 @@
       <jhi-alert></jhi-alert>
 
       <dl class="row-md jh-entity-details">
-        <dt><span>ID</span></dt>
+        <dt><span jhiTranslate="global.field.id">ID</span></dt>
         <dd>
           <span>{{ formation.id }}</span>
         </dd>
-        <dt><span>Nom Formation</span></dt>
+        <dt><span jhiTranslate="jhipsterProjectBaseJwtApp.formation.nomFormation">Nom Formation</span></dt>
         <dd>
           <span>{{ formation.nomFormation }}</span>
         </dd>
-        <dt><span>Image Formation</span></dt>
+        <dt><span jhiTranslate="jhipsterProjectBaseJwtApp.formation.imageFormation">Image Formation</span></dt>
         <dd>
           <div *ngIf="formation.imageFormation">
             <a (click)="openFile(formation.imageFormation, formation.imageFormationContentType)">
@@ -31,44 +31,50 @@
             {{ formation.imageFormationContentType }}, {{ byteSize(formation.imageFormation) }}
           </div>
         </dd>
-        <dt><span>Type Formation</span></dt>
+        <dt><span jhiTranslate="jhipsterProjectBaseJwtApp.formation.typeFormation">Type Formation</span></dt>
         <dd>
-          <span>{{ formation.typeFormation }}</span>
+          <span jhiTranslate="{{ 'jhipsterProjectBaseJwtApp.TypeFormation.' + formation.typeFormation }}">{{
+            formation.typeFormation
+          }}</span>
         </dd>
-        <dt><span>Duree</span></dt>
+        <dt><span jhiTranslate="jhipsterProjectBaseJwtApp.formation.duree">Duree</span></dt>
         <dd>
           <span>{{ formation.duree }}</span>
         </dd>
-        <dt><span>Admission</span></dt>
+        <dt><span jhiTranslate="jhipsterProjectBaseJwtApp.formation.admission">Admission</span></dt>
         <dd>
-          <span>{{ formation.admission }}</span>
+          <span jhiTranslate="{{ 'jhipsterProjectBaseJwtApp.Admission.' + formation.admission }}">{{ formation.admission }}</span>
         </dd>
-        <dt><span>Diplome Requis</span></dt>
+        <dt><span jhiTranslate="jhipsterProjectBaseJwtApp.formation.diplomeRequis">Diplome Requis</span></dt>
         <dd>
-          <span>{{ formation.diplomeRequis }}</span>
+          <span jhiTranslate="{{ 'jhipsterProjectBaseJwtApp.DiplomeRequis.' + formation.diplomeRequis }}">{{
+            formation.diplomeRequis
+          }}</span>
         </dd>
-        <dt><span>Fiche Formation</span></dt>
+        <dt><span jhiTranslate="jhipsterProjectBaseJwtApp.formation.ficheFormation">Fiche Formation</span></dt>
         <dd>
           <div *ngIf="formation.ficheFormation">
-            <a (click)="openFile(formation.ficheFormation, formation.ficheFormationContentType)">open</a>
+            <a (click)="openFile(formation.ficheFormation, formation.ficheFormationContentType)" jhiTranslate="entity.action.open"
+              >Ouvrir</a
+            >
             {{ formation.ficheFormationContentType }}, {{ byteSize(formation.ficheFormation) }}
           </div>
         </dd>
-        <dt><span>Etablissement</span></dt>
+        <dt><span jhiTranslate="jhipsterProjectBaseJwtApp.formation.etablissement">Etablissement</span></dt>
         <dd>
           <span *ngFor="let etablissement of formation.etablissements; let last = last">
-            <a [routerLink]="['/etablissement', etablissement?.id, 'view']">{{ etablissement.nomEtablissement }}</a
+            <a [routerLink]="['/etablissement', etablissement.id, 'view']">{{ etablissement.nomEtablissement }}</a
             >{{ last ? '' : ', ' }}
           </span>
         </dd>
       </dl>
 
       <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
-        <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span>Back</span>
+        <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Retour</span>
       </button>
 
       <button type="button" [routerLink]="['/formation', formation.id, 'edit']" class="btn btn-primary">
-        <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span>Edit</span>
+        <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Editer</span>
       </button>
     </div>
   </div>

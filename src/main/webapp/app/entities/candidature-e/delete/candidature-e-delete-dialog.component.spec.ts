@@ -18,8 +18,7 @@ describe('CandidatureE Management Delete Component', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
-      declarations: [CandidatureEDeleteDialogComponent],
+      imports: [HttpClientTestingModule, CandidatureEDeleteDialogComponent],
       providers: [NgbActiveModal],
     })
       .overrideTemplate(CandidatureEDeleteDialogComponent, '')

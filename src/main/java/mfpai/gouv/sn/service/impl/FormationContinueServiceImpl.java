@@ -33,6 +33,12 @@ public class FormationContinueServiceImpl implements FormationContinueService {
     }
 
     @Override
+    public FormationContinue update(FormationContinue formationContinue) {
+        log.debug("Request to update FormationContinue : {}", formationContinue);
+        return formationContinueRepository.save(formationContinue);
+    }
+
+    @Override
     public Optional<FormationContinue> partialUpdate(FormationContinue formationContinue) {
         log.debug("Request to partially update FormationContinue : {}", formationContinue);
 

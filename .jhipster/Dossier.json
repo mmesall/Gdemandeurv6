@@ -1,18 +1,12 @@
 {
   "applications": "*",
   "changelogDate": "20230328104852",
-  "dto": "no",
-  "embedded": false,
   "entityTableName": "dossier",
   "fields": [
     {
       "fieldName": "numDossier",
       "fieldType": "String",
       "fieldValidateRules": ["unique"]
-    },
-    {
-      "fieldName": "dateNaiss",
-      "fieldType": "LocalDate"
     },
     {
       "fieldName": "prenom",
@@ -26,6 +20,15 @@
     },
     {
       "fieldName": "nomUtilisateur",
+      "fieldType": "String",
+      "fieldValidateRules": ["unique"]
+    },
+    {
+      "fieldName": "dateNaiss",
+      "fieldType": "LocalDate"
+    },
+    {
+      "fieldName": "lieuNaiss",
       "fieldType": "String"
     },
     {
@@ -37,10 +40,6 @@
       "fieldName": "departementNaiss",
       "fieldType": "NomDepartement",
       "fieldValues": "DAKAR,GUEDIAWAYE,PIKINE,RUFISQUE,BAMBAEY,DIOURBEL,MBACKE,FATICK,FOUNDIOUGNE,GOSSAS,BIRKILANE,KAFFRINE,KOUNGHEUR,MALEM_HODAR,GUINGUINEO,KAOLOACK,NIORO,KEDOUGOU,SALAMATA,SARAYA,KOLDA,MEDINA_YORO_FOULAH,VELINGARA,KEBEMERE,LINGUERE,LOUGA,KANELKANEL,MATAM,RANEROU_FERLO,DAGANA,PODOR,SAINT_LOUIS,BOUNKILING,GOUDOMP,SEDHIOU,BAKEL,GOUDIRY,KOUMPENTOUM,TAMBACOUNDA,MBOUR,THIES,TIVAOUANE,BIGNONA,OUSSOUYE,ZICHUINCHOR,AUTRE"
-    },
-    {
-      "fieldName": "lieuNaiss",
-      "fieldType": "String"
     },
     {
       "fieldName": "typePiece",
@@ -89,19 +88,26 @@
       "fieldValues": "CINQUIEME,QUATRIEME,TROISIEME,BFEM,EQUIVALENT_BFEM,SECONDE,PREMIERE,TERMINAL,BAC,EQUIVALENT_BAC,LICENCE1,LICENCE2,LICEMCE3,MASTER,DOCTORAT,ATTESTATION,CAP,CAP1,CAP2,CAP3,CPS,BEP,BEP1,BEP2,BT,BT1,BT2,BT3,BTS,BTS1,BTS2,CQP,CHEFEQUIPE,CHEF_DE_CHANTIER,TECHNICIENSPECIALISE,METP,BTI,TITRE_PROFESSIONNEL,AUTRES"
     },
     {
-      "fieldName": "specialite1",
+      "fieldName": "specialite",
       "fieldType": "NomFiliere",
       "fieldValues": "AGRI_ELEVAGE,AGRICULTURE,PECHE,ELEVAGE,MINE_CARRIERES,ARTISANAT,BATIMAT_TRAVAUX_PUBLIQUES,MECANIQUE,MENUISERIE_BOIS,HABILLEMENT,AGROALIMENTAIRE,ELECTROTECHNIQUE_ELECTRIQUE_ENERGETIQUE,HYDRAULIQUE,STRUCTURE_METALLIQUE,STRUCTURE_PLASTIQUE,BEAUTE_ESTHETIQUE,DEVELOPPEMENT_TERRITORIAL,DROIT,ECONOMIE_GESTION_COMMERCE_LOGISTIQUE,INSDUSTRIE_CULTURELLE_ET_CREATIVE,INFORMATIQUE_ET_NUMERIQUE,RESTAURATION_ET_HOTELLORIE,SANTE_BIOLOGIE_CHIMIE,SPORT,TOURISME,ENVIRONNEMENT,AUTRES"
     },
     {
-      "fieldName": "specialite2",
-      "fieldType": "NomSerie",
-      "fieldValues": "STEG,STIDD_M,STIDD_E,S3,S4,S5,F6,AUTRES"
+      "fieldName": "intituleDiplome",
+      "fieldType": "String"
     },
     {
-      "fieldName": "diplomeRequis",
-      "fieldType": "DiplomeRequis",
-      "fieldValues": "ATTESTATION,CAP,BT,DUR,DNBA,BEP,BTS,BFEM,BAC,LICENCE,MASTER,AUTRES"
+      "fieldName": "diplome",
+      "fieldType": "byte[]",
+      "fieldTypeBlobContent": "any"
+    },
+    {
+      "fieldName": "anneeObtention",
+      "fieldType": "LocalDate"
+    },
+    {
+      "fieldName": "lieuObtention",
+      "fieldType": "String"
     },
     {
       "fieldName": "cv",
@@ -111,50 +117,90 @@
     {
       "fieldName": "lettreMotivation",
       "fieldType": "byte[]",
-      "fieldTypeBlobContent": "text"
+      "fieldTypeBlobContent": "any"
     },
     {
       "fieldName": "profession",
       "fieldType": "String"
+    },
+    {
+      "fieldName": "autreSpecialite",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "nomCompetence",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "niveauCompetence",
+      "fieldType": "NIVEAUCOMP",
+      "fieldValues": "DEBUTANT,INTERMEDIAIRE,EXPERT"
+    },
+    {
+      "fieldName": "intituleExperience",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "posteOccupe",
+      "fieldType": "String",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "dateDebut",
+      "fieldType": "LocalDate",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "dateFin",
+      "fieldType": "LocalDate",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "nomEntreprise",
+      "fieldType": "String",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "mission",
+      "fieldType": "byte[]",
+      "fieldTypeBlobContent": "text"
     }
   ],
-  "fluentMethods": true,
-  "jpaMetamodelFiltering": false,
   "name": "Dossier",
   "pagination": "infinite-scroll",
-  "readOnly": false,
   "relationships": [
     {
       "otherEntityField": "niveauEtude",
       "otherEntityName": "eleve",
       "otherEntityRelationshipName": "dossier",
-      "ownerSide": true,
       "relationshipName": "eleve",
+      "relationshipSide": "left",
       "relationshipType": "one-to-one"
     },
     {
       "otherEntityField": "carteEtudiant",
       "otherEntityName": "etudiant",
       "otherEntityRelationshipName": "dossier",
-      "ownerSide": true,
       "relationshipName": "etudiant",
+      "relationshipSide": "left",
       "relationshipType": "one-to-one"
     },
     {
       "otherEntityField": "profession",
       "otherEntityName": "professionnel",
       "otherEntityRelationshipName": "dossier",
-      "ownerSide": true,
       "relationshipName": "professionnel",
+      "relationshipSide": "left",
       "relationshipType": "one-to-one"
     },
     {
       "otherEntityName": "demandeur",
       "otherEntityRelationshipName": "dossier",
-      "ownerSide": false,
       "relationshipName": "demandeur",
+      "relationshipSide": "right",
       "relationshipType": "one-to-one"
     }
   ],
+  "searchEngine": "no",
   "service": "serviceImpl"
 }

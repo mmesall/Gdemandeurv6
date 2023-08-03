@@ -18,8 +18,7 @@ describe('FormationContinue Management Delete Component', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
-      declarations: [FormationContinueDeleteDialogComponent],
+      imports: [HttpClientTestingModule, FormationContinueDeleteDialogComponent],
       providers: [NgbActiveModal],
     })
       .overrideTemplate(FormationContinueDeleteDialogComponent, '')

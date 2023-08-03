@@ -1,7 +1,9 @@
 <div class="d-flex justify-content-center">
   <div class="col-8">
     <div *ngIf="candidatureP">
-      <h2 data-cy="candidaturePDetailsHeading"><span>Candidature P</span></h2>
+      <h2 data-cy="candidaturePDetailsHeading">
+        <span jhiTranslate="jhipsterProjectBaseJwtApp.candidatureP.detail.title">Candidature P</span>
+      </h2>
 
       <hr />
 
@@ -10,60 +12,62 @@
       <jhi-alert></jhi-alert>
 
       <dl class="row-md jh-entity-details">
-        <dt><span>ID</span></dt>
+        <dt><span jhiTranslate="global.field.id">ID</span></dt>
         <dd>
           <span>{{ candidatureP.id }}</span>
         </dd>
-        <dt><span>Offre Formation</span></dt>
+        <dt><span jhiTranslate="jhipsterProjectBaseJwtApp.candidatureP.offreFormation">Offre Formation</span></dt>
         <dd>
-          <span>{{ candidatureP.offreFormation }}</span>
+          <span jhiTranslate="{{ 'jhipsterProjectBaseJwtApp.NomFiliere.' + candidatureP.offreFormation }}">{{
+            candidatureP.offreFormation
+          }}</span>
         </dd>
-        <dt><span>Date Debut Offre</span></dt>
+        <dt><span jhiTranslate="jhipsterProjectBaseJwtApp.candidatureP.dateDebutOffre">Date Debut Offre</span></dt>
         <dd>
           <span>{{ candidatureP.dateDebutOffre | formatMediumDate }}</span>
         </dd>
-        <dt><span>Date Fin Offre</span></dt>
+        <dt><span jhiTranslate="jhipsterProjectBaseJwtApp.candidatureP.dateFinOffre">Date Fin Offre</span></dt>
         <dd>
           <span>{{ candidatureP.dateFinOffre | formatMediumDate }}</span>
         </dd>
-        <dt><span>Date Depot</span></dt>
+        <dt><span jhiTranslate="jhipsterProjectBaseJwtApp.candidatureP.dateDepot">Date Depot</span></dt>
         <dd>
           <span>{{ candidatureP.dateDepot | formatMediumDate }}</span>
         </dd>
-        <dt><span>Resultat</span></dt>
+        <dt><span jhiTranslate="jhipsterProjectBaseJwtApp.candidatureP.resultat">Resultat</span></dt>
         <dd>
-          <span>{{ candidatureP.resultat }}</span>
+          <span jhiTranslate="{{ 'jhipsterProjectBaseJwtApp.Resultat.' + candidatureP.resultat }}">{{ candidatureP.resultat }}</span>
         </dd>
-        <dt><span>Professionnel</span></dt>
+        <dt><span jhiTranslate="jhipsterProjectBaseJwtApp.candidatureP.professionnel">Professionnel</span></dt>
         <dd>
           <div *ngIf="candidatureP.professionnel">
-            <a [routerLink]="['/professionnel', candidatureP.professionnel?.id, 'view']">{{ candidatureP.professionnel?.profession }}</a>
+            <a [routerLink]="['/professionnel', candidatureP.professionnel.id, 'view']">{{ candidatureP.professionnel.profession }}</a>
           </div>
         </dd>
-        <dt><span>Formation Continue</span></dt>
+        <dt><span jhiTranslate="jhipsterProjectBaseJwtApp.candidatureP.formationContinue">Formation Continue</span></dt>
         <dd>
           <div *ngIf="candidatureP.formationContinue">
-            <a [routerLink]="['/formation-continue', candidatureP.formationContinue?.id, 'view']">{{
-              candidatureP.formationContinue?.nomFormationC
+            <a [routerLink]="['/formation-continue', candidatureP.formationContinue.id, 'view']">{{
+              candidatureP.formationContinue.nomFormationC
             }}</a>
           </div>
         </dd>
-        <dt><span>Etablissement</span></dt>
+        <dt><span jhiTranslate="jhipsterProjectBaseJwtApp.candidatureP.etablissement">Etablissement</span></dt>
         <dd>
           <div *ngIf="candidatureP.etablissement">
-            <a [routerLink]="['/etablissement', candidatureP.etablissement?.id, 'view']">{{
-              candidatureP.etablissement?.nomEtablissement
+            <a [routerLink]="['/etablissement', candidatureP.etablissement.id, 'view']">{{
+              candidatureP.etablissement.nomEtablissement
             }}</a>
           </div>
         </dd>
       </dl>
 
       <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
-        <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span>Back</span>
+        <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Retour</span>
       </button>
 
       <button type="button" [routerLink]="['/candidature-p', candidatureP.id, 'edit']" class="btn btn-primary">
-        <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span>Edit</span>
+        <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Editer</span>
       </button>
     </div>
   </div>

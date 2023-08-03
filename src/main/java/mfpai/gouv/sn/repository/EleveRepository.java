@@ -10,7 +10,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 /**
- * Spring Data SQL repository for the Eleve entity.
+ * Spring Data JPA repository for the Eleve entity.
  */
 @Repository
 public interface EleveRepository extends JpaRepository<Eleve, Long> {
@@ -26,13 +26,10 @@ public interface EleveRepository extends JpaRepository<Eleve, Long> {
         return this.findAllWithToOneRelationships(pageable);
     }
 
-    @Query(
-        value = "select distinct eleve from Eleve eleve left join fetch eleve.user",
-        countQuery = "select count(distinct eleve) from Eleve eleve"
-    )
+    @Query(value = "select eleve from Eleve eleve left join fetch eleve.user", countQuery = "select count(eleve) from Eleve eleve")
     Page<Eleve> findAllWithToOneRelationships(Pageable pageable);
 
-    @Query("select distinct eleve from Eleve eleve left join fetch eleve.user")
+    @Query("select eleve from Eleve eleve left join fetch eleve.user")
     List<Eleve> findAllWithToOneRelationships();
 
     @Query("select eleve from Eleve eleve left join fetch eleve.user where eleve.id =:id")

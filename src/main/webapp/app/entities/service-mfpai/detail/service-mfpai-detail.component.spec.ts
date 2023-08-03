@@ -1,5 +1,6 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ActivatedRoute } from '@angular/router';
+import { TestBed } from '@angular/core/testing';
+import { provideRouter, withComponentInputBinding } from '@angular/router';
+import { RouterTestingHarness, RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
 
 import { DataUtils } from 'app/core/util/data-util.service';
@@ -7,35 +8,37 @@ import { DataUtils } from 'app/core/util/data-util.service';
 import { ServiceMFPAIDetailComponent } from './service-mfpai-detail.component';
 
 describe('ServiceMFPAI Management Detail Component', () => {
-  let comp: ServiceMFPAIDetailComponent;
-  let fixture: ComponentFixture<ServiceMFPAIDetailComponent>;
   let dataUtils: DataUtils;
 
-  beforeEach(() => {
-    TestBed.configureTestingModule({
-      declarations: [ServiceMFPAIDetailComponent],
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [ServiceMFPAIDetailComponent, RouterTestingModule.withRoutes([], { bindToComponentInputs: true })],
       providers: [
-        {
-          provide: ActivatedRoute,
-          useValue: { data: of({ serviceMFPAI: { id: 123 } }) },
-        },
+        provideRouter(
+          [
+            {
+              path: '**',
+              component: ServiceMFPAIDetailComponent,
+              resolve: { serviceMFPAI: () => of({ id: 123 }) },
+            },
+          ],
+          withComponentInputBinding()
+        ),
       ],
     })
       .overrideTemplate(ServiceMFPAIDetailComponent, '')
       .compileComponents();
-    fixture = TestBed.createComponent(ServiceMFPAIDetailComponent);
-    comp = fixture.componentInstance;
     dataUtils = TestBed.inject(DataUtils);
     jest.spyOn(window, 'open').mockImplementation(() => null);
   });
 
   describe('OnInit', () => {
-    it('Should load serviceMFPAI on init', () => {
-      // WHEN
-      comp.ngOnInit();
+    it('Should load serviceMFPAI on init', async () => {
+      const harness = await RouterTestingHarness.create();
+      const instance = await harness.navigateByUrl('/', ServiceMFPAIDetailComponent);
 
       // THEN
-      expect(comp.serviceMFPAI).toEqual(expect.objectContaining({ id: 123 }));
+      expect(instance.serviceMFPAI).toEqual(expect.objectContaining({ id: 123 }));
     });
   });
 
@@ -44,6 +47,8 @@ describe('ServiceMFPAI Management Detail Component', () => {
       // GIVEN
       jest.spyOn(dataUtils, 'byteSize');
       const fakeBase64 = 'fake base64';
+      const fixture = TestBed.createComponent(ServiceMFPAIDetailComponent);
+      const comp = fixture.componentInstance;
 
       // WHEN
       comp.byteSize(fakeBase64);
@@ -58,12 +63,14 @@ describe('ServiceMFPAI Management Detail Component', () => {
       const newWindow = { ...window };
       newWindow.document.write = jest.fn();
       window.open = jest.fn(() => newWindow);
-      window.onload = jest.fn(() => newWindow);
-      window.URL.createObjectURL = jest.fn();
+      window.onload = jest.fn(() => newWindow) as any;
+      window.URL.createObjectURL = jest.fn() as any;
       // GIVEN
       jest.spyOn(dataUtils, 'openFile');
       const fakeContentType = 'fake content type';
       const fakeBase64 = 'fake base64';
+      const fixture = TestBed.createComponent(ServiceMFPAIDetailComponent);
+      const comp = fixture.componentInstance;
 
       // WHEN
       comp.openFile(fakeBase64, fakeContentType);

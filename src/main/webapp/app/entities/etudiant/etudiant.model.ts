@@ -1,60 +1,24 @@
 import dayjs from 'dayjs/esm';
 import { IUser } from 'app/entities/user/user.model';
-import { IDiplome } from 'app/entities/diplome/diplome.model';
-import { IExperience } from 'app/entities/experience/experience.model';
-import { ICandidatureE } from 'app/entities/candidature-e/candidature-e.model';
-import { IDossier } from 'app/entities/dossier/dossier.model';
-import { IDemandeur } from 'app/entities/demandeur/demandeur.model';
 import { Sexe } from 'app/entities/enumerations/sexe.model';
 import { NomRegion } from 'app/entities/enumerations/nom-region.model';
 import { NomDepartement } from 'app/entities/enumerations/nom-departement.model';
 
 export interface IEtudiant {
-  id?: number;
-  carteEtudiant?: string;
-  nom?: string;
-  prenom?: string;
+  id: number;
+  carteEtudiant?: string | null;
+  nom?: string | null;
+  prenom?: string | null;
   dateNaiss?: dayjs.Dayjs | null;
   lieuNaiss?: string | null;
-  sexe?: Sexe | null;
+  sexe?: keyof typeof Sexe | null;
   telephone?: number | null;
   adressePhysique?: string | null;
-  regionResidence?: NomRegion | null;
-  departResidence?: NomDepartement | null;
+  regionResidence?: keyof typeof NomRegion | null;
+  departResidence?: keyof typeof NomDepartement | null;
   email?: string | null;
-  cni?: number;
-  user?: IUser | null;
-  diplomes?: IDiplome[] | null;
-  experiences?: IExperience[] | null;
-  candidatureES?: ICandidatureE[] | null;
-  dossier?: IDossier | null;
-  demandeur?: IDemandeur | null;
+  cni?: number | null;
+  user?: Pick<IUser, 'id' | 'login'> | null;
 }
 
-export class Etudiant implements IEtudiant {
-  constructor(
-    public id?: number,
-    public carteEtudiant?: string,
-    public nom?: string,
-    public prenom?: string,
-    public dateNaiss?: dayjs.Dayjs | null,
-    public lieuNaiss?: string | null,
-    public sexe?: Sexe | null,
-    public telephone?: number | null,
-    public adressePhysique?: string | null,
-    public regionResidence?: NomRegion | null,
-    public departResidence?: NomDepartement | null,
-    public email?: string | null,
-    public cni?: number,
-    public user?: IUser | null,
-    public diplomes?: IDiplome[] | null,
-    public experiences?: IExperience[] | null,
-    public candidatureES?: ICandidatureE[] | null,
-    public dossier?: IDossier | null,
-    public demandeur?: IDemandeur | null
-  ) {}
-}
-
-export function getEtudiantIdentifier(etudiant: IEtudiant): number | undefined {
-  return etudiant.id;
-}
+export type NewEtudiant = Omit<IEtudiant, 'id'> & { id: null };

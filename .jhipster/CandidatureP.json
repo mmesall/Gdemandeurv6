@@ -1,8 +1,6 @@
 {
   "applications": "*",
   "changelogDate": "20230510150030",
-  "dto": "no",
-  "embedded": false,
   "entityTableName": "candidature_p",
   "fields": [
     {
@@ -25,20 +23,18 @@
     {
       "fieldName": "resultat",
       "fieldType": "Resultat",
-      "fieldValues": "SOUMIS,ACCORD,REJET"
+      "fieldValues": "SOUMIS,VALIDE,APPROUVE,REJETE"
     }
   ],
-  "fluentMethods": true,
-  "jpaMetamodelFiltering": false,
   "name": "CandidatureP",
   "pagination": "infinite-scroll",
-  "readOnly": false,
   "relationships": [
     {
       "otherEntityField": "profession",
       "otherEntityName": "professionnel",
       "otherEntityRelationshipName": "candidatureP",
       "relationshipName": "professionnel",
+      "relationshipSide": "right",
       "relationshipType": "many-to-one"
     },
     {
@@ -46,6 +42,7 @@
       "otherEntityName": "formationContinue",
       "otherEntityRelationshipName": "candidatureP",
       "relationshipName": "formationContinue",
+      "relationshipSide": "right",
       "relationshipType": "many-to-one"
     },
     {
@@ -53,8 +50,10 @@
       "otherEntityName": "etablissement",
       "otherEntityRelationshipName": "candidatureP",
       "relationshipName": "etablissement",
+      "relationshipSide": "right",
       "relationshipType": "many-to-one"
     }
   ],
+  "searchEngine": "no",
   "service": "serviceImpl"
 }

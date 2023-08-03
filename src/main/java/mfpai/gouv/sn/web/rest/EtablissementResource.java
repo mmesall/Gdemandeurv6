@@ -1,12 +1,12 @@
 package mfpai.gouv.sn.web.rest;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 import mfpai.gouv.sn.domain.Etablissement;
 import mfpai.gouv.sn.repository.EtablissementRepository;
 import mfpai.gouv.sn.service.EtablissementService;
@@ -95,7 +95,7 @@ public class EtablissementResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        Etablissement result = etablissementService.save(etablissement);
+        Etablissement result = etablissementService.update(etablissement);
         return ResponseEntity
             .ok()
             .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, etablissement.getId().toString()))
@@ -145,7 +145,7 @@ public class EtablissementResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of etablissements in body.
      */
     @GetMapping("/etablissements")
-    public ResponseEntity<List<Etablissement>> getAllEtablissements(@org.springdoc.api.annotations.ParameterObject Pageable pageable) {
+    public ResponseEntity<List<Etablissement>> getAllEtablissements(@org.springdoc.core.annotations.ParameterObject Pageable pageable) {
         log.debug("REST request to get a page of Etablissements");
         Page<Etablissement> page = etablissementService.findAll(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
